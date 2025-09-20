@@ -33,33 +33,7 @@ Route::name('admin.')->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
         });
 
-        Route::controller(CountryController::class)->prefix('countries')->name('countries.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{country}/edit', 'edit')->name('edit');
-            Route::put('/{country}', 'update')->name('update');
-            Route::delete('/{country}', 'destroy')->name('destroy');
-        });
-
-        Route::controller(StateController::class)->prefix('states')->name('states.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{state}/edit', 'edit')->name('edit');
-            Route::put('/{state}', 'update')->name('update');
-            Route::delete('/{state}', 'destroy')->name('destroy');
-        });
-        Route::controller(CityController::class)->prefix('cities')->name('cities.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{city}/edit', 'edit')->name('edit');
-            Route::put('/{city}', 'update')->name('update');
-            Route::delete('/{city}', 'destroy')->name('destroy');
-
-            Route::get('/states/{countryId}', 'getStates')->name('states');
-        });
+        
         Route::controller(PropertyTypeController::class)->prefix('property_types')->name('property_types.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
@@ -93,43 +67,8 @@ Route::name('admin.')->group(function () {
             Route::delete('/{teamMember}', 'destroy')->name('destroy');
         });
 
-        Route::controller(BlogCategoryController::class)->prefix('blog-categories')->name('blog-categories.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{blogCategory}/edit', 'edit')->name('edit');
-            Route::put('/{blogCategory}', 'update')->name('update');
-            Route::delete('/{blogCategory}', 'destroy')->name('destroy');
-        });
-        Route::controller(BlogController::class)->prefix('blogs')->name('blogs.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{blog}/edit', 'edit')->name('edit');
-            Route::put('/{blog}', 'update')->name('update');
-            Route::delete('/{blog}', 'destroy')->name('destroy');
-        });
-        Route::controller(SubscriberController::class)->prefix('subscribers')->name('subscribers.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{subscriber}', 'show')->name('show');
-            Route::get('/{subscriber}/edit', 'edit')->name('edit');
-            Route::put('/{subscriber}', 'update')->name('update');
-            Route::delete('/{subscriber}', 'destroy')->name('destroy');
-            Route::post('/{subscriber}/verify', 'verify')->name('verify');
-            Route::post('/{subscriber}/unsubscribe', 'unsubscribe')->name('unsubscribe');
-            Route::get('/export', 'export')->name('export');
-        });
-        Route::controller(SliderController::class)->prefix('sliders')->name('sliders.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{slider}/edit', 'edit')->name('edit');
-            Route::put('/{slider}', 'update')->name('update');
-            Route::delete('/{slider}', 'destroy')->name('destroy');
-            Route::post('{slider}/status', 'updateStatus')->name('status.update');
-        });
+       
+        
         Route::controller(PropertyController::class)->prefix('properties')->name('properties.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
