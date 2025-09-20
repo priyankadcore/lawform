@@ -1,7 +1,7 @@
 <?php
 
 $settings = \App\Models\Setting::first();
-$site_title = $settings->site_name ?? 'FindMyHomeZ - Admin & Dashboard ';
+$site_title = 'Lawform - Admin & Dashboard ';
 $favicon = isset($settings->favicon) ? asset('storage/' . $settings->favicon) : asset('build/images/favicon.ico');
 
 ?>

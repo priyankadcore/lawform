@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\SubscriberController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ProfileController;
 
 
 Route::name('admin.')->group(function () {
@@ -88,5 +89,13 @@ Route::name('admin.')->group(function () {
             Route::put('/{setting}', 'update')->name('update');
             Route::delete('/{setting}', 'destroy')->name('destroy');
         });
+
+
+     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/update-profile', [ProfileController::class, 'updateAvatar'])->name('profile.update-avatar');
+    Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+   
+
     });
 });

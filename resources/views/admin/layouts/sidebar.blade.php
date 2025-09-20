@@ -7,13 +7,9 @@
         <div class="user-sidebar text-center">
             <div class="dropdown">
                 <div class="user-img">
-                    <img src="{{ URL::asset('build/images/users/avatar-7.jpg') }}" alt="" class="rounded-circle">
-                    <span class="avatar-online bg-success"></span>
+                   <h4 class="mt-3 font-size-16 text-white"> Admin dashboard</h4>
                 </div>
-                <div class="user-info">
-                    <h5 class="mt-3 font-size-16 text-white">Bhuvnesh</h5>
-                    <span class="font-size-13 text-white-50">Administrator</span>
-                </div>
+                
             </div>
         </div>
 

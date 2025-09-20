@@ -8,7 +8,7 @@
         type="text/css" />
 @endsection
 @section('content')
-    <x-breadcrub pagetitle="Morvin" subtitle="Dashboard" title="Dashboard" />
+    <x-breadcrub pagetitle="Admin" subtitle="Dashboard" title="Dashboard" />
 
     <div class="container-fluid">
         <div class="page-content-wrapper">
