@@ -1,0 +1,113 @@
+<?php
+$settings = \App\Models\Setting::first();
+$site_title = $settings ? $settings->site_name : 'FindMyHomeZ | Real Estate';
+$site_description = $settings ? $settings->site_description : 'FindMyHomeZ | Real Estate';
+$site_keywords = $settings ? $settings->site_keywords : 'HTML5,CSS3,HTML,Template,Multi-Purpose,Mr_Bhuvi,Corporate FindMyHomeZ | Real Estate';
+$site_author = $settings ? $settings->site_author : 'Mr_Bhuvi';
+$favicon = isset($settings->favicon) ? asset('storage/' . $settings->favicon) : asset('build/images/favicon.ico');
+$logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('build/images/logo-dark.png');
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $site_title }} | Real Estate </title>
+    <meta name="keywords"
+        content="{{ $site_keywords }}">
+    <meta name="description" content="{{ $site_description }}">
+    <meta name="author" content="{{ $site_author }}">
+
+    <!-- FONTS ONLINE -->
+    <link
+        href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic'
+        rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+    <link rel="shortcut icon" href="{{ $favicon }}">
+
+    <!--MAIN STYLE-->
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/animate.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+    <!-- Page Wrap ===========================================-->
+    <div id="wrap" class="home-1">
+
+
+        @include('layouts.topbar')
+
+
+        @include('layouts.header')
+
+        @yield('content')
+
+        @include('layouts.footer')
+
+        <!--======= RIGHTS =========-->
+        <div class="rights">
+            <div class="container">
+                <p class="font-montserrat">© 2015 Realtor. All rights reserved</p>
+            </div>
+        </div>
+    </div>
+    <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
+    <script src="{{ asset('js/wow.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-select.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.stellar.js') }}"></script>
+    <script src="{{ asset('js/jquery.flexslider-min.js') }}"></script>
+    <script src="{{ asset('js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.sticky.js') }}"></script>
+    <script src="{{ asset('js/own-menu.js') }}"></script>
+    <script src="{{ asset('js/jquery.nouislider.min.js') }}"></script>
+    <script src="{{ asset('js/google-map-home.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script type="text/javascript">
+        /*-----------------------------------------------------------------------------------*/
+        /*    PRICE RANGE
+        /*-----------------------------------------------------------------------------------*/
+        $("#price-range").noUiSlider({
+            range: {
+                'min': [0],
+                'max': [10000000]
+            },
+            start: [0, 10000000],
+            connect: true,
+            serialization: {
+                lower: [
+                    $.Link({
+                        target: $("#price-min")
+                    })
+                ],
+                upper: [
+                    $.Link({
+                        target: $("#price-max")
+                    })
+                ],
+                format: {
+                    // Set formatting
+                    decimals: 0,
+                    prefix: '$'
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
