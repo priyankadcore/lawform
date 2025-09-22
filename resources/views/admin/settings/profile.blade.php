@@ -1,8 +1,39 @@
 @extends('admin.layouts.master')
-@section('title', 'Profile')
-@section('css')
-    <link href="{{ asset('build/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+@section('title')
+    Profile
 @endsection
+
+@section('css')
+    <link href="{{ URL::asset('build/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet"
+        type="text/css" />
+    <style>
+        .property-type-img {
+            max-width: 80px;
+            max-height: 60px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .swal2-toast {
+            font-size: 12px !important;
+            padding: 6px 10px !important;
+            min-width: auto !important;
+            width: 220px !important;
+            line-height: 1.3em !important;
+        }
+
+        .swal2-toast .swal2-icon {
+            width: 24px !important;
+            height: 24px !important;
+            margin-right: 6px !important;
+        }
+
+        .swal2-toast .swal2-title {
+            font-size: 13px !important;
+        }
+    </style>
+@endsection
+
 
 @section('content')
     <x-breadcrub pagetitle="Home" subtitle="Admin" title="Profile Update" />
@@ -13,21 +44,23 @@
             --light-bg: #f8f9fa;
             --border-color: #e9ecef;
         }
-        .small-toast {
-                font-size: 12px; /* ya jitna chhota chahiye */
-            }
 
-        
+        .small-toast {
+            font-size: 12px;
+            /* ya jitna chhota chahiye */
+        }
+
+
         body {
             background-color: #f5f6f8;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .profile-container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         .profile-card {
             border-radius: 12px;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
@@ -35,7 +68,7 @@
             overflow: hidden;
             background: white;
         }
-        
+
         .profile-sidebar {
             background: linear-gradient(to bottom, #bdb4ed, #d0d2d4ff);
             color: white;
@@ -43,7 +76,7 @@
             text-align: center;
             height: 100%;
         }
-        
+
         .profile-avatar {
             width: 150px;
             height: 150px;
@@ -53,13 +86,13 @@
             margin: 0 auto 20px;
             display: block;
         }
-        
+
         .profile-avatar-edit {
             position: relative;
             display: inline-block;
             cursor: pointer;
         }
-        
+
         .avatar-edit-icon {
             position: absolute;
             bottom: 20px;
@@ -74,27 +107,28 @@
             justify-content: center;
             border: 3px solid white;
         }
-        
+
         .profile-details {
             padding: 30px;
         }
-        
+
         .profile-name {
             font-size: 1.8rem;
             font-weight: 600;
             margin-bottom: 5px;
         }
-        
+
         .profile-role {
             color: var(--secondary-color);
             margin-bottom: 25px;
         }
-        
-        .form-control:focus, .form-select:focus {
+
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(59, 125, 221, 0.25);
         }
-        
+
         .profile-section {
             background-color: white;
             border-radius: 10px;
@@ -102,7 +136,7 @@
             margin-bottom: 25px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
-        
+
         .section-title {
             font-size: 1.2rem;
             font-weight: 600;
@@ -111,7 +145,7 @@
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
         }
-        
+
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -119,57 +153,57 @@
             border-radius: 6px;
             font-weight: 500;
         }
-        
+
         .btn-primary:hover {
             background-color: #2d6ac1;
             border-color: #2d6ac1;
         }
-        
+
         .btn-outline-secondary {
             padding: 10px 25px;
             border-radius: 6px;
             font-weight: 500;
         }
-        
+
         .sidebar-stats {
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .stat-item {
             margin-bottom: 15px;
         }
-        
+
         .stat-value {
             font-size: 1.4rem;
             font-weight: 700;
         }
-        
+
         .stat-label {
             font-size: 0.9rem;
             opacity: 0.9;
         }
-        
+
         .password-toggle {
             cursor: pointer;
         }
-        
+
         .alert {
             border-radius: 10px;
             margin-bottom: 20px;
         }
-        
+
         /* Tab Styles */
         .nav-tabs {
             border-bottom: 2px solid var(--border-color);
             margin-bottom: 25px;
         }
-        
+
         .nav-tabs .nav-item {
             margin-bottom: -2px;
         }
-        
+
         .nav-tabs .nav-link {
             border: none;
             color: var(--secondary-color);
@@ -177,80 +211,85 @@
             padding: 12px 25px;
             border-radius: 8px 8px 0 0;
         }
-        
+
         .nav-tabs .nav-link:hover {
             border: none;
             color: var(--primary-color);
             background-color: rgba(82, 92, 229, 0.05);
         }
-        
+
         .nav-tabs .nav-link.active {
             color: var(--primary-color);
             background-color: white;
             border-bottom: 3px solid var(--primary-color);
             font-weight: 600;
         }
-        
+
         .tab-content {
             padding: 0;
         }
-        
+
         .tab-pane {
             display: none;
         }
-        
+
         .tab-pane.active {
             display: block;
             animation: fadeIn 0.3s ease-in;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
-        
+
         @media (max-width: 992px) {
             .profile-sidebar {
                 padding: 20px;
             }
-            
+
             .profile-avatar {
                 width: 120px;
                 height: 120px;
             }
-            
+
             .nav-tabs .nav-link {
                 padding: 10px 15px;
                 font-size: 0.9rem;
             }
         }
-        
+
         @media (max-width: 768px) {
             .profile-sidebar {
                 text-align: center;
                 padding: 30px 20px;
             }
-            
+
             .profile-details {
                 padding: 25px 20px;
             }
-            
+
             .nav-tabs {
                 flex-direction: column;
                 border-bottom: none;
             }
-            
+
             .nav-tabs .nav-item {
                 margin-bottom: 5px;
                 width: 100%;
             }
-            
+
             .nav-tabs .nav-link {
                 border-radius: 6px;
                 text-align: center;
                 border: 1px solid var(--border-color);
             }
-            
+
             .nav-tabs .nav-link.active {
                 border-bottom: 3px solid var(--primary-color);
             }
@@ -263,10 +302,10 @@
                 <h2 class="mb-4">Profile Update</h2>
             </div>
         </div>
-        
+
         <!-- Success/Error Messages -->
         <div id="messageContainer"></div>
-        
+
         <div class="row">
             <div class="col-12">
                 <div class="card profile-card">
@@ -275,99 +314,112 @@
                             <!-- Left Sidebar with Image -->
                             <div class="col-lg-4 col-md-5 profile-sidebar">
                                 <div class="profile-avatar-edit mb-3">
-                                    <img src="{{ $user->profile ? asset('storage/'.$user->profile) : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80' }}" 
-                                         alt="Avatar" class="profile-avatar" id="avatarPreview">
+                                    <img src="{{ $user->profile ? asset('storage/' . $user->profile) : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80' }}"
+                                        alt="Avatar" class="profile-avatar" id="avatarPreview">
                                     <div class="avatar-edit-icon" data-bs-toggle="modal" data-bs-target="#avatarModal">
                                         <i class="fas fa-camera"></i>
                                     </div>
                                 </div>
-                                
+
                                 <h3 class="profile-name">{{ $user->name }}</h3>
                                 <p class="profile-role">{{ $user->role }}</p>
-                                
+
                                 <div class="sidebar-stats">
                                     <div class="stat-item">
                                         <div class="text-black">{{ $user->bio }}</div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Right Side with Tabs and Form -->
                             <div class="col-lg-8 col-md-7 profile-details">
                                 <!-- Tabs Navigation -->
                                 <ul class="nav nav-tabs" id="profileTabs" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+                                        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab"
+                                            data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
+                                            aria-selected="true">
                                             <i class="fas fa-user me-2"></i>Profile Information
                                         </button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
+                                        <button class="nav-link" id="password-tab" data-bs-toggle="tab"
+                                            data-bs-target="#password" type="button" role="tab"
+                                            aria-controls="password" aria-selected="false">
                                             <i class="fas fa-lock me-2"></i>Change Password
                                         </button>
                                     </li>
                                 </ul>
-                                
+
                                 <!-- Tab Content -->
                                 <div class="tab-content" id="profileTabsContent">
                                     <!-- Profile Tab -->
-                                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="tab-pane fade show active" id="profile" role="tabpanel"
+                                        aria-labelledby="profile-tab">
                                         <form id="profileForm">
                                             @csrf
                                             <!-- Personal Information Section -->
                                             <div class="profile-section">
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12 mb-3">
                                                         <label for="name" class="form-label">Full Name </label>
-                                                        <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" required>
+                                                        <input type="text" class="form-control" id="name"
+                                                            name="name" value="{{ $user->name }}" required>
                                                         <div class="invalid-feedback" id="nameError"></div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label for="email" class="form-label">Email Address </label>
-                                                        <input type="email" class="form-control" id="email" readonly name="email" value="{{ $user->email }}" >
+                                                        <input type="email" class="form-control" id="email" readonly
+                                                            name="email" value="{{ $user->email }}">
                                                         <div class="invalid-feedback" id="emailError"></div>
                                                     </div>
                                                     <div class="col-md-6 mb-3">
                                                         <label for="phone" class="form-label">Phone Number</label>
-                                                        <input type="tel" class="form-control" id="phone" name="phone" value="{{ $user->phone }}">
+                                                        <input type="tel" class="form-control" id="phone"
+                                                            name="phone" value="{{ $user->phone }}">
                                                         <div class="invalid-feedback" id="phoneError"></div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="mb-3">
                                                     <label for="bio" class="form-label">Bio</label>
                                                     <textarea class="form-control" id="bio" name="bio" rows="3">{{ $user->bio }}</textarea>
                                                     <div class="invalid-feedback" id="bioError"></div>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Action Buttons -->
                                             <div class="d-flex justify-content-between mt-4">
-                                                <button type="button" class="btn btn-outline-secondary" id="cancelBtn">Cancel</button>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    id="cancelBtn">Cancel</button>
                                                 <button type="submit" class="btn btn-primary" id="submitBtn">
-                                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                                    <span class="spinner-border spinner-border-sm d-none" role="status"
+                                                        aria-hidden="true"></span>
                                                     Update Profile
                                                 </button>
                                             </div>
                                         </form>
                                     </div>
-                                    
+
                                     <!-- Password Tab -->
-                                    <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                                    <div class="tab-pane fade" id="password" role="tabpanel"
+                                        aria-labelledby="password-tab">
                                         <form id="passwordForm">
                                             @csrf
                                             <!-- Password Change Section -->
                                             <div class="profile-section">
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12 mb-3">
-                                                        <label for="current_password" class="form-label">Current Password </label>
+                                                        <label for="current_password" class="form-label">Current Password
+                                                        </label>
                                                         <div class="input-group">
-                                                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                                                            <input type="password" class="form-control"
+                                                                id="current_password" name="current_password" required>
                                                             <span class="input-group-text password-toggle">
                                                                 <i class="fas fa-eye-slash"></i>
                                                             </span>
@@ -375,12 +427,13 @@
                                                         <div class="invalid-feedback" id="currentPasswordError"></div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label for="new_password" class="form-label">New Password </label>
                                                         <div class="input-group">
-                                                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                                                            <input type="password" class="form-control" id="new_password"
+                                                                name="new_password" required>
                                                             <span class="input-group-text password-toggle">
                                                                 <i class="fas fa-eye-slash"></i>
                                                             </span>
@@ -388,9 +441,12 @@
                                                         <div class="invalid-feedback" id="newPasswordError"></div>
                                                     </div>
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+                                                        <label for="new_password_confirmation" class="form-label">Confirm
+                                                            New Password</label>
                                                         <div class="input-group">
-                                                            <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
+                                                            <input type="password" class="form-control"
+                                                                id="new_password_confirmation"
+                                                                name="new_password_confirmation" required>
                                                             <span class="input-group-text password-toggle">
                                                                 <i class="fas fa-eye-slash"></i>
                                                             </span>
@@ -399,12 +455,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Action Buttons -->
                                             <div class="d-flex justify-content-between mt-4">
-                                                <button type="button" class="btn btn-outline-secondary" id="passwordCancelBtn">Cancel</button>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    id="passwordCancelBtn">Cancel</button>
                                                 <button type="submit" class="btn btn-primary" id="passwordSubmitBtn">
-                                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                                    <span class="spinner-border spinner-border-sm d-none" role="status"
+                                                        aria-hidden="true"></span>
                                                     Change Password
                                                 </button>
                                             </div>
@@ -418,7 +476,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Avatar Modal -->
     <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -434,8 +492,9 @@
                         <div class="invalid-feedback" id="avatarError"></div>
                     </div>
                     <div class="text-center">
-                        <img src="{{ $user->profile ? asset('storage/'.$user->profile) : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80' }}" 
-                             alt="Avatar Preview" class="img-fluid rounded" id="modalAvatarPreview" style="max-height: 200px;">
+                        <img src="{{ $user->profile ? asset('storage/' . $user->profile) : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80' }}"
+                            alt="Avatar Preview" class="img-fluid rounded" id="modalAvatarPreview"
+                            style="max-height: 200px;">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -445,19 +504,20 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SweetAlert2 -->
+@section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Bootstrap tabs
             const triggerTabList = [].slice.call(document.querySelectorAll('#profileTabs button'));
-            triggerTabList.forEach(function (triggerEl) {
+            triggerTabList.forEach(function(triggerEl) {
                 new bootstrap.Tab(triggerEl);
             });
-            
+
             // Elements
             const profileForm = document.getElementById('profileForm');
             const passwordForm = document.getElementById('passwordForm');
@@ -472,13 +532,13 @@
             const saveAvatarBtn = document.getElementById('saveAvatarBtn');
             const avatarModal = document.getElementById('avatarModal');
             const modalInstance = new bootstrap.Modal(avatarModal);
-            
+
             // Password visibility toggle
             document.querySelectorAll('.password-toggle').forEach(toggle => {
                 toggle.addEventListener('click', function() {
                     const icon = this.querySelector('i');
                     const input = this.parentElement.querySelector('input');
-                    
+
                     if (input.type === 'password') {
                         input.type = 'text';
                         icon.classList.remove('fa-eye-slash');
@@ -490,7 +550,7 @@
                     }
                 });
             });
-            
+
             // Avatar preview in modal
             avatarUpload.addEventListener('change', function() {
                 const file = this.files[0];
@@ -498,19 +558,19 @@
                     // Validate file type and size
                     const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
                     const maxSize = 2 * 1024 * 1024; // 2MB
-                    
+
                     if (!validImageTypes.includes(file.type)) {
                         showMessage('Please select a valid image file (JPEG, PNG, GIF).', 'danger');
                         this.value = '';
                         return;
                     }
-                    
+
                     if (file.size > maxSize) {
                         showMessage('Image size should be less than 2MB.', 'danger');
                         this.value = '';
                         return;
                     }
-                    
+
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         modalAvatarPreview.src = e.target.result;
@@ -518,7 +578,7 @@
                     reader.readAsDataURL(file);
                 }
             });
-            
+
             // Save avatar button
             saveAvatarBtn.addEventListener('click', function() {
                 const file = avatarUpload.files[0];
@@ -526,169 +586,171 @@
                     showMessage('Please select an image first.', 'danger');
                     return;
                 }
-                
+
                 const formData = new FormData();
                 formData.append('avatar', file);
                 formData.append('_token', '{{ csrf_token() }}');
-                
+
                 // Show loading state
                 saveAvatarBtn.disabled = true;
-                saveAvatarBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...';
-                
-                fetch('{{ route("admin.profile.update-avatar") }}', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        mainAvatarPreview.src = data.avatar_url;
-                         modalInstance.hide();
+                saveAvatarBtn.innerHTML =
+                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...';
+
+                fetch('{{ route('admin.profile.update-avatar') }}', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            mainAvatarPreview.src = data.avatar_url;
+                            modalInstance.hide();
                             Swal.fire({
-                            toast: true,
-                            icon: 'success',
-                            title: 'Profile picture updated successfully!',
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            customClass: {
-                                popup: 'small-toast'
-                            }
-                        });
-                       
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                    } else {
-                        showMessage(data.message || 'Error updating profile picture.', 'danger');
-                    }
-                })
-                .catch(error => {
-                    showMessage('An error occurred. Please try again.', 'danger');
-                })
-                .finally(() => {
-                    saveAvatarBtn.disabled = false;
-                    saveAvatarBtn.innerHTML = 'Save Changes';
-                });
+                                toast: true,
+                                icon: 'success',
+                                title: 'Profile picture updated successfully!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                customClass: {
+                                    popup: 'small-toast'
+                                }
+                            });
+
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            showMessage(data.message || 'Error updating profile picture.', 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        showMessage('An error occurred. Please try again.', 'danger');
+                    })
+                    .finally(() => {
+                        saveAvatarBtn.disabled = false;
+                        saveAvatarBtn.innerHTML = 'Save Changes';
+                    });
             });
-            
+
             // Profile Form submission
             profileForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 // Clear previous errors
                 clearErrors();
-                
+
                 // Show loading state
                 submitBtn.disabled = true;
                 submitBtn.querySelector('.spinner-border').classList.remove('d-none');
-                
+
                 // Create FormData object
                 const formData = new FormData(this);
-                
+
                 // Send AJAX request
-                fetch('{{ route("admin.profile.update") }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
+                fetch('{{ route('admin.profile.update') }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Profile updated successfully!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                customClass: {
+                                    popup: 'small-toast'
+                                }
+                            });
+
+                            // Refresh page after 2 sec
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            // Display validation errors
+                            if (data.errors) {
+                                Object.keys(data.errors).forEach(field => {
+                                    const errorElement = document.getElementById(field +
+                                        'Error');
+                                    if (errorElement) {
+                                        const input = document.getElementById(field);
+                                        if (input) {
+                                            input.classList.add('is-invalid');
+                                        }
+                                        errorElement.textContent = data.errors[field][0];
+                                    }
+                                });
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Please correct the errors in the form.',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    customClass: {
+                                        popup: 'small-toast'
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: data.message || 'Error updating profile.',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    customClass: {
+                                        popup: 'small-toast'
+                                    }
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
                         Swal.fire({
                             toast: true,
-                            icon: 'success',
-                            title: 'Profile updated successfully!',
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.',
                             position: 'top-end',
                             showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true,
+                            timer: 3000,
                             customClass: {
                                 popup: 'small-toast'
                             }
                         });
-
-                        // Refresh page after 2 sec
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                    } else {
-                        // Display validation errors
-                        if (data.errors) {
-                            Object.keys(data.errors).forEach(field => {
-                                const errorElement = document.getElementById(field + 'Error');
-                                if (errorElement) {
-                                    const input = document.getElementById(field);
-                                    if (input) {
-                                        input.classList.add('is-invalid');
-                                    }
-                                    errorElement.textContent = data.errors[field][0];
-                                }
-                            });
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Please correct the errors in the form.',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                customClass: {
-                                    popup: 'small-toast'  
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: data.message || 'Error updating profile.',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                customClass: {
-                                    popup: 'small-toast'  
-                                }
-                            });
-                        }
-                    }
-                })
-                .catch(error => {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'error',
-                        title: 'An error occurred. Please try again.',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        customClass: {
-                            popup: 'small-toast'  
-                        }
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.querySelector('.spinner-border').classList.add('d-none');
                     });
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.querySelector('.spinner-border').classList.add('d-none');
-                });
             });
-            
+
             // Password Form submission
             passwordForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 // Clear previous errors
                 clearErrors();
-                
+
                 // Validate password confirmation
                 const newPassword = document.getElementById('new_password').value;
                 const confirmPassword = document.getElementById('new_password_confirmation').value;
-                
+
                 if (newPassword !== confirmPassword) {
                     document.getElementById('new_password').classList.add('is-invalid');
                     document.getElementById('new_password_confirmation').classList.add('is-invalid');
                     document.getElementById('confirmPasswordError').textContent = 'Passwords do not match.';
-                    
+
                     Swal.fire({
                         toast: true,
                         icon: 'error',
@@ -697,114 +759,115 @@
                         showConfirmButton: false,
                         timer: 3000,
                         customClass: {
-                            popup: 'small-toast'  
+                            popup: 'small-toast'
                         }
                     });
                     return;
                 }
-                
+
                 // Show loading state
                 passwordSubmitBtn.disabled = true;
                 passwordSubmitBtn.querySelector('.spinner-border').classList.remove('d-none');
-                
+
                 // Create FormData object
                 const formData = new FormData(this);
-                
+
                 // Send AJAX request
-                fetch('{{ route("admin.profile.change-password") }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
+                fetch('{{ route('admin.profile.change-password') }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Password updated successfully!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                customClass: {
+                                    popup: 'small-toast'
+                                }
+                            });
+
+                            // Clear form and reset validation
+                            passwordForm.reset();
+                            clearErrors();
+                        } else {
+                            // Display validation errors
+                            if (data.errors) {
+                                Object.keys(data.errors).forEach(field => {
+                                    const errorElement = document.getElementById(field +
+                                        'Error');
+                                    if (errorElement) {
+                                        const input = document.getElementById(field);
+                                        if (input) {
+                                            input.classList.add('is-invalid');
+                                        }
+                                        errorElement.textContent = data.errors[field][0];
+                                    }
+                                });
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Please correct the errors in the form.',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    customClass: {
+                                        popup: 'small-toast'
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: data.message || 'Error changing password.',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    customClass: {
+                                        popup: 'small-toast'
+                                    }
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
                         Swal.fire({
                             toast: true,
-                            icon: 'success',
-                            title: 'Password updated successfully!',
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.',
                             position: 'top-end',
                             showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true,
+                            timer: 3000,
                             customClass: {
                                 popup: 'small-toast'
                             }
                         });
-
-                        // Clear form and reset validation
-                        passwordForm.reset();
-                        clearErrors();
-                    } else {
-                        // Display validation errors
-                        if (data.errors) {
-                            Object.keys(data.errors).forEach(field => {
-                                const errorElement = document.getElementById(field + 'Error');
-                                if (errorElement) {
-                                    const input = document.getElementById(field);
-                                    if (input) {
-                                        input.classList.add('is-invalid');
-                                    }
-                                    errorElement.textContent = data.errors[field][0];
-                                }
-                            });
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Please correct the errors in the form.',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                customClass: {
-                                    popup: 'small-toast'  
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: data.message || 'Error changing password.',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                customClass: {
-                                    popup: 'small-toast'  
-                                }
-                            });
-                        }
-                    }
-                })
-                .catch(error => {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'error',
-                        title: 'An error occurred. Please try again.',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        customClass: {
-                            popup: 'small-toast'  
-                        }
+                    })
+                    .finally(() => {
+                        passwordSubmitBtn.disabled = false;
+                        passwordSubmitBtn.querySelector('.spinner-border').classList.add('d-none');
                     });
-                })
-                .finally(() => {
-                    passwordSubmitBtn.disabled = false;
-                    passwordSubmitBtn.querySelector('.spinner-border').classList.add('d-none');
-                });
             });
-            
+
             // Cancel buttons
             cancelBtn.addEventListener('click', function() {
                 window.location.reload();
             });
-            
+
             passwordCancelBtn.addEventListener('click', function() {
                 passwordForm.reset();
                 clearErrors();
             });
-            
+
             // Helper function to show messages
             function showMessage(message, type) {
                 messageContainer.innerHTML = `
@@ -813,7 +876,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 `;
-                
+
                 // Auto dismiss after 5 seconds
                 setTimeout(() => {
                     const alert = messageContainer.querySelector('.alert');
@@ -822,14 +885,14 @@
                     }
                 }, 5000);
             }
-            
+
             // Helper function to clear validation errors
             function clearErrors() {
                 const errorElements = document.querySelectorAll('.invalid-feedback');
                 errorElements.forEach(element => {
                     element.textContent = '';
                 });
-                
+
                 const invalidInputs = document.querySelectorAll('.is-invalid');
                 invalidInputs.forEach(input => {
                     input.classList.remove('is-invalid');
