@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\SectionController;
 
 
 Route::name('admin.')->group(function () {
@@ -35,14 +36,7 @@ Route::name('admin.')->group(function () {
         });
 
         
-        Route::controller(PropertyTypeController::class)->prefix('property_types')->name('property_types.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{propertyType}/edit', 'edit')->name('edit');
-            Route::put('/{propertyType}', 'update')->name('update');
-            Route::delete('/{propertyType}', 'destroy')->name('destroy');
-        });
+        
         Route::controller(PropertyStatusController::class)->prefix('property_statuses')->name('property_statuses.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
@@ -96,6 +90,22 @@ Route::name('admin.')->group(function () {
     Route::post('/profile/update-profile', [ProfileController::class, 'updateAvatar'])->name('profile.update-avatar');
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
    
+
+     Route::controller(SectionController::class)->prefix('section_types')->name('section_types.')->group(function () {
+        Route::get('/', 'section_type')->name('type');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{sectionType}/edit', 'edit')->name('edit');
+        Route::put('/{sectionType}', 'update')->name('update');
+        Route::delete('/{sectionType}', 'destroy')->name('destroy');
+    });
+
+         Route::controller(SectionController::class)->prefix('section_template')->name('section_template.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'template_save')->name('save');
+            Route::get('/{propertyType}/template_edit', 'edit')->name('edit');
+            Route::put('/{propertyType}', 'template_update')->name('update');
+            Route::delete('/{propertyType}', 'template_destroy')->name('destroy');
+        });
 
     });
 });

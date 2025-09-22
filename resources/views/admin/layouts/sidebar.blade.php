@@ -37,6 +37,24 @@
                     </a>
                 </li> --}}
 
+                   <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-bars"></i> <!-- Main menu icon -->
+                        <span>Section</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li> <a href="{{ route('admin.section_template.index') }}">
+                               All Section
+                            </a>
+                        </li>
+                        {{-- <li>
+                            <a href="{{ route('admin.property_statuses.index') }}">
+                                Footer Menu
+                            </a>
+                        </li> --}}
+                    </ul>
+                </li>
+
                 {{-- Property --}}
 
                 <li>
@@ -44,11 +62,11 @@
                         <i class="fas fa-home"></i>
                         <span>Pages</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
+                    {{-- <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.property_types.index') }}">Property Type</a></li>
                         <li><a href="{{ route('admin.property_statuses.index') }}">Property Status</a></li>
                         <li><a href="{{ route('admin.properties.index') }}">Properties</a></li>
-                    </ul>
+                    </ul> --}}
                 </li>
 
                
