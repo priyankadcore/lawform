@@ -102,10 +102,13 @@ Route::name('admin.')->group(function () {
          Route::controller(SectionController::class)->prefix('section_template')->name('section_template.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'template_save')->name('save');
-            Route::get('/{propertyType}/template_edit', 'edit')->name('edit');
-            Route::put('/{propertyType}', 'template_update')->name('update');
-            Route::delete('/{propertyType}', 'template_destroy')->name('destroy');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'template_update')->name('update');
+            Route::delete('/{id}', 'template_destroy')->name('destroy');
         });
+
+
+
 
     });
 });

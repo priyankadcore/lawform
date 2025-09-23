@@ -164,9 +164,10 @@
                                             Created: {{ $template->created_at->format('M d, Y') }}
                                         </small>
                                         <div>
-                                            <button class="btn btn-sm btn-outline-primary edit-btn" data-id="{{ $template->id }}">
+                                           <button class="btn btn-sm btn-outline-primary edit-btn" data-id="{{ $template->id }}" data-bs-toggle="modal" data-bs-target="#editTemplateModal">
                                                 <i class="mdi mdi-pencil"></i>
                                             </button>
+
                                             <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{{ $template->id }}">
                                                 <i class="mdi mdi-trash-can"></i>
                                             </button>
@@ -259,6 +260,69 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Template Modal -->
+   <div class="modal fade" id="editTemplateModal" tabindex="-1" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="editTemplateForm" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editTemplateModalLabel">Edit Template</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Template Name *</label>
+                            <input type="text" class="form-control" name="name" id="editTemplateName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Section Type *</label>
+                            <select class="form-select" name="section_type_id" id="editSectionType" required>
+                                <option value="">Select Section Type</option>
+                                @foreach($sectionTypes as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Style Variant *</label>
+                            <input type="text" class="form-control" name="style_variant" id="editStyleVariant" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Icon Class</label>
+                            <input type="text" class="form-control" name="icon" id="editTemplateIcon">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" id="editTemplateDescription"></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Config Properties</label>
+                            <input type="number" class="form-control" name="config_properties" id="editConfigProperties">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Preview Image</label>
+                            <input type="file" class="form-control" name="image">
+                            <img id="editTemplatePreview" class="mt-2" style="max-width:120px;">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="editTemplateStatus" name="status">
+                                <label class="form-check-label" for="editTemplateStatus">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update Template</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('scripts')
@@ -423,5 +487,44 @@
                 });
             @endif
         });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle Edit Button
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const templateId = this.dataset.id;
+                    fetch(`/admin/section_template/${templateId}/edit`)
+                        .then(res => res.json())
+                        .then(data => {
+                            // Fill form
+                            document.getElementById('editTemplateName').value = data.name;
+                            document.getElementById('editSectionType').value = data.section_type_id;
+                            document.getElementById('editStyleVariant').value = data.style_variant;
+                            document.getElementById('editTemplateIcon').value = data.icon || '';
+                            document.getElementById('editTemplateDescription').value = data.description || '';
+                            document.getElementById('editConfigProperties').value = data.config_properties || 0;
+                            document.getElementById('editTemplateStatus').checked = data.status == 1;
+
+                            // Preview image
+                            if (data.image) {
+                                document.getElementById('editTemplatePreview').src = `/storage/${data.image}`;
+                                document.getElementById('editTemplatePreview').style.display = 'block';
+                            } else {
+                                document.getElementById('editTemplatePreview').style.display = 'none';
+                            }
+
+                            // Update form action
+                            document.getElementById('editTemplateForm').action = `/admin/section_template/${templateId}`;
+
+                            // Show modal
+                            new bootstrap.Modal(document.getElementById('editTemplateModal')).show();
+                        });
+                });
+            });
+
+            // Delete already handled in your code (just confirm AJAX call)
+        });
+
     </script>
 @endsection

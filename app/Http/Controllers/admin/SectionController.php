@@ -108,6 +108,43 @@ class SectionController extends Controller
         }
     }
 
+     public function template_update(Request $request, $id)
+    {
+        $template = SectionTemplate::findOrFail($id);
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'section_type_id' => 'required|exists:section_types,id',
+            'style_variant' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'icon' => 'nullable|string|max:255',
+            'config_properties' => 'nullable|integer|min:0',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('templates', 'public');
+        }
+
+        $data['status'] = $request->has('status') ? 1 : 0;
+
+        $template->update($data);
+
+        return redirect()->back()->with('success', 'Template updated successfully!');
+    }
+    public function template_destroy($id)
+    {
+        $template = SectionTemplate::findOrFail($id);
+
+        if ($template->image && \Storage::disk('public')->exists($template->image)) {
+            \Storage::disk('public')->delete($template->image);
+        }
+
+        $template->delete();
+
+        return response()->json(['success' => true]);
+    }
+
 
 
 }
