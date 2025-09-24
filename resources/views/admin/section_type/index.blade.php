@@ -72,8 +72,8 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Slug</th>
+                                            <th>Title</th>
+                                            <th>Type</th>
                                             <th>Status</th>
                                             <th>Created At</th>
                                             <th>Actions</th>
@@ -84,7 +84,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $type->name }}</td>
-                                                <td>{{ $type->slug }}</td>
+                                                <td>{{ $type->type }}</td>
                                                 <td>
                                                     @if ($type->status)
                                                         <span class="badge badge-soft-success">Active</span>
@@ -96,7 +96,7 @@
                                                 <td>
                                                     <button class="btn btn-sm btn-primary edit-btn"
                                                         data-id="{{ $type->id }}" data-name="{{ $type->name }}"
-                                                        data-slug="{{ $type->slug }}" data-status="{{ $type->status }}">
+                                                        data-type="{{ $type->type }}" data-status="{{ $type->status }}">
                                                         <i class="mdi mdi-pencil font-size-14"></i>
                                                     </button>
                                                     <form action="{{ route('admin.section_types.destroy', $type->id) }}"
@@ -134,12 +134,12 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">Title <span class="text-danger">*</span></label>
                             <input type="text" id="name" name="name" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="slug" class="form-label">Slug</label>
-                            <input type="text" id="slug" name="slug" class="form-control">
+                            <label for="slug" class="form-label">Type</label>
+                            <input type="text" id="type" name="type" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
@@ -173,12 +173,12 @@
                     <div class="modal-body">
                         <input type="hidden" id="edit_id" name="id">
                         <div class="mb-3">
-                            <label for="edit_name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <label for="edit_name" class="form-label">Title <span class="text-danger">*</span></label>
                             <input type="text" id="edit_name" name="name" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_slug" class="form-label">Slug</label>
-                            <input type="text" id="edit_slug" name="slug" class="form-control">
+                            <label for="edit_slug" class="form-label">Type</label>
+                            <input type="text" id="edit_type" name="type" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="edit_status" class="form-label">Status</label>
@@ -248,40 +248,23 @@
                 ] // Default sort by ID
             });
 
-            // Auto-generate slug from name
-            $('#name').on('keyup', function() {
-                let slug = $(this).val().toLowerCase()
-                    .replace(/ /g, '-')
-                    .replace(/[^\w-]+/g, '');
-                $('#slug').val(slug);
-            });
-
+           
             // Edit button click handler
             $('.edit-btn').on('click', function() {
                 var id = $(this).data('id');
                 var name = $(this).data('name');
-                var slug = $(this).data('slug');
+                var type = $(this).data('type');
                 var status = $(this).data('status');
 
                 $('#edit_id').val(id);
                 $('#edit_name').val(name);
-                $('#edit_slug').val(slug);
+                $('#edit_type').val(type);
                 $('#edit_status').val(status);
-
-                // Set the form action
                 $('#editForm').attr('action', '{{ url('admin/section_types') }}/' + id);
 
-                // Show the modal
                 $('#editSectionTypeModal').modal('show');
             });
-
-            // Auto-generate slug from name in edit modal
-            $('#edit_name').on('keyup', function() {
-                let slug = $(this).val().toLowerCase()
-                    .replace(/ /g, '-')
-                    .replace(/[^\w-]+/g, '');
-                $('#edit_slug').val(slug);
-            });
+ 
         });
     </script>
     <script>

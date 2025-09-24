@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('section_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('type');
             $table->boolean('status')->default(1); // 1 = active, 0 = inactive
             $table->timestamps();
         });

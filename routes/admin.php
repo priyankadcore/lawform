@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\PagesController;
 
 
 Route::name('admin.')->group(function () {
@@ -98,15 +99,20 @@ Route::name('admin.')->group(function () {
         Route::put('/{sectionType}', 'update')->name('update');
         Route::delete('/{sectionType}', 'destroy')->name('destroy');
     });
-
-         Route::controller(SectionController::class)->prefix('section_template')->name('section_template.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::post('/', 'template_save')->name('save');
-            Route::get('/{id}/edit', 'edit')->name('edit');
-            Route::put('/{id}', 'template_update')->name('update');
-            Route::delete('/{id}', 'template_destroy')->name('destroy');
-        });
-
+    Route::controller(SectionController::class)->prefix('section_template')->name('section_template.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'template_save')->name('save');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'template_update')->name('update');
+        Route::delete('/{id}', 'template_destroy')->name('destroy');
+    });
+     Route::controller(PagesController::class)->prefix('pages')->name('pages.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'template_save')->name('save');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'template_update')->name('update');
+        Route::delete('/{id}', 'template_destroy')->name('destroy');
+    });
 
 
 

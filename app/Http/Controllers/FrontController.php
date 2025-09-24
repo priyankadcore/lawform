@@ -14,15 +14,15 @@ class FrontController extends Controller
 {
     public function index()
     {
-        $home_sliders = Slider::all();
-        $services = Service::where('status', 1)->get();
-        $settings = Setting::first();
-        $properties = Property::with(['propertyType','propertyStatus','country','state','city'])->where('status', 1)->take(6)->get();
-        $teamMembers = TeamMember::where('status', 'active')->get();
-        $socialLinks = json_decode($settings->social_links, true) ?? [];
-        $blogs = Blog::with('author')->where('status', 1)->take(3)->get();
+        // $home_sliders = Slider::all();
+        // $services = Service::where('status', 1)->get();
+        // $settings = Setting::first();
+        // $properties = Property::with(['propertyType','propertyStatus','country','state','city'])->where('status', 1)->take(6)->get();
+        // $teamMembers = TeamMember::where('status', 'active')->get();
+        // $socialLinks = json_decode($settings->social_links, true) ?? [];
+        // $blogs = Blog::with('author')->where('status', 1)->take(3)->get();
 
-        return view('index',compact('home_sliders','settings','services','properties','teamMembers','socialLinks','blogs'));
+        return view('index');
     }
     public function second()
     {

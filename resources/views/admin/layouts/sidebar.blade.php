@@ -62,11 +62,10 @@
                         <i class="fas fa-home"></i>
                         <span>Pages</span>
                     </a>
-                    {{-- <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.property_types.index') }}">Property Type</a></li>
-                        <li><a href="{{ route('admin.property_statuses.index') }}">Property Status</a></li>
-                        <li><a href="{{ route('admin.properties.index') }}">Properties</a></li>
-                    </ul> --}}
+                    <ul class="sub-menu" aria-expanded="false">
+                        {{-- <li><a href="{{ route('admin.property_types.index') }}">All Pages</a></li>/ --}}
+                        <li><a href="{{ route('admin.property_statuses.index') }}">Add Pages</a></li>
+                    </ul>
                 </li>
 
                

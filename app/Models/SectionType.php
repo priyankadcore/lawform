@@ -11,15 +11,15 @@ class SectionType extends Model
 
     protected $fillable = [
         'name',
-        'slug',
+        'type',
         'status',
     ];
 
     protected $casts = [
         'status' => 'boolean'
     ];
-    public function properties()
+     public function templates()
     {
-        return $this->hasMany(Property::class);
+        return $this->hasMany(SectionTemplate::class);
     }
 }
