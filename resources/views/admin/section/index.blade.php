@@ -6,15 +6,15 @@
 @section('css')
     <style>
         .template-type-badge {
-        display: inline-block;
-        padding: 4px 10px;
-        font-size: 12px;
-        font-weight: 500;
-        color: #0d6efd;    
-        background-color: #e7f1ff;   
-        border: 1px solid #b6d4fe;   
-        border-radius: 20px;
-    }
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #0d6efd;
+            background-color: #e7f1ff;
+            border: 1px solid #b6d4fe;
+            border-radius: 20px;
+        }
 
         .swal2-toast {
             font-size: 12px !important;
@@ -33,6 +33,7 @@
         .swal2-toast .swal2-title {
             font-size: 13px !important;
         }
+
         .template-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #000000ff;
@@ -155,48 +156,52 @@
 
                         <!-- Template Grid View -->
                         <div class="row mt-4" id="templatesGrid">
-                            @foreach($templates as $template)
-                            <div class="col-xl-4 col-lg-6 col-md-6 mb-4 template-item" data-type="{{ $template->section_type_id }}">
-                                <div class="card template-card shadow-lg p-3 mb-5 bg-body rounded">
-                                    <!-- Template Image -->
-                                    <div class="template-image-container">
-                                        @if($template->image)
-                                            <img src="{{ asset('storage/' . $template->image) }}" class="template-image" alt="{{ $template->name }}">
-                                        @else
-                                            <div class="template-image-placeholder">
-                                                <i class="mdi mdi-view-dashboard"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    
-                                    <!-- Template Content -->
-                                    <div class="template-content">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <h4 class="card-title mb-0">{{ $template->title }}</h4>
-                                            
+                            @foreach ($templates as $template)
+                                <div class="col-xl-4 col-lg-6 col-md-6 mb-4 template-item"
+                                    data-type="{{ $template->section_type_id }}">
+                                    <div class="card template-card shadow-lg p-3 mb-5 bg-body rounded">
+                                        <!-- Template Image -->
+                                        <div class="template-image-container">
+                                            @if ($template->image)
+                                                <img src="{{ asset('storage/' . $template->image) }}" class="template-image"
+                                                    alt="{{ $template->name }}">
+                                            @else
+                                                <div class="template-image-placeholder">
+                                                    <i class="mdi mdi-view-dashboard"></i>
+                                                </div>
+                                            @endif
                                         </div>
-                                        <p class="template-type-badge">
-                                            {{ $template->sectionType->name ?? 'Unknown' }} 
-                                        </p> - {{ $template->style_variant }}
-                                    </div>
-                                    
-                                    <!-- Template Footer -->
-                                    <div class="template-footer d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            Created: {{ $template->created_at->format('M d, Y') }}
-                                        </small>
-                                        <div>
-                                            <button class="btn btn-sm btn-outline-primary edit-btn" data-id="{{ $template->id }}">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </button>
-                                           
-                                            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{{ $template->id }}">
-                                                <i class="mdi mdi-trash-can"></i>
-                                            </button>
+
+                                        <!-- Template Content -->
+                                        <div class="template-content">
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <h4 class="card-title mb-0">{{ $template->title }}</h4>
+
+                                            </div>
+                                            <p class="template-type-badge">
+                                                {{ $template->sectionType->name ?? 'Unknown' }}
+                                            </p> - {{ $template->style_variant }}
+                                        </div>
+
+                                        <!-- Template Footer -->
+                                        <div class="template-footer d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                Created: {{ $template->created_at->format('M d, Y') }}
+                                            </small>
+                                            <div>
+                                                <button class="btn btn-sm btn-outline-primary edit-btn"
+                                                    data-id="{{ $template->id }}">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </button>
+
+                                                <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                    data-id="{{ $template->id }}">
+                                                    <i class="mdi mdi-trash-can"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
 
@@ -225,20 +230,22 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="templateName" class="form-label">Title <span class="text-danger">*</span></label>
+                                <label for="templateName" class="form-label">Title <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="templateName" name="title" required
-                                    placeholder="e.g., Hero Banner Dark" >
+                                    placeholder="e.g., Hero Banner Dark">
                                 @error('ttle')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="sectionType" class="form-label">Section Type <span class="text-danger">*</span></label>
+                                <label for="sectionType" class="form-label">Section Type <span
+                                        class="text-danger">*</span></label>
                                 <select class="form-select" id="sectionType" name="section_type_id" required>
                                     <option value="">Select Section Type</option>
                                     @foreach ($sectionTypes as $type)
-                                        <option value="{{ $type->id }}" >{{ $type->type }}</option>
+                                        <option value="{{ $type->id }}">{{ $type->type }}</option>
                                     @endforeach
                                 </select>
                                 @error('section_type_id')
@@ -249,7 +256,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="styleVariant" class="form-label">Style Variant</label>
                                 <input type="text" class="form-control" id="styleVariant" name="style_variant"
-                                     placeholder="e.g., Style 1, Style 2" >
+                                    placeholder="e.g., Style 1, Style 2">
                                 @error('style_variant')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
@@ -257,8 +264,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image Upload (Max: 2MB)</label>
-                                <input type="file" class="form-control" id="templateImage" 
-                                    name="image" accept="image/*">
+                                <input type="file" class="form-control" id="templateImage" name="image"
+                                    accept="image/*">
                                 <img id="templateImagePreview" class="image-preview">
                                 @error('image')
                                     <div class="text-danger small">{{ $message }}</div>
@@ -266,10 +273,11 @@
                             </div>
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Fields <span class="text-danger">*</span></label>
-                                <input type="text" name="fields" class="form-control" placeholder="title,description,image" required>
+                                <input type="text" name="fields" class="form-control"
+                                    placeholder="title,description,image" required>
                             </div>
 
-                           
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -277,14 +285,15 @@
                         <button type="submit" class="btn btn-primary">Save Template</button>
                     </div>
                 </form>
-               
+
 
             </div>
         </div>
     </div>
 
     <!-- Edit Template Modal -->
-    <div class="modal fade" id="editTemplateModal" tabindex="-1" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editTemplateModal" tabindex="-1" aria-labelledby="editTemplateModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form id="editTemplateForm" method="POST" enctype="multipart/form-data">
@@ -299,7 +308,8 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Title <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="title" id="editTemplateName" required>
+                                <input type="text" class="form-control" name="title" id="editTemplateName"
+                                    required>
                                 @error('ttle')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
@@ -309,7 +319,7 @@
                                 <label class="form-label">Section Type *</label>
                                 <select class="form-select" name="section_type_id" id="editSectionType" required>
                                     <option value="">Select Section Type</option>
-                                    @foreach($sectionTypes as $type)
+                                    @foreach ($sectionTypes as $type)
                                         <option value="{{ $type->id }}">{{ $type->name }}</option>
                                     @endforeach
                                 </select>
@@ -324,27 +334,28 @@
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Image Upload (Max: 2MB)</label>
-                                <input type="file" class="form-control" name="image" id="editTemplateImage" accept="image/*">
+                                <input type="file" class="form-control" name="image" id="editTemplateImage"
+                                    accept="image/*">
                                 <div class="mt-2">
                                     <strong>Current Image:</strong>
                                     <div id="currentImageContainer" class="mt-1"></div>
                                 </div>
                                 <img id="editTemplatePreview" class="image-preview mt-2">
-                                 @error('image')
+                                @error('image')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                             <div class="col-md-12 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label class="form-label">Fields <span class="text-danger">*</span></label>
-                                <input type="text" name="fields" class="form-control" placeholder="title,description,image" 
-                                id="editfields">
+                                <input type="text" name="fields" class="form-control"
+                                    placeholder="title,description,image" id="editfields">
                             </div>
-                            
-                            
+
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -359,14 +370,14 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Image preview functionality
             function setupImagePreview(inputId, previewId) {
                 const input = document.getElementById(inputId);
                 const preview = document.getElementById(previewId);
-                
+
                 if (input && preview) {
                     input.addEventListener('change', function(e) {
                         const file = e.target.files[0];
@@ -384,7 +395,7 @@
                                 preview.style.display = 'none';
                                 return;
                             }
-                            
+
                             preview.src = URL.createObjectURL(file);
                             preview.style.display = 'block';
                         } else {
@@ -439,14 +450,17 @@
             document.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const templateId = this.getAttribute('data-id');
-                    
+
                     fetch(`/admin/section_template/${templateId}/edit`)
                         .then(response => response.json())
                         .then(template => {
                             // Fill form with template data
-                            document.getElementById('editTemplateName').value = template.title || '';
-                            document.getElementById('editSectionType').value = template.section_type_id || '';
-                            document.getElementById('editStyleVariant').value = template.style_variant || '';
+                            document.getElementById('editTemplateName').value = template
+                                .title || '';
+                            document.getElementById('editSectionType').value = template
+                                .section_type_id || '';
+                            document.getElementById('editStyleVariant').value = template
+                                .style_variant || '';
                             let fieldsValue = '';
                             try {
                                 fieldsValue = JSON.parse(template.fields).join(', ');
@@ -457,22 +471,26 @@
 
 
                             // Show current image
-                            const currentImageContainer = document.getElementById('currentImageContainer');
+                            const currentImageContainer = document.getElementById(
+                                'currentImageContainer');
                             if (template.image) {
-                               currentImageContainer.innerHTML = `
+                                currentImageContainer.innerHTML = `
                                     <img src="/storage/${template.image}" class="image-preview" style="max-width: 150px;">
                                     <small class="text-muted d-block mt-1">Current image</small>
                                 `;
 
                             } else {
-                                currentImageContainer.innerHTML = '<span class="text-muted">No image</span>';
+                                currentImageContainer.innerHTML =
+                                    '<span class="text-muted">No image</span>';
                             }
 
                             // Update form action
-                            document.getElementById('editTemplateForm').action = `/admin/section_template/${templateId}`;
+                            document.getElementById('editTemplateForm').action =
+                                `/admin/section_template/${templateId}`;
 
                             // Show modal
-                            const editModal = new bootstrap.Modal(document.getElementById('editTemplateModal'));
+                            const editModal = new bootstrap.Modal(document.getElementById(
+                                'editTemplateModal'));
                             editModal.show();
                         })
                         .catch(error => {
@@ -493,63 +511,65 @@
             // Handle edit form submission
             document.getElementById('editTemplateForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(this);
                 const url = this.action;
-                
+
                 fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            toast: true,
-                            icon: 'success',
-                            title: data.message,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                        
-                        // Close modal and reload page
-                        bootstrap.Modal.getInstance(document.getElementById('editTemplateModal')).hide();
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: data.message,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+
+                            // Close modal and reload page
+                            bootstrap.Modal.getInstance(document.getElementById('editTemplateModal'))
+                                .hide();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: data.message,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating template:', error);
                         Swal.fire({
                             toast: true,
                             icon: 'error',
-                            title: data.message,
+                            title: 'Error updating template',
                             position: 'top-end',
                             showConfirmButton: false,
                             timer: 3000
                         });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error updating template:', error);
-                    Swal.fire({
-                        toast: true,
-                        icon: 'error',
-                        title: 'Error updating template',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
                     });
-                });
             });
 
             // Delete template functionality
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const templateId = this.getAttribute('data-id');
-                    const templateName = this.closest('.template-item').querySelector('.card-title').textContent;
+                    const templateName = this.closest('.template-item').querySelector('.card-title')
+                        .textContent;
 
                     Swal.fire({
                         title: 'Are you sure?',
@@ -563,51 +583,52 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             fetch(`/admin/section_template/${templateId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    Swal.fire({
-                                        toast: true,
-                                        icon: 'success',
-                                        title: data.message,
-                                        position: 'top-end',
-                                        showConfirmButton: false,
-                                        timer: 3000
-                                    });
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: 'success',
+                                            title: data.message,
+                                            position: 'top-end',
+                                            showConfirmButton: false,
+                                            timer: 3000
+                                        });
 
-                                    // Remove template from DOM
-                                    this.closest('.template-item').remove();
+                                        // Remove template from DOM
+                                        this.closest('.template-item').remove();
 
-                                    // Check if any templates left
-                                    filterTemplates();
-                                } else {
+                                        // Check if any templates left
+                                        filterTemplates();
+                                    } else {
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: 'error',
+                                            title: data.message ||
+                                                'Error deleting template!',
+                                            position: 'top-end',
+                                            showConfirmButton: false,
+                                            timer: 3000
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error deleting template:', error);
                                     Swal.fire({
                                         toast: true,
                                         icon: 'error',
-                                        title: data.message || 'Error deleting template!',
+                                        title: 'Error deleting template!',
                                         position: 'top-end',
                                         showConfirmButton: false,
                                         timer: 3000
                                     });
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error deleting template:', error);
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Error deleting template!',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000
                                 });
-                            });
                         }
                     });
                 });

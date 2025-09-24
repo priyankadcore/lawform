@@ -7,9 +7,9 @@
         <div class="user-sidebar text-center">
             <div class="dropdown">
                 <div class="user-img">
-                   <h4 class="mt-3 font-size-16 text-white"> Admin dashboard</h4>
+                    <h4 class="mt-3 font-size-16 text-white"> Admin dashboard</h4>
                 </div>
-                
+
             </div>
         </div>
 
@@ -37,14 +37,14 @@
                     </a>
                 </li> --}}
 
-                   <li>
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="fas fa-bars"></i> <!-- Main menu icon -->
                         <span>Section</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li> <a href="{{ route('admin.section_template.index') }}">
-                               All Section
+                                All Section
                             </a>
                         </li>
                         {{-- <li>
@@ -64,11 +64,11 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         {{-- <li><a href="{{ route('admin.property_types.index') }}">All Pages</a></li>/ --}}
-                        <li><a href="{{ route('admin.property_statuses.index') }}">Add Pages</a></li>
+                        <li><a href="{{ route('admin.pages.index') }}">Add Pages</a></li>
                     </ul>
                 </li>
 
-               
+
 
             </ul>
         </div>
