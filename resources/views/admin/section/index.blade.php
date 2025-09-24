@@ -5,6 +5,17 @@
 
 @section('css')
     <style>
+        .template-type-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #0d6efd;    
+        background-color: #e7f1ff;   
+        border: 1px solid #b6d4fe;   
+        border-radius: 20px;
+    }
+
         .swal2-toast {
             font-size: 12px !important;
             padding: 6px 10px !important;
@@ -135,7 +146,7 @@
                                     <select id="filterSectionType" class="form-select form-select-sm w-auto">
                                         <option value="all" selected>All Types</option>
                                         @foreach ($sectionTypes as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                            <option value="{{ $type->id }}">{{ $type->type }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -161,29 +172,12 @@
                                     <!-- Template Content -->
                                     <div class="template-content">
                                         <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <h5 class="card-title mb-0">{{ $template->name }}</h5>
-                                            <span class="badge bg-{{ $template->status ? 'success' : 'secondary' }}">
-                                                {{ $template->status ? 'Active' : 'Inactive' }}
-                                            </span>
+                                            <h4 class="card-title mb-0">{{ $template->title }}</h4>
+                                            
                                         </div>
-                                        
-                                        <p class="text-muted small mb-2">
-                                            <strong>Type:</strong> 
-                                            <span class="template-type">{{ $template->sectionType->name ?? 'Unknown' }}</span>
-                                        </p>
-                                        <p class="text-muted small mb-3">
-                                            <strong>Style:</strong> <span class="template-style">{{ $template->style_variant }}</span>
-                                        </p>
-                                        
-                                        {{-- <p class="card-text text-muted small mb-3">
-                                            {{ Str::limit($template->description, 100) ?: 'No description available' }}
-                                        </p> --}}
-                                        
-                                        <div class="mb-2">
-                                            <span class="badge bg-light text-dark">
-                                                <strong>Config Schema:</strong> {{ $template->config_properties ?? 0 }} properties
-                                            </span>
-                                        </div>
+                                        <p class="template-type-badge">
+                                            {{ $template->sectionType->name ?? 'Unknown' }} 
+                                        </p> - {{ $template->style_variant }}
                                     </div>
                                     
                                     <!-- Template Footer -->
@@ -231,7 +225,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="templateName" class="form-label">Title   *</label>
+                                <label for="templateName" class="form-label">Title <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="templateName" name="title" required
                                     placeholder="e.g., Hero Banner Dark" >
                                 @error('ttle')
@@ -240,11 +234,11 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="sectionType" class="form-label">Section Type *</label>
+                                <label for="sectionType" class="form-label">Section Type <span class="text-danger">*</span></label>
                                 <select class="form-select" id="sectionType" name="section_type_id" required>
                                     <option value="">Select Section Type</option>
                                     @foreach ($sectionTypes as $type)
-                                        <option value="{{ $type->id }}" >{{ $type->name }}</option>
+                                        <option value="{{ $type->id }}" >{{ $type->type }}</option>
                                     @endforeach
                                 </select>
                                 @error('section_type_id')
@@ -271,8 +265,8 @@
                                 @enderror
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label class="form-label">Fields </label>
-                                <input type="text" name="fields" class="form-control" placeholder="title,description,image">
+                                <label class="form-label">Fields <span class="text-danger">*</span></label>
+                                <input type="text" name="fields" class="form-control" placeholder="title,description,image" required>
                             </div>
 
                            
@@ -304,9 +298,13 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Template Name *</label>
-                                <input type="text" class="form-control" name="name" id="editTemplateName" required>
+                                <label class="form-label">Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="title" id="editTemplateName" required>
+                                @error('ttle')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Section Type *</label>
                                 <select class="form-select" name="section_type_id" id="editSectionType" required>
@@ -315,20 +313,16 @@
                                         <option value="{{ $type->id }}">{{ $type->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('section_type_id')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Style Variant</label>
                                 <input type="text" class="form-control" name="style_variant" id="editStyleVariant">
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Config Properties</label>
-                                <input type="number" class="form-control" name="config_properties" id="editConfigProperties" min="0">
-                            </div>
-                            
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" name="description" id="editTemplateDescription" rows="3"></textarea>
+                                @error('style_variant')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <div class="col-md-6 mb-3">
@@ -339,18 +333,18 @@
                                     <div id="currentImageContainer" class="mt-1"></div>
                                 </div>
                                 <img id="editTemplatePreview" class="image-preview mt-2">
+                                 @error('image')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                             <div class="col-md-12 mb-3">
+                                <label class="form-label">Fields <span class="text-danger">*</span></label>
+                                <input type="text" name="fields" class="form-control" placeholder="title,description,image" 
+                                id="editfields">
                             </div>
                             
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Status</label>
-                                <div class="form-check form-switch mt-2">
-                                    <input type="hidden" name="status" value="0">
-                                    <input class="form-check-input" type="checkbox" id="editTemplateStatus" name="status" value="1">
-
-                                    {{-- <input class="form-check-input" type="checkbox" id="editTemplateStatus" name="status"> --}}
-                                    <label class="form-check-label" for="editTemplateStatus">Active</label>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -447,34 +441,36 @@
                     const templateId = this.getAttribute('data-id');
                     
                     fetch(`/admin/section_template/${templateId}/edit`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
+                        .then(response => response.json())
                         .then(template => {
                             // Fill form with template data
-                            document.getElementById('editTemplateName').value = template.name || '';
+                            document.getElementById('editTemplateName').value = template.title || '';
                             document.getElementById('editSectionType').value = template.section_type_id || '';
                             document.getElementById('editStyleVariant').value = template.style_variant || '';
-                            document.getElementById('editTemplateDescription').value = template.description || '';
-                            document.getElementById('editConfigProperties').value = template.config_properties || 1;
-                            document.getElementById('editTemplateStatus').checked = template.status == 1;
+                            let fieldsValue = '';
+                            try {
+                                fieldsValue = JSON.parse(template.fields).join(', ');
+                            } catch (e) {
+                                fieldsValue = template.fields || '';
+                            }
+                            document.getElementById('editfields').value = fieldsValue;
+
 
                             // Show current image
                             const currentImageContainer = document.getElementById('currentImageContainer');
                             if (template.image) {
-                                currentImageContainer.innerHTML = `
-                                    <img src="/storage/${template.image}" class="image-preview" style="display: block;">
+                               currentImageContainer.innerHTML = `
+                                    <img src="/storage/${template.image}" class="image-preview" style="max-width: 150px;">
                                     <small class="text-muted d-block mt-1">Current image</small>
                                 `;
+
                             } else {
                                 currentImageContainer.innerHTML = '<span class="text-muted">No image</span>';
                             }
 
                             // Update form action
                             document.getElementById('editTemplateForm').action = `/admin/section_template/${templateId}`;
+
                             // Show modal
                             const editModal = new bootstrap.Modal(document.getElementById('editTemplateModal'));
                             editModal.show();
@@ -492,6 +488,7 @@
                         });
                 });
             });
+
 
             // Handle edit form submission
             document.getElementById('editTemplateForm').addEventListener('submit', function(e) {

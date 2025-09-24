@@ -64,43 +64,35 @@ class SectionController extends Controller
         return view('admin.section.index', compact('templates','sectionTypes'));
     }
 
-    public function template_save(Request $request)
+   public function template_save(Request $request)
     {
-        try {
-                $request->validate([
-                    'name' => 'required|string|max:255',
-                    'section_type_id' => 'required|exists:section_types,id',
-                    'style_variant' => 'nullable|string',
-                    'description' => 'nullable|string',
-                    'config_properties' => 'nullable|integer|min:0',
-                    'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-                    'status' => 'nullable|in:0,1',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                \Log::error('Validation failed: ' . json_encode($e->errors()));
-                return response()->json(['success' => false, 'errors' => $e->errors()], 422);
-            }
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'style_variant' => 'nullable|string|max:255',
+            'section_type_id' => 'required|exists:section_types,id',
+            'fields' => 'required|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
-        try {
-           $data = $request->only(['name', 'section_type_id', 'style_variant', 'description', 'config_properties']);
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('templates', 'public');
-                $data['image'] = $imagePath;
-            }
+        $fields = array_map('trim', explode(',', $request->fields));
 
-            $data['status'] = $request->boolean('status');
+        $data = [
+            'title' => $request->title,
+            'style_variant' => $request->style_variant,
+            'section_type_id' => $request->section_type_id,
+            'fields' => json_encode($fields),
+        ];
 
-            // Create template
-            SectionTemplate::create($data);
-
-            return redirect()->route('admin.section_template.index')
-                ->with('success', 'Template created successfully!');
-
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error creating template: ' . $e->getMessage())
-                ->withInput();
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('templates', 'public');
         }
+
+        SectionTemplate::create($data);
+
+        return redirect()->route('admin.section_template.index')
+            ->with('success', 'Template created successfully.');
     }
+
 
     public function edit($id)
     {
@@ -115,26 +107,30 @@ class SectionController extends Controller
     public function template_update(Request $request, $id)
     {
         $template = SectionTemplate::findOrFail($id);
-       
-       try {
-                $request->validate([
-                    'name' => 'required|string|max:255',
-                    'section_type_id' => 'required|exists:section_types,id',
-                    'style_variant' => 'nullable|string',
-                    'description' => 'nullable|string',
-                    'config_properties' => 'nullable|integer|min:0',
-                    'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-                    'status' => 'nullable|in:0,1',
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                \Log::error('Validation failed: ' . json_encode($e->errors()));
-                return response()->json(['success' => false, 'errors' => $e->errors()], 422);
-            }
 
         try {
-            $data = $request->only(['name', 'section_type_id', 'style_variant', 'description', 'config_properties']);
-            $data['status'] = $request->boolean('status');
-           
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'style_variant' => 'nullable|string|max:255',
+                'section_type_id' => 'required|exists:section_types,id',
+                'fields' => 'required|string',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed: ' . json_encode($e->errors()));
+            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+        }
+
+        try {
+            // Process fields (comma separated to JSON)
+            $fields = array_map('trim', explode(',', $request->fields));
+
+            $data = [
+                'title' => $request->title,
+                'style_variant' => $request->style_variant,
+                'section_type_id' => $request->section_type_id,
+                'fields' => json_encode($fields),
+            ];
 
             if ($request->hasFile('image')) {
                 // Delete old image if exists
@@ -146,13 +142,20 @@ class SectionController extends Controller
 
             $template->update($data);
 
-            return response()->json(['success' => true, 'message' => 'Template updated successfully!']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Template updated successfully!'
+            ]);
 
         } catch (\Exception $e) {
             \Log::error('Template update error: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to update template: ' . $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update template: ' . $e->getMessage()
+            ], 500);
         }
     }
+
 
     public function template_destroy($id)
     {
