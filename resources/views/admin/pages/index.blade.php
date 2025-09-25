@@ -226,7 +226,7 @@
                         </select>
                     </div>
 
-                  
+
 
                     <!-- Right: Add Section Button -->
                     <div class="col-sm-3 text-sm-end">
@@ -246,7 +246,7 @@
                     <table class="table table-hover datatable" style="background-color: white !important;">
                         <thead>
                             <tr>
-                                 <th>Section Name</th>
+                                <th>Section Name</th>
                                 <th>Slug</th>
                                 <th>Status</th>
                                 <th>Created At</th>
@@ -333,7 +333,7 @@
             <div class="modal-dialog ">
                 <form action="{{ route('admin.pages.section-add') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                      <input type="hidden" name="page_id" id="selectedPageId" value="">
+                    <input type="hidden" name="page_id" id="selectedPageId" value="">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="addPageModalLabel">Add Section</h5>
@@ -357,10 +357,11 @@
                                 <select name="section_template_id" class="form-select" id="sectionStyle" required>
                                     <option value="">First select Section Type</option>
                                 </select>
-                                
+
                                 <!-- Preview Image -->
                                 <div id="stylePreview" class="mt-2" style="display: none;">
-                                    <img id="previewImage" src="" alt="Style Preview" class="img-thumbnail" style="max-height: 200px;">
+                                    <img id="previewImage" src="" alt="Style Preview" class="img-thumbnail"
+                                        style="max-height: 200px;">
                                     <small id="previewDescription" class="text-muted d-block mt-1"></small>
                                 </div>
                             </div>
@@ -373,7 +374,8 @@
                             <!-- Status -->
                             <div class="mb-3">
                                 <label for="pageStatus" class="form-label">Order</label>
-                                <input type="number" name="order" class="form-control" id="pageStatus" required value="1">
+                                <input type="number" name="order" class="form-control" id="pageStatus" required
+                                    value="1">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -392,10 +394,9 @@
     <script src="{{ asset('build/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('build/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-       
         $(document).ready(function() {
             $('.datatable').DataTable({
                 responsive: true,
@@ -440,7 +441,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const pageDropdown = document.getElementById('pageDropdown');
             const addSectionBtn = document.getElementById('addSectionBtn');
-            
+
 
             pageDropdown.addEventListener('change', function() {
                 addSectionBtn.disabled = !this.value;
@@ -452,14 +453,14 @@
                     addSectionBtn.classList.remove('btn-success');
                     addSectionBtn.classList.add('btn-secondary');
                 }
-                 const selectedPageId = $('#pageDropdown').val();
-                    $('#selectedPageId').val(selectedPageId);
-                    
-                    if (!selectedPageId) {
-                        e.preventDefault();
-                        alert('Please select a page first');
-                        return false;
-                    }
+                const selectedPageId = $('#pageDropdown').val();
+                $('#selectedPageId').val(selectedPageId);
+
+                if (!selectedPageId) {
+                    e.preventDefault();
+                    alert('Please select a page first');
+                    return false;
+                }
             });
 
             // Auto-generate slug from page name
@@ -470,75 +471,78 @@
             });
         });
     </script>
-   
-    <script>
-    $(document).ready(function() {
-        // Section Type Change
-        $('#sectionType').change(function() {
-            var sectionTypeId = $(this).val();
-            
-            if(sectionTypeId) {
-                $.ajax({
-                    url: '/admin/pages/get-templates/' + sectionTypeId,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        $('#sectionStyle').empty();
-                        $('#sectionStyle').append('<option value="">Select Style</option>');
-                        
-                        $.each(data, function(key, template) {
-                            $('#sectionStyle').append(
-                                '<option value="'+ template.id +'" ' +
-                                'data-preview="'+ (template.preview_image_url || '') +'" ' +
-                                'data-fields=\''+ JSON.stringify(template.fields || []) +'\'>'+ 
-                                template.style_variant +
-                                '</option>'
-                            );
-                        });
-                        
-                        // Hide preview and clear fields
-                        $('#stylePreview').hide();
-                        $('#dynamicFieldsContainer').empty();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error loading templates:', error);
-                        $('#sectionStyle').empty();
-                        $('#sectionStyle').append('<option value="">Error loading styles</option>');
-                    }
-                });
-            } else {
-                $('#sectionStyle').empty();
-                $('#sectionStyle').append('<option value="">First select Section Type</option>');
-                $('#stylePreview').hide();
-                $('#dynamicFieldsContainer').empty();
-            }
-        });
 
-        // Style Change - Show Preview and Dynamic Fields
-        $('#sectionStyle').change(function() {
-            var selectedOption = $(this).find('option:selected');
-            var previewImageUrl = selectedOption.data('preview');
-            var fields = selectedOption.data('fields');
-            
-            console.log('Preview URL:', previewImageUrl); // Debugging के लिए
-            
-            // Show/Hide Preview
-            if(previewImageUrl && previewImageUrl !== '') {
-                $('#previewImage').attr('src', previewImageUrl);
-                $('#stylePreview').show();
-            } else {
-                $('#stylePreview').hide();
-            }
-            
-            // Load Dynamic Fields
-            if(fields && Array.isArray(fields)) {
-                loadDynamicFields(fields);
-            } else {
-                $('#dynamicFieldsContainer').empty();
-            }
+    <script>
+        $(document).ready(function() {
+            // Section Type Change
+            $('#sectionType').change(function() {
+                var sectionTypeId = $(this).val();
+
+                if (sectionTypeId) {
+                    $.ajax({
+                        url: '/admin/pages/get-templates/' + sectionTypeId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#sectionStyle').empty();
+                            $('#sectionStyle').append('<option value="">Select Style</option>');
+
+                            $.each(data, function(key, template) {
+                                $('#sectionStyle').append(
+                                    '<option value="' + template.id + '" ' +
+                                    'data-preview="' + (template
+                                        .preview_image_url || '') + '" ' +
+                                    'data-fields=\'' + JSON.stringify(template
+                                        .fields || []) + '\'>' +
+                                    template.style_variant +
+                                    '</option>'
+                                );
+                            });
+
+                            // Hide preview and clear fields
+                            $('#stylePreview').hide();
+                            $('#dynamicFieldsContainer').empty();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error loading templates:', error);
+                            $('#sectionStyle').empty();
+                            $('#sectionStyle').append(
+                                '<option value="">Error loading styles</option>');
+                        }
+                    });
+                } else {
+                    $('#sectionStyle').empty();
+                    $('#sectionStyle').append('<option value="">First select Section Type</option>');
+                    $('#stylePreview').hide();
+                    $('#dynamicFieldsContainer').empty();
+                }
+            });
+
+            // Style Change - Show Preview and Dynamic Fields
+            $('#sectionStyle').change(function() {
+                var selectedOption = $(this).find('option:selected');
+                var previewImageUrl = selectedOption.data('preview');
+                var fields = selectedOption.data('fields');
+
+                console.log('Preview URL:', previewImageUrl); // Debugging के लिए
+
+                // Show/Hide Preview
+                if (previewImageUrl && previewImageUrl !== '') {
+                    $('#previewImage').attr('src', previewImageUrl);
+                    $('#stylePreview').show();
+                } else {
+                    $('#stylePreview').hide();
+                }
+
+                // Load Dynamic Fields
+                if (fields && Array.isArray(fields)) {
+                    loadDynamicFields(fields);
+                } else {
+                    $('#dynamicFieldsContainer').empty();
+                }
+            });
+
+
         });
-        
-       
-    });
     </script>
 @endsection

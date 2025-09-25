@@ -96,8 +96,18 @@ class SectionController extends Controller
     public function edit($id)
     {
         try {
+          
             $template = SectionTemplate::findOrFail($id);
-            return response()->json($template);
+            
+            return response()->json([
+                'id' => $template->id,
+                'title' => $template->title,
+                'section_type_id' => $template->section_type_id,
+                'style_variant' => $template->style_variant,
+                'image' => $template->image,
+                'fields' => $template->fields, // This should be your JSON string
+            ]);
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Template not found'], 404);
         }
@@ -112,7 +122,7 @@ class SectionController extends Controller
                 'title' => 'required|string|max:255',
                 'style_variant' => 'nullable|string|max:255',
                 'section_type_id' => 'required|exists:section_types,id',
-                'fields' => 'required|string',
+                'fields' => 'required|array',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -121,14 +131,21 @@ class SectionController extends Controller
         }
 
         try {
-            // Process fields (comma separated to JSON)
-            $fields = array_map('trim', explode(',', $request->fields));
+            // Process fields (array of objects to JSON)
+            $fieldsArray = [];
+            foreach ($request->fields as $field) {
+                $fieldsArray[] = [
+                    'key' => trim($field['key']),
+                    'label' => trim($field['label']),
+                    'type' => trim($field['type'])
+                ];
+            }
 
             $data = [
                 'title' => $request->title,
                 'style_variant' => $request->style_variant,
                 'section_type_id' => $request->section_type_id,
-                'fields' => json_encode($fields),
+                'fields' => json_encode($fieldsArray),
             ];
 
             if ($request->hasFile('image')) {

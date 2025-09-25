@@ -33,9 +33,12 @@ class PagesController extends Controller
         return view('admin.pages.index', compact('pages', 'sectionTypes', 'pageSections'));
     }
 
+    
+
     public function list()
     {
         $pages = Page::all();
+        
         return view('admin.pages.list', compact('pages'));
     }
 
@@ -119,7 +122,7 @@ class PagesController extends Controller
                 ->withInput()
                 ->with('error', 'Database error occurred. Please try again.');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'An unexpected error occurred. Please try again.');

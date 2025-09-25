@@ -35,11 +35,11 @@ Route::name('admin.')->group(function () {
             Route::delete('/{propertyStatus}', 'destroy')->name('destroy');
         });
     
-     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/update-profile', [ProfileController::class, 'updateAvatar'])->name('profile.update-avatar');
-    Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
-   
+        Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/update-profile', [ProfileController::class, 'updateAvatar'])->name('profile.update-avatar');
+        Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+    
 
      Route::controller(SectionController::class)->prefix('section_types')->name('section_types.')->group(function () {
         Route::get('/', 'section_type')->name('type');
@@ -57,7 +57,7 @@ Route::name('admin.')->group(function () {
     });
      Route::controller(PagesController::class)->prefix('pages')->name('pages.')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/list', 'list')->name('list');
+        // Route::get('/list', 'list')->name('list');
         Route::post('/', 'store')->name('store');
         // Route::get('/{id}/edit', 'edit')->name('edit');
         // Route::put('/{id}', 'template_update')->name('update');
@@ -65,6 +65,9 @@ Route::name('admin.')->group(function () {
         Route::get('/get-templates/{section_type_id}', 'getTemplates')->name('getTemplates');
         Route::post('/section-add', 'section_add')->name('section-add');
       
+    });
+     Route::controller(PagesController::class)->prefix('pages-list')->name('pages-list.')->group(function () {
+        Route::get('/', 'list')->name('list');
     });
 
 

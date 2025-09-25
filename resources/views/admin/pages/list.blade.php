@@ -51,7 +51,7 @@
                                 <div class="col-sm-6">
                                     <h4 class="card-title">All Pages List</h4>
                                 </div>
-                               
+
                             </div>
 
                             <div class="table-responsive">
@@ -67,9 +67,9 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                     <tbody>
+                                    <tbody>
                                         @foreach ($pages as $index => $page)
-                                            <tr>  
+                                            <tr>
                                                 <td>
                                                     <h6 class="mb-0">{{ $page->name }}</h6>
                                                 </td>
@@ -107,9 +107,6 @@
             </div>
         </div>
     </div>
-
-
-   
 @endsection
 
 @section('scripts')
@@ -162,7 +159,7 @@
                 ] // Default sort by ID
             });
 
- 
+
         });
     </script>
     <script>

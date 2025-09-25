@@ -93,17 +93,15 @@
             max-width: 329px;
             max-height: 150px;
             object-fit: cover;
-            /* border-radius: 4px; */
-            /* margin-top: 8px; */
             display: none;
         }
 
-        .swal2-toast {
-            font-size: 12px !important;
-            padding: 6px 10px !important;
-            min-width: auto !important;
-            width: 220px !important;
-            line-height: 1.3em !important;
+        .field-row {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            background-color: #f8f9fa;
         }
     </style>
 @endsection
@@ -176,7 +174,6 @@
                                         <div class="template-content">
                                             <div class="d-flex justify-content-between align-items-start mb-3">
                                                 <h4 class="card-title mb-0">{{ $template->title }}</h4>
-
                                             </div>
                                             <p class="template-type-badge">
                                                 {{ $template->sectionType->name ?? 'Unknown' }}
@@ -225,7 +222,8 @@
                     <h5 class="modal-title" id="addTemplateModalLabel">Add New Template</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('admin.section_template.save') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.section_template.save') }}" method="POST" enctype="multipart/form-data"
+                    id="addTemplateForm">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -234,7 +232,7 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="templateName" name="title" required
                                     placeholder="e.g., Hero Banner Dark">
-                                @error('ttle')
+                                @error('title')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -271,43 +269,41 @@
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
-                            {{-- <div class="col-md-12 mb-3">
-                                <label class="form-label">Fields <span class="text-danger">*</span></label>
-                                <input type="text" name="fields" class="form-control"
-                                    placeholder="title,description,image" required>
-                            </div> --}}
-                             <div class="col-12 mb-3">
-                                    <h5 class="form-label">Fields </h5>
-                                    <hr>
-                                    <div id="fieldsContainer">
-                                        <div class="field-row">
-                                            <div class="row">
-                                                <div class="col-md-4 mb-2">
-                                                    <label class="form-label">Key <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control field-key" name="fields[0][key]" required placeholder="e.g., title">
-                                                </div>
-                                                <div class="col-md-4 mb-2">
-                                                    <label class="form-label">Label <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control field-label" name="fields[0][label]" required placeholder="e.g., Title">
-                                                </div>
-                                                <div class="col-md-3 mb-2">
-                                                    <label class="form-label">Type <span class="text-danger">*</span></label>
-                                                     <input type="text" class="form-control field-type" name="fields[0][type]" required placeholder="e.g., Type">
-                                                </div>
-                                                <div class="col-md-1 mb-2 d-flex align-items-end">
-                                                    <button type="button" class="btn btn-danger btn-sm remove-field-btn" disabled>
-                                                        <i class="mdi mdi-trash-can"></i>
-                                                    </button>
-                                                </div>
+
+                            <div class="col-12 mb-3">
+                                <h5 class="form-label">Fields</h5>
+                                <hr>
+                                <div id="fieldsContainer">
+                                    <div class="field-row">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-2">
+                                                <label class="form-label">Key <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control field-key"
+                                                    name="fields[0][key]" required placeholder="e.g., Key">
+                                            </div>
+                                            <div class="col-md-4 mb-2">
+                                                <label class="form-label">Label <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control field-label"
+                                                    name="fields[0][label]" required placeholder="e.g., Label">
+                                            </div>
+                                            <div class="col-md-3 mb-2">
+                                                <label class="form-label">Type <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control field-type"
+                                                    name="fields[0][type]" required placeholder="e.g., Type">
+                                            </div>
+                                            <div class="col-md-1 mb-2 d-flex align-items-end">
+                                                <button type="button" class="btn btn-danger btn-sm remove-field-btn"
+                                                    disabled>
+                                                    <i class="mdi mdi-trash-can"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-success btn-sm add-field-btn">
-                                        <i class="bi bi-plus"></i> Add Field
-                                    </button>
                                 </div>
-
-
+                                <button type="button" class="btn btn-success btn-sm add-field-btn">
+                                    <i class="bi bi-plus"></i> Add Field
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -315,8 +311,6 @@
                         <button type="submit" class="btn btn-primary">Save Template</button>
                     </div>
                 </form>
-
-
             </div>
         </div>
     </div>
@@ -340,9 +334,6 @@
                                 <label class="form-label">Title <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="title" id="editTemplateName"
                                     required>
-                                @error('ttle')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -350,19 +341,14 @@
                                 <select class="form-select" name="section_type_id" id="editSectionType" required>
                                     <option value="">Select Section Type</option>
                                     @foreach ($sectionTypes as $type)
-                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        <option value="{{ $type->id }}">{{ $type->type }}</option>
                                     @endforeach
                                 </select>
-                                @error('section_type_id')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Style Variant</label>
                                 <input type="text" class="form-control" name="style_variant" id="editStyleVariant">
-                                @error('style_variant')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -374,18 +360,18 @@
                                     <div id="currentImageContainer" class="mt-1"></div>
                                 </div>
                                 <img id="editTemplatePreview" class="image-preview mt-2">
-                                @error('image')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
                             </div>
 
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Fields <span class="text-danger">*</span></label>
-                                <input type="text" name="fields" class="form-control"
-                                    placeholder="title,description,image" id="editfields">
+                            <div class="col-12 mb-3">
+                                <h5 class="form-label">Fields</h5>
+                                <hr>
+                                <div id="editFieldsContainer">
+                                    <!-- Dynamic fields will be added here -->
+                                </div>
+                                <button type="button" class="btn btn-success btn-sm add-edit-field-btn">
+                                    <i class="bi bi-plus"></i> Add Field
+                                </button>
                             </div>
-
-
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -476,6 +462,135 @@
             searchInput.addEventListener('input', filterTemplates);
             filterSectionType.addEventListener('change', filterTemplates);
 
+            // Add Template Modal - Dynamic Fields Management
+            let fieldCount = 1;
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            const addFieldBtn = document.querySelector('.add-field-btn');
+
+            // Add field to add modal
+            function addField(fieldData = {
+                key: '',
+                label: '',
+                type: 'text'
+            }) {
+                const newFieldRow = document.createElement('div');
+                newFieldRow.className = 'field-row';
+                newFieldRow.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label">Key <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-key" name="fields[${fieldCount}][key]" 
+                                   value="${fieldData.key}" required placeholder="e.g., Key">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label">Label <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-label" name="fields[${fieldCount}][label]" 
+                                   value="${fieldData.label}" required placeholder="e.g., Label">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label">Type <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-type" name="fields[${fieldCount}][type]" 
+                                   value="${fieldData.type}" required placeholder="e.g., Type">
+                        </div>
+                        <div class="col-md-1 mb-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-field-btn">
+                                <i class="mdi mdi-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                fieldsContainer.appendChild(newFieldRow);
+                fieldCount++;
+
+                // Enable remove buttons if there's more than one field
+                if (fieldCount > 1) {
+                    document.querySelectorAll('.remove-field-btn').forEach(btn => {
+                        btn.disabled = false;
+                    });
+                }
+            }
+
+            // Add field button for add modal
+            addFieldBtn.addEventListener('click', function() {
+                addField();
+            });
+
+            // Remove field from add modal
+            fieldsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-field-btn') ||
+                    e.target.parentElement.classList.contains('remove-field-btn')) {
+
+                    const btn = e.target.classList.contains('remove-field-btn') ?
+                        e.target : e.target.parentElement;
+                    const fieldRow = btn.closest('.field-row');
+
+                    if (fieldsContainer.children.length > 1) {
+                        fieldRow.remove();
+                        fieldCount--;
+
+                        // Re-index the fields
+                        const fieldRows = fieldsContainer.querySelectorAll('.field-row');
+                        fieldRows.forEach((row, index) => {
+                            const inputs = row.querySelectorAll('input, select');
+                            inputs.forEach(input => {
+                                const name = input.getAttribute('name');
+                                if (name) {
+                                    input.setAttribute('name', name.replace(/\[\d+\]/,
+                                        `[${index}]`));
+                                }
+                            });
+                        });
+
+                        // Disable remove button for the first field if there's only one
+                        if (fieldCount === 1) {
+                            document.querySelectorAll('.remove-field-btn')[0].disabled = true;
+                        }
+                    }
+                }
+            });
+
+            // Edit Template Modal - Dynamic Fields Management
+            let editFieldCount = 0;
+
+            // Function to add a field to the edit form
+            function addEditField(index, fieldData = {
+                key: '',
+                label: '',
+                type: 'text'
+            }) {
+                const editFieldsContainer = document.getElementById('editFieldsContainer');
+                const fieldRow = document.createElement('div');
+                fieldRow.className = 'field-row';
+                fieldRow.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label">Key <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-key" name="fields[${index}][key]" 
+                                   value="${fieldData.key || ''}" required placeholder="e.g., title">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label">Label <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-label" name="fields[${index}][label]" 
+                                   value="${fieldData.label || ''}" required placeholder="e.g., Title">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label">Type <span class="text-danger">*</span></label>
+                             <input type="text" class="form-control field-type" name="fields[${index}][type]" 
+                                   value="${fieldData.type || ''}" required placeholder="e.g., Title">
+
+                            
+                        </div>
+                        <div class="col-md-1 mb-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-edit-field-btn" 
+                                    ${index === 0 ? 'disabled' : ''}>
+                                <i class="mdi mdi-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                editFieldsContainer.appendChild(fieldRow);
+            }
+
             // Edit template functionality
             document.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -484,21 +599,13 @@
                     fetch(`/admin/section_template/${templateId}/edit`)
                         .then(response => response.json())
                         .then(template => {
-                            // Fill form with template data
+                            // Fill basic form data
                             document.getElementById('editTemplateName').value = template
                                 .title || '';
                             document.getElementById('editSectionType').value = template
                                 .section_type_id || '';
                             document.getElementById('editStyleVariant').value = template
                                 .style_variant || '';
-                            let fieldsValue = '';
-                            try {
-                                fieldsValue = JSON.parse(template.fields).join(', ');
-                            } catch (e) {
-                                fieldsValue = template.fields || '';
-                            }
-                            document.getElementById('editfields').value = fieldsValue;
-
 
                             // Show current image
                             const currentImageContainer = document.getElementById(
@@ -508,11 +615,42 @@
                                     <img src="/storage/${template.image}" class="image-preview" style="max-width: 150px;">
                                     <small class="text-muted d-block mt-1">Current image</small>
                                 `;
-
                             } else {
                                 currentImageContainer.innerHTML =
                                     '<span class="text-muted">No image</span>';
                             }
+
+                            // Parse and display fields
+                            const editFieldsContainer = document.getElementById(
+                                'editFieldsContainer');
+                            editFieldsContainer.innerHTML = ''; // Clear existing fields
+
+                            let fields = [];
+                            try {
+                                // Try to parse as JSON
+                                fields = JSON.parse(template.fields);
+                            } catch (e) {
+                                // If parsing fails, try to handle as string
+                                console.error('Error parsing fields JSON:', e);
+                                fields = [];
+                            }
+
+                            // If fields is still empty or not an array, create a default field
+                            if (!Array.isArray(fields) || fields.length === 0) {
+                                fields = [{
+                                    key: 'title',
+                                    label: 'Title',
+                                    type: 'text'
+                                }];
+                            }
+
+                            // Reset edit field count
+                            editFieldCount = fields.length;
+
+                            // Add fields to the edit form
+                            fields.forEach((field, index) => {
+                                addEditField(index, field);
+                            });
 
                             // Update form action
                             document.getElementById('editTemplateForm').action =
@@ -537,6 +675,55 @@
                 });
             });
 
+            // Add field button for edit modal
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-edit-field-btn')) {
+                    const editFieldsContainer = document.getElementById('editFieldsContainer');
+                    addEditField(editFieldCount);
+                    editFieldCount++;
+
+                    // Enable remove buttons if there's more than one field
+                    if (editFieldCount > 1) {
+                        editFieldsContainer.querySelectorAll('.remove-edit-field-btn').forEach(btn => {
+                            btn.disabled = false;
+                        });
+                    }
+                }
+
+                // Remove field button for edit modal
+                if (e.target.classList.contains('remove-edit-field-btn') ||
+                    e.target.parentElement.classList.contains('remove-edit-field-btn')) {
+
+                    const btn = e.target.classList.contains('remove-edit-field-btn') ?
+                        e.target : e.target.parentElement;
+                    const fieldRow = btn.closest('.field-row');
+                    const editFieldsContainer = document.getElementById('editFieldsContainer');
+
+                    if (editFieldsContainer.children.length > 1) {
+                        fieldRow.remove();
+                        editFieldCount--;
+
+                        // Re-index fields
+                        const fieldRows = editFieldsContainer.querySelectorAll('.field-row');
+                        fieldRows.forEach((row, index) => {
+                            const inputs = row.querySelectorAll('input, select');
+                            inputs.forEach(input => {
+                                const name = input.getAttribute('name');
+                                if (name) {
+                                    input.setAttribute('name', name.replace(/\[\d+\]/,
+                                        `[${index}]`));
+                                }
+                            });
+
+                            // Disable remove button for first field
+                            const removeBtn = row.querySelector('.remove-edit-field-btn');
+                            if (removeBtn) {
+                                removeBtn.disabled = index === 0;
+                            }
+                        });
+                    }
+                }
+            });
 
             // Handle edit form submission
             document.getElementById('editTemplateForm').addEventListener('submit', function(e) {
@@ -564,7 +751,6 @@
                                 timer: 3000
                             });
 
-                            // Close modal and reload page
                             bootstrap.Modal.getInstance(document.getElementById('editTemplateModal'))
                                 .hide();
                             setTimeout(() => {
@@ -694,153 +880,6 @@
                     addModal.show();
                 });
             @endif
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Image preview functionality
-            const imageInput = document.getElementById('templateImage');
-            const imagePreview = document.getElementById('templateImagePreview');
-            
-            imageInput.addEventListener('change', function() {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    imagePreview.style.display = 'none';
-                }
-            });
-            
-            // Dynamic field management
-            let fieldCount = 1;
-            const fieldsContainer = document.getElementById('fieldsContainer');
-            const addFieldBtn = document.querySelector('.add-field-btn');
-            
-            addFieldBtn.addEventListener('click', function() {
-                const newFieldRow = document.createElement('div');
-                newFieldRow.className = 'field-row';
-                newFieldRow.innerHTML = `
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <label class="form-label">Key <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-key" name="fields[${fieldCount}][key]" required placeholder="e.g., description">
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label class="form-label">Label <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-label" name="fields[${fieldCount}][label]" required placeholder="e.g., Description">
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <label class="form-label">Type <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-type" name="fields[${fieldCount}][type ]" required placeholder="e.g., Type">
-                        </div>
-                        <div class="col-md-1 mb-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-field-btn">
-                               <i class="mdi mdi-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                fieldsContainer.appendChild(newFieldRow);
-                fieldCount++;
-                
-                if (fieldCount > 1) {
-                    document.querySelectorAll('.remove-field-btn')[0].disabled = false;
-                }
-            });
-            
-            fieldsContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-field-btn') || 
-                    e.target.parentElement.classList.contains('remove-field-btn')) {
-                    
-                    const btn = e.target.classList.contains('remove-field-btn') ? 
-                               e.target : e.target.parentElement;
-                    const fieldRow = btn.closest('.field-row');
-                    
-                    if (fieldsContainer.children.length > 1) {
-                        fieldRow.remove();
-                        fieldCount--;
-                        
-                        // Re-index the fields
-                        const fieldRows = fieldsContainer.querySelectorAll('.field-row');
-                        fieldRows.forEach((row, index) => {
-                            const inputs = row.querySelectorAll('input, select');
-                            inputs.forEach(input => {
-                                const name = input.getAttribute('name');
-                                if (name) {
-                                    input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
-                                }
-                            });
-                        });
-                        
-                        // Disable remove button for the first field if there's only one
-                        if (fieldCount === 1) {
-                            document.querySelectorAll('.remove-field-btn')[0].disabled = true;
-                        }
-                    }
-                }
-            });
-            
-            // Form submission
-            document.getElementById('templateForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Basic validation
-                const title = document.getElementById('templateName').value;
-                const sectionType = document.getElementById('sectionType').value;
-                
-                if (!title || !sectionType) {
-                    alert('Please fill in all required fields.');
-                    return;
-                }
-                
-                // Validate that at least one field is added
-                const fieldRows = fieldsContainer.querySelectorAll('.field-row');
-                let validFields = true;
-                
-                fieldRows.forEach(row => {
-                    const key = row.querySelector('.field-key').value;
-                    const label = row.querySelector('.field-label').value;
-                    const type = row.querySelector('.field-type').value;
-                    
-                    if (!key || !label || !type) {
-                        validFields = false;
-                    }
-                });
-                
-                if (!validFields) {
-                    alert('Please fill in all field properties.');
-                    return;
-                }
-                
-                // Prepare data for submission
-                const formData = new FormData(this);
-                
-                // Convert fields to the format you want
-                const fields = [];
-                fieldRows.forEach((row, index) => {
-                    const key = row.querySelector('.field-key').value;
-                    const label = row.querySelector('.field-label').value;
-                    const type = row.querySelector('.field-type').value;
-                    
-                    fields.push({ key, label, type });
-                });
-                
-                // Add fields as a JSON string to the form data
-                formData.append('fields_json', JSON.stringify(fields));
-                
-                // Here you would typically send the form data to the server
-                console.log('Form data:', Object.fromEntries(formData));
-                console.log('Fields array:', fields);
-                
-                alert('Template saved successfully! (Check console for data)');
-            });
         });
     </script>
 @endsection
