@@ -64,23 +64,21 @@ class SectionController extends Controller
         return view('admin.section.index', compact('templates','sectionTypes'));
     }
 
-   public function template_save(Request $request)
+  public function template_save(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'style_variant' => 'nullable|string|max:255',
             'section_type_id' => 'required|exists:section_types,id',
-            'fields' => 'required|string',
+            'fields' => 'required|array', // 👈 ab array validate karo
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
-
-        $fields = array_map('trim', explode(',', $request->fields));
 
         $data = [
             'title' => $request->title,
             'style_variant' => $request->style_variant,
             'section_type_id' => $request->section_type_id,
-            'fields' => json_encode($fields),
+            'fields' => json_encode($request->fields), // 👈 array ko JSON string bna ke save karo
         ];
 
         if ($request->hasFile('image')) {
@@ -92,6 +90,7 @@ class SectionController extends Controller
         return redirect()->route('admin.section_template.index')
             ->with('success', 'Template created successfully.');
     }
+
 
 
     public function edit($id)

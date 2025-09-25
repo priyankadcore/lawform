@@ -57,10 +57,14 @@ Route::name('admin.')->group(function () {
     });
      Route::controller(PagesController::class)->prefix('pages')->name('pages.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/list', 'list')->name('list');
         Route::post('/', 'store')->name('store');
-        Route::get('/{id}/edit', 'edit')->name('edit');
-        Route::put('/{id}', 'template_update')->name('update');
-        Route::delete('/{id}', 'template_destroy')->name('destroy');
+        // Route::get('/{id}/edit', 'edit')->name('edit');
+        // Route::put('/{id}', 'template_update')->name('update');
+        // Route::delete('/{id}', 'template_destroy')->name('destroy');
+        Route::get('/get-templates/{section_type_id}', 'getTemplates')->name('getTemplates');
+        Route::post('/section-add', 'section_add')->name('section-add');
+      
     });
 
 

@@ -5,30 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SectionTemplate extends Model
+class PageSection extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
+        'page_id',
         'section_type_id',
-        'style_variant',
-        'fields',
-        'image',
+        'section_template_id',
+        'order',
     ];
 
-   
+    // Relationships
+    public function page()
+    {
+        return $this->belongsTo(Page::class);
+    }
 
     public function sectionType()
     {
         return $this->belongsTo(SectionType::class);
     }
 
-    // SectionType Model
-    public function templates()
+    public function sectionTemplate()
     {
-        return $this->hasMany(SectionTemplate::class);
+        return $this->belongsTo(SectionTemplate::class);
     }
-
-
 }

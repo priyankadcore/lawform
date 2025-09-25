@@ -226,11 +226,10 @@
                         </select>
                     </div>
 
+                  
+
                     <!-- Right: Add Section Button -->
                     <div class="col-sm-3 text-sm-end">
-                        {{-- <button type="button" id="addSectionBtn" class="btn btn-success" disabled>
-                            <i class="mdi mdi-view-grid-plus-outline me-1"></i> Add Section
-                        </button> --}}
                         <button type="button" id="addSectionBtn" class="btn btn-success" data-bs-toggle="modal"
                             data-bs-target="#sectionModal" disabled>
                             <i class="mdi mdi-view-grid-plus-outline me-1"></i> Add Section
@@ -247,15 +246,14 @@
                     <table class="table table-hover datatable" style="background-color: white !important;">
                         <thead>
                             <tr>
-                                <th>Page Name</th>
+                                 <th>Section Name</th>
                                 <th>Slug</th>
                                 <th>Status</th>
-                                <th>Sections</th>
                                 <th>Created At</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        {{-- <tbody>
                             @foreach ($pages as $index => $page)
                                 <tr>
 
@@ -288,7 +286,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
+                        </tbody> --}}
                     </table>
                 </div>
             </div>
@@ -330,35 +328,57 @@
             </div>
         </div>
 
+        {{-- Add Section --}}
         <div class="modal fade" id="sectionModal" tabindex="-1" aria-labelledby="sectionModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <form action="{{ route('admin.pages.store') }}" method="POST">
+            <div class="modal-dialog ">
+                <form action="{{ route('admin.pages.section-add') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                      <input type="hidden" name="page_id" id="selectedPageId" value="">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addPageModalLabel">Add Section </h5>
+                            <h5 class="modal-title" id="addPageModalLabel">Add Section</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
+                            <!-- Section Type -->
                             <div class="mb-3">
-                                <label for="pageName" class="form-label">Section Type</label>
-                                <input type="text" name="name" class="form-control" id="pageName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="pageSlug" class="form-label">Style</label>
-                                <input type="text" name="slug" class="form-control" id="pageSlug" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="pageStatus" class="form-label">Status</label>
-                                <select name="status" class="form-select" id="pageStatus" required>
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
+                                <label for="sectionType" class="form-label">Section Type</label>
+                                <select name="section_type_id" class="form-select" id="sectionType" required>
+                                    <option value="">Select Type</option>
+                                    @foreach ($sectionTypes as $type)
+                                        <option value="{{ $type->id }}">{{ $type->type }}</option>
+                                    @endforeach
                                 </select>
+                            </div>
+
+                            <!-- Style with Preview -->
+                            <div class="mb-3">
+                                <label for="sectionStyle" class="form-label">Style</label>
+                                <select name="section_template_id" class="form-select" id="sectionStyle" required>
+                                    <option value="">First select Section Type</option>
+                                </select>
+                                
+                                <!-- Preview Image -->
+                                <div id="stylePreview" class="mt-2" style="display: none;">
+                                    <img id="previewImage" src="" alt="Style Preview" class="img-thumbnail" style="max-height: 200px;">
+                                    <small id="previewDescription" class="text-muted d-block mt-1"></small>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Fields Container -->
+                            <div id="dynamicFieldsContainer">
+                                <!-- Fields will be loaded here based on selected template -->
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label for="pageStatus" class="form-label">Order</label>
+                                <input type="number" name="order" class="form-control" id="pageStatus" required value="1">
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Page</button>
+                            <button type="submit" class="btn btn-primary">Save Section</button>
                         </div>
                     </div>
                 </form>
@@ -372,8 +392,10 @@
     <script src="{{ asset('build/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('build/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+       
         $(document).ready(function() {
             $('.datatable').DataTable({
                 responsive: true,
@@ -418,6 +440,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const pageDropdown = document.getElementById('pageDropdown');
             const addSectionBtn = document.getElementById('addSectionBtn');
+            
 
             pageDropdown.addEventListener('change', function() {
                 addSectionBtn.disabled = !this.value;
@@ -429,6 +452,14 @@
                     addSectionBtn.classList.remove('btn-success');
                     addSectionBtn.classList.add('btn-secondary');
                 }
+                 const selectedPageId = $('#pageDropdown').val();
+                    $('#selectedPageId').val(selectedPageId);
+                    
+                    if (!selectedPageId) {
+                        e.preventDefault();
+                        alert('Please select a page first');
+                        return false;
+                    }
             });
 
             // Auto-generate slug from page name
@@ -438,5 +469,76 @@
                 document.getElementById('pageSlug').value = slug;
             });
         });
+    </script>
+   
+    <script>
+    $(document).ready(function() {
+        // Section Type Change
+        $('#sectionType').change(function() {
+            var sectionTypeId = $(this).val();
+            
+            if(sectionTypeId) {
+                $.ajax({
+                    url: '/admin/pages/get-templates/' + sectionTypeId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#sectionStyle').empty();
+                        $('#sectionStyle').append('<option value="">Select Style</option>');
+                        
+                        $.each(data, function(key, template) {
+                            $('#sectionStyle').append(
+                                '<option value="'+ template.id +'" ' +
+                                'data-preview="'+ (template.preview_image_url || '') +'" ' +
+                                'data-fields=\''+ JSON.stringify(template.fields || []) +'\'>'+ 
+                                template.style_variant +
+                                '</option>'
+                            );
+                        });
+                        
+                        // Hide preview and clear fields
+                        $('#stylePreview').hide();
+                        $('#dynamicFieldsContainer').empty();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading templates:', error);
+                        $('#sectionStyle').empty();
+                        $('#sectionStyle').append('<option value="">Error loading styles</option>');
+                    }
+                });
+            } else {
+                $('#sectionStyle').empty();
+                $('#sectionStyle').append('<option value="">First select Section Type</option>');
+                $('#stylePreview').hide();
+                $('#dynamicFieldsContainer').empty();
+            }
+        });
+
+        // Style Change - Show Preview and Dynamic Fields
+        $('#sectionStyle').change(function() {
+            var selectedOption = $(this).find('option:selected');
+            var previewImageUrl = selectedOption.data('preview');
+            var fields = selectedOption.data('fields');
+            
+            console.log('Preview URL:', previewImageUrl); // Debugging के लिए
+            
+            // Show/Hide Preview
+            if(previewImageUrl && previewImageUrl !== '') {
+                $('#previewImage').attr('src', previewImageUrl);
+                $('#stylePreview').show();
+            } else {
+                $('#stylePreview').hide();
+            }
+            
+            // Load Dynamic Fields
+            if(fields && Array.isArray(fields)) {
+                loadDynamicFields(fields);
+            } else {
+                $('#dynamicFieldsContainer').empty();
+            }
+        });
+        
+       
+    });
     </script>
 @endsection

@@ -63,7 +63,7 @@
                         <span>Pages</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        {{-- <li><a href="{{ route('admin.property_types.index') }}">All Pages</a></li>/ --}}
+                        <li><a href="{{ route('admin.pages.list') }}">All Pages</a></li>
                         <li><a href="{{ route('admin.pages.index') }}">Add Pages</a></li>
                     </ul>
                 </li>

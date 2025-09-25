@@ -271,11 +271,41 @@
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-12 mb-3">
+                            {{-- <div class="col-md-12 mb-3">
                                 <label class="form-label">Fields <span class="text-danger">*</span></label>
                                 <input type="text" name="fields" class="form-control"
                                     placeholder="title,description,image" required>
-                            </div>
+                            </div> --}}
+                             <div class="col-12 mb-3">
+                                    <h5 class="form-label">Fields </h5>
+                                    <hr>
+                                    <div id="fieldsContainer">
+                                        <div class="field-row">
+                                            <div class="row">
+                                                <div class="col-md-4 mb-2">
+                                                    <label class="form-label">Key <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control field-key" name="fields[0][key]" required placeholder="e.g., title">
+                                                </div>
+                                                <div class="col-md-4 mb-2">
+                                                    <label class="form-label">Label <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control field-label" name="fields[0][label]" required placeholder="e.g., Title">
+                                                </div>
+                                                <div class="col-md-3 mb-2">
+                                                    <label class="form-label">Type <span class="text-danger">*</span></label>
+                                                     <input type="text" class="form-control field-type" name="fields[0][type]" required placeholder="e.g., Type">
+                                                </div>
+                                                <div class="col-md-1 mb-2 d-flex align-items-end">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-field-btn" disabled>
+                                                        <i class="mdi mdi-trash-can"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-success btn-sm add-field-btn">
+                                        <i class="bi bi-plus"></i> Add Field
+                                    </button>
+                                </div>
 
 
                         </div>
@@ -664,6 +694,153 @@
                     addModal.show();
                 });
             @endif
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image preview functionality
+            const imageInput = document.getElementById('templateImage');
+            const imagePreview = document.getElementById('templateImagePreview');
+            
+            imageInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.style.display = 'none';
+                }
+            });
+            
+            // Dynamic field management
+            let fieldCount = 1;
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            const addFieldBtn = document.querySelector('.add-field-btn');
+            
+            addFieldBtn.addEventListener('click', function() {
+                const newFieldRow = document.createElement('div');
+                newFieldRow.className = 'field-row';
+                newFieldRow.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label">Key <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-key" name="fields[${fieldCount}][key]" required placeholder="e.g., description">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label">Label <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-label" name="fields[${fieldCount}][label]" required placeholder="e.g., Description">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label">Type <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control field-type" name="fields[${fieldCount}][type ]" required placeholder="e.g., Type">
+                        </div>
+                        <div class="col-md-1 mb-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-field-btn">
+                               <i class="mdi mdi-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                fieldsContainer.appendChild(newFieldRow);
+                fieldCount++;
+                
+                if (fieldCount > 1) {
+                    document.querySelectorAll('.remove-field-btn')[0].disabled = false;
+                }
+            });
+            
+            fieldsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-field-btn') || 
+                    e.target.parentElement.classList.contains('remove-field-btn')) {
+                    
+                    const btn = e.target.classList.contains('remove-field-btn') ? 
+                               e.target : e.target.parentElement;
+                    const fieldRow = btn.closest('.field-row');
+                    
+                    if (fieldsContainer.children.length > 1) {
+                        fieldRow.remove();
+                        fieldCount--;
+                        
+                        // Re-index the fields
+                        const fieldRows = fieldsContainer.querySelectorAll('.field-row');
+                        fieldRows.forEach((row, index) => {
+                            const inputs = row.querySelectorAll('input, select');
+                            inputs.forEach(input => {
+                                const name = input.getAttribute('name');
+                                if (name) {
+                                    input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
+                                }
+                            });
+                        });
+                        
+                        // Disable remove button for the first field if there's only one
+                        if (fieldCount === 1) {
+                            document.querySelectorAll('.remove-field-btn')[0].disabled = true;
+                        }
+                    }
+                }
+            });
+            
+            // Form submission
+            document.getElementById('templateForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Basic validation
+                const title = document.getElementById('templateName').value;
+                const sectionType = document.getElementById('sectionType').value;
+                
+                if (!title || !sectionType) {
+                    alert('Please fill in all required fields.');
+                    return;
+                }
+                
+                // Validate that at least one field is added
+                const fieldRows = fieldsContainer.querySelectorAll('.field-row');
+                let validFields = true;
+                
+                fieldRows.forEach(row => {
+                    const key = row.querySelector('.field-key').value;
+                    const label = row.querySelector('.field-label').value;
+                    const type = row.querySelector('.field-type').value;
+                    
+                    if (!key || !label || !type) {
+                        validFields = false;
+                    }
+                });
+                
+                if (!validFields) {
+                    alert('Please fill in all field properties.');
+                    return;
+                }
+                
+                // Prepare data for submission
+                const formData = new FormData(this);
+                
+                // Convert fields to the format you want
+                const fields = [];
+                fieldRows.forEach((row, index) => {
+                    const key = row.querySelector('.field-key').value;
+                    const label = row.querySelector('.field-label').value;
+                    const type = row.querySelector('.field-type').value;
+                    
+                    fields.push({ key, label, type });
+                });
+                
+                // Add fields as a JSON string to the form data
+                formData.append('fields_json', JSON.stringify(fields));
+                
+                // Here you would typically send the form data to the server
+                console.log('Form data:', Object.fromEntries(formData));
+                console.log('Fields array:', fields);
+                
+                alert('Template saved successfully! (Check console for data)');
+            });
         });
     </script>
 @endsection
