@@ -89,17 +89,6 @@ class PagesController extends Controller
                 'order' => 'required|integer|min:0',
             ]);
 
-            // Check if section already exists with same page and order
-            $existingSection =  PageSection::where('page_id', $request->page_id)
-                ->where('order', $request->order)
-                ->first();
-
-            if ($existingSection) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'Section with this order already exists for the selected page.');
-            }
-
             // Create new section
             PageSection::create([
                 'page_id' => $request->page_id,
@@ -107,7 +96,6 @@ class PagesController extends Controller
                 'section_template_id' => $request->section_template_id,
                 'order' => $request->order,
             ]);
-
             return redirect()->route('admin.pages.index')
                 ->with('success', 'Page Section added successfully.');
 
@@ -126,6 +114,39 @@ class PagesController extends Controller
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'An unexpected error occurred. Please try again.');
+        }
+    }
+
+   public function getSections($id)
+    {
+        $sections = PageSection::with(['sectionType', 'sectionTemplate'])
+            ->where('page_id', $id)
+            ->get()
+            ->map(function ($section) {
+                return [
+                    'id' => $section->id,
+                    'order' => $section->order,
+                    'sectionType' => [
+                        'type' => $section->sectionType->type ?? 'N/A',
+                    ],
+                    'sectionTemplate' => [
+                        'style_variant' => $section->sectionTemplate->style_variant ?? 'N/A',
+                    ],
+                ];
+            });
+
+        return response()->json($sections);
+    }
+
+    public function deletePageSection($id)
+    {
+        try {
+            $section = PageSection::findOrFail($id);
+            $section->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Section deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Failed to delete section.'], 500);
         }
     }
 }

@@ -1,6 +1,7 @@
 @extends('admin.layouts.master')
 @section('title')
     Add Pages
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 @section('css')
     <link href="{{ asset('build/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -246,47 +247,17 @@
                     <table class="table table-hover datatable" style="background-color: white !important;">
                         <thead>
                             <tr>
-                                <th>Section Name</th>
-                                <th>Slug</th>
-                                <th>Status</th>
-                                <th>Created At</th>
+                                <th>Section Type</th>
+                                <th>Style</th>
+                                <th>Order</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        {{-- <tbody>
-                            @foreach ($pages as $index => $page)
-                                <tr>
-
-                                    <td>
-                                        <h6 class="mb-0">{{ $page->name }}</h6>
-
-                                    </td>
-                                    <td>{{ $page->slug }}</td>
-                                    <td>
-                                        @if ($page->status == 'published')
-                                            <span class="badge bg-success">Published</span>
-                                        @else
-                                            <span class="badge bg-warning">Draft</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-primary">{{ $page->sections_count ?? 0 }}</span>
-                                    </td>
-                                    <td>{{ $page->created_at->format('M d, Y') }}</td>
-                                    <td class="action-btns">
-                                        <button class="btn btn-sm btn-outline-primary" title="Edit">
-                                            <i class="mdi mdi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-success" title="View Sections">
-                                            <i class="mdi mdi-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" title="Delete">
-                                            <i class="mdi mdi-delete"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody> --}}
+                        <tbody id="sectionsTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center">Please select a page to view its sections.</td> 
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -545,4 +516,101 @@
 
         });
     </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const pageDropdown = document.getElementById('pageDropdown');
+        const tableBody = document.getElementById('sectionsTableBody');
+
+        pageDropdown.addEventListener('change', function () {
+            const pageId = this.value;
+
+            if (!pageId) {
+                tableBody.innerHTML = '';
+                return;
+            }
+
+            fetch(`/admin/pages/${pageId}/sections`)
+                .then(response => response.json())
+                .then(data => {
+                    tableBody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No sections found.</td></tr>';
+                        return;
+                    }
+
+                    data.forEach(section => {
+                       
+                        const row = `
+                            <tr>
+                                <td><h6 class="mb-0">${section.sectionType.type}</h6></td>
+                                <td>${section.sectionTemplate.style_variant}</td>
+                                <td>${section.order}</td>
+                                <td class="action-btns">
+                                    <button class="btn btn-sm btn-outline-primary" title="Edit">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" data-id="${section.id}" title="Delete">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.insertAdjacentHTML('beforeend', row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching sections:', error);
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-danger text-center">Failed to load sections.</td></tr>';
+                });
+        });
+    });
+
+    document.addEventListener('click', function (e) {
+    if (e.target.closest('.btn-outline-danger')) {
+        const button = e.target.closest('.btn-outline-danger');
+        const sectionId = button.getAttribute('data-id');
+        const row = button.closest('tr');
+
+        if (!confirm('Are you sure you want to delete this section?')) return;
+
+        fetch(`/admin/pages/sections/${sectionId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                row.remove();
+                 Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: "Section deleted successfully.",
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            } else {
+               Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: "Failed to delete section.",
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });ss
+            }
+        })
+        .catch(err => {
+            console.error('Delete error:', err);
+            alert('Something went wrong while deleting.');
+        });
+    }
+});
+    </script>
+    
+    
 @endsection
