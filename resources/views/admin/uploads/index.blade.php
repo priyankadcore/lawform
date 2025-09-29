@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
- Uploads - Admin
+    Uploads - Admin
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
@@ -44,48 +44,48 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         header {
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         h1 {
             font-size: 24px;
             font-weight: 600;
             margin-bottom: 5px;
         }
-        
+
         .subtitle {
             color: #666;
             font-size: 14px;
         }
-        
+
         .view-controls {
             display: flex;
             gap: 15px;
             align-items: center;
         }
-        
+
         .view-toggle {
             display: flex;
             gap: 5px;
         }
-        
+
         .view-button {
             background: none;
             border: 1px solid #ddd;
@@ -97,18 +97,18 @@
             align-items: center;
             gap: 5px;
         }
-        
+
         .view-button.active {
             background-color: #4a90e2;
             color: white;
             border-color: #4a90e2;
         }
-        
+
         .image-count {
             font-size: 14px;
             color: #666;
         }
-        
+
         .upload-section {
             background-color: white;
             border-radius: 8px;
@@ -116,7 +116,7 @@
             margin-bottom: 30px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
-        
+
         .upload-area {
             border: 2px dashed #ddd;
             border-radius: 8px;
@@ -127,33 +127,33 @@
             margin-bottom: 20px;
             position: relative;
         }
-        
+
         .upload-area:hover {
             border-color: #4a90e2;
             background-color: #f9f9f9;
         }
-        
+
         .upload-area.dragover {
             border-color: #4a90e2;
             background-color: #f0f8ff;
         }
-        
+
         .upload-icon {
             font-size: 48px;
             color: #4a90e2;
             margin-bottom: 15px;
         }
-        
+
         .upload-text {
             font-size: 16px;
             margin-bottom: 10px;
         }
-        
+
         .upload-subtext {
             font-size: 14px;
             color: #888;
         }
-        
+
         .file-input {
             position: absolute;
             top: 0;
@@ -163,12 +163,12 @@
             opacity: 0;
             cursor: pointer;
         }
-        
+
         .upload-progress {
             display: none;
             margin-top: 15px;
         }
-        
+
         .progress-bar {
             width: 100%;
             height: 6px;
@@ -176,25 +176,25 @@
             border-radius: 3px;
             overflow: hidden;
         }
-        
+
         .progress-fill {
             height: 100%;
             background-color: #4a90e2;
             width: 0%;
             transition: width 0.3s ease;
         }
-        
+
         .progress-text {
             font-size: 12px;
             color: #666;
             margin-top: 5px;
             text-align: center;
         }
-        
+
         .uploaded-files {
             margin-top: 20px;
         }
-        
+
         .file-item {
             display: flex;
             align-items: center;
@@ -205,31 +205,31 @@
             margin-bottom: 8px;
             background-color: #f9f9f9;
         }
-        
+
         .file-info {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .file-icon {
             color: #4a90e2;
         }
-        
+
         .file-name {
             font-size: 14px;
         }
-        
+
         .file-status {
             font-size: 12px;
             color: #28a745;
         }
-        
+
         .search-bar {
             display: flex;
             margin-bottom: 20px;
         }
-        
+
         .search-input {
             flex: 1;
             padding: 12px 15px;
@@ -237,7 +237,7 @@
             border-radius: 4px 0 0 4px;
             font-size: 14px;
         }
-        
+
         .search-button {
             background-color: #4a90e2;
             color: white;
@@ -246,14 +246,14 @@
             border-radius: 0 4px 4px 0;
             cursor: pointer;
         }
-        
+
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .image-card {
             background-color: white;
             border-radius: 8px;
@@ -261,11 +261,11 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s;
         }
-        
+
         .image-card:hover {
             transform: translateY(-5px);
         }
-        
+
         .image-placeholder {
             height: 150px;
             background-color: #f0f0f0;
@@ -275,42 +275,42 @@
             color: #888;
             font-size: 14px;
         }
-        
+
         .image-preview {
             height: 150px;
             width: 100%;
             object-fit: cover;
         }
-        
+
         .image-info {
             padding: 15px;
         }
-        
+
         .image-id {
             font-family: monospace;
             font-size: 12px;
             margin-bottom: 10px;
             word-break: break-all;
         }
-        
+
         .image-name {
             font-size: 14px;
             font-weight: 500;
             margin-bottom: 5px;
         }
-        
+
         .image-size {
             font-size: 12px;
             color: #666;
             margin-bottom: 10px;
         }
-        
+
         .card-actions {
             display: flex;
             gap: 8px;
             margin-top: 10px;
         }
-        
+
         .action-button {
             flex: 1;
             padding: 8px 12px;
@@ -324,85 +324,85 @@
             justify-content: center;
             gap: 5px;
         }
-        
+
         .copy-button {
             background-color: #f5f5f5;
             border: 1px solid #ddd;
             color: #333;
         }
-        
+
         .copy-button:hover {
             background-color: #e9e9e9;
         }
-        
+
         .copy-button.copied {
             background-color: #4a90e2;
             color: white;
             border-color: #4a90e2;
         }
-        
+
         .view-button-small {
             background-color: #28a745;
             color: white;
         }
-        
+
         .view-button-small:hover {
             background-color: #218838;
         }
-        
+
         .delete-button {
             background-color: #dc3545;
             color: white;
         }
-        
+
         .delete-button:hover {
             background-color: #c82333;
         }
-        
+
         /* List view styles */
         .list-view .gallery {
             grid-template-columns: 1fr;
         }
-        
+
         .list-view .image-card {
             display: flex;
         }
-        
+
         .list-view .image-placeholder,
         .list-view .image-preview-container {
             width: 200px;
             height: 120px;
             flex-shrink: 0;
         }
-        
+
         .list-view .image-info {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
-        
+
         .list-view .card-actions {
             width: auto;
             align-self: flex-start;
             margin-top: 0;
         }
-        
+
         /* Responsive design */
         @media (max-width: 768px) {
             .gallery {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
-            
+
             .list-view .image-card {
                 flex-direction: column;
             }
-            
+
             .list-view .image-placeholder,
             .list-view .image-preview-container {
                 width: 100%;
             }
-            
+
             header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -431,42 +431,65 @@
                 </div>
             </div>
         </header>
-        
+
         <section class="upload-section">
             <h2>Upload Images</h2>
             <form id="uploadForm" action="{{ route('admin.uploads.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="upload-area" id="uploadArea">
-                    <input type="file" name="file" id="fileInput" class="file-input" multiple accept="image/*,.png,.jpg,.jpeg,.gif">
+                    <input type="file" name="file" id="fileInput" class="file-input" multiple
+                        accept="image/*,.png,.jpg,.jpeg,.gif">
                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <p class="upload-text">Click to upload or drag and drop</p>
                     <p class="upload-subtext">PNG, JPG, GIF up to 10MB</p>
                 </div>
-                
+
                 <div class="upload-progress" id="uploadProgress">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFill"></div>
                     </div>
                     <div class="progress-text" id="progressText">0%</div>
                 </div>
-                
+
                 <div class="uploaded-files" id="uploadedFiles"></div>
             </form>
-            
+
             <div class="search-bar">
                 <input type="text" class="search-input" placeholder="Search images...">
                 <button class="search-button">Search</button>
             </div>
-            <div class="image-count" id="imageCount">0 images</div>
+            <div class="image-count" id="imageCount">{{ $uploads->count() }} images</div>
         </section>
-        
+
         <section class="gallery-section">
             <div class="gallery" id="imageGallery">
-                <!-- Images will be dynamically added here -->
+                @foreach ($uploads as $upload)
+                    <div class="image-card" data-id="{{ $upload->id }}">
+                        <div class="image-preview-container">
+                            <img src="{{ asset('storage/uploads/' . $upload->filename) }}" alt="{{ $upload->filename }}"
+                                class="image-preview">
+                        </div>
+                        <div class="image-info">
+                            <div class="image-name">{{ $upload->filename }}</div>
+                            <div class="card-actions">
+                                <button class="action-button copy-button"
+                                    data-url="{{ asset('storage/uploads/' . $upload->filename) }}">
+                                    <i class="fas fa-copy"></i> Copy URL
+                                </button>
+                                <button class="action-button view-button-small"
+                                    data-url="{{ asset('storage/uploads/' . $upload->filename) }}">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="action-button delete-button" data-deleteId="{{ $upload->id }}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         </section>
     </div>
-
 @endsection
 
 @section('scripts')
@@ -496,7 +519,7 @@
             });
         @endif
     </script>
-    
+
     <script>
         // DOM elements
         const imageGallery = document.getElementById('imageGallery');
@@ -511,71 +534,11 @@
         const listViewBtn = document.getElementById('listView');
         const imageCount = document.getElementById('imageCount');
 
-        // Store uploaded images from database
-        let uploadedImages = @json($uploads->map(function($upload) {
-            return [
-                'id' => $upload->id,
-                'name' => $upload->original_name,
-                'size' => $upload->formatted_file_size,
-                'preview' => $upload->file_url,
-                'url' => $upload->file_url
-            ];
-        }));
+        // CSRF token for AJAX requests
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         // Initialize the gallery
         function initializeGallery() {
-            renderImages();
-            updateImageCount();
-        }
-
-        // Render images in the gallery
-        function renderImages() {
-            imageGallery.innerHTML = '';
-            
-            if (uploadedImages.length === 0) {
-                imageGallery.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
-                        <i class="fas fa-images" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
-                        <p>No images uploaded yet. Upload some images to get started.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            uploadedImages.forEach((image, index) => {
-                const imageCard = document.createElement('div');
-                imageCard.className = 'image-card';
-                imageCard.setAttribute('data-id', image.id);
-                
-                imageCard.innerHTML = `
-                    <div class="image-preview-container">
-                        <img src="${image.preview}" alt="${image.name}" class="image-preview" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="image-placeholder" style="display: none;">
-                            <i class="fas fa-image" style="font-size: 36px; color: #aaa;"></i>
-                        </div>
-                    </div>
-                    <div class="image-info">
-                        <div class="image-name">${image.name}</div>
-                        <div class="image-size">${image.size}</div>
-                        <div class="image-id">ID: ${image.id}</div>
-                        <div class="card-actions">
-                            <button class="action-button copy-button" data-id="${image.url}">
-                                <i class="fas fa-copy"></i> Copy URL
-                            </button>
-                            <button class="action-button view-button-small" data-id="${image.id}">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="action-button delete-button" data-id="${image.id}">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                imageGallery.appendChild(imageCard);
-            });
-            
-            // Add event listeners to buttons
             attachEventListeners();
         }
 
@@ -584,49 +547,46 @@
             // Copy buttons
             document.querySelectorAll('.copy-button').forEach(button => {
                 button.addEventListener('click', function() {
-                    const imageUrl = this.getAttribute('data-id');
+                    const imageUrl = this.getAttribute('data-url');
                     copyToClipboard(imageUrl);
-                    
+
                     const originalText = this.innerHTML;
                     this.innerHTML = '<i class="fas fa-check"></i> Copied!';
                     this.classList.add('copied');
-                    
+
                     setTimeout(() => {
                         this.innerHTML = originalText;
                         this.classList.remove('copied');
                     }, 2000);
                 });
             });
-            
+
             // View buttons
             document.querySelectorAll('.view-button-small').forEach(button => {
                 button.addEventListener('click', function() {
-                    const imageId = this.getAttribute('data-id');
-                    const image = uploadedImages.find(img => img.id == imageId);
-                    
-                    if (image) {
-                        Swal.fire({
-                            title: 'Image Preview',
-                            html: `
-                                <div style="text-align: center;">
-                                    <img src="${image.preview}" 
-                                         style="max-width: 100%; max-height: 400px; border-radius: 8px;"
-                                         onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'">
-                                    <p style="margin-top: 15px; font-weight: 500;">${image.name}</p>
-                                    <p style="color: #666; font-size: 14px;">${image.size}</p>
-                                </div>
-                            `,
-                            showConfirmButton: true,
-                            confirmButtonText: 'Close'
-                        });
-                    }
+                    const imageUrl = this.getAttribute('data-url');
+                    const imageCard = this.closest('.image-card');
+                    const imageName = imageCard.querySelector('.image-name').textContent;
+
+                    Swal.fire({
+                        title: 'Image Preview',
+                        html: `
+                            <div style="text-align: center;">
+                                <img src="${imageUrl}" 
+                                     style="max-width: 100%; max-height: 400px; border-radius: 8px;">
+                                <p style="margin-top: 15px; font-weight: 500;">${imageName}</p>
+                            </div>
+                        `,
+                        showConfirmButton: true,
+                        confirmButtonText: 'Close'
+                    });
                 });
             });
-            
+
             // Delete buttons
             document.querySelectorAll('.delete-button').forEach(button => {
                 button.addEventListener('click', function() {
-                    const imageId = this.getAttribute('data-id');
+                    const imageId = this.getAttribute('data-deleteId');
                     deleteImage(imageId, this);
                 });
             });
@@ -634,6 +594,8 @@
 
         // Delete image function
         function deleteImage(imageId, button) {
+            console.log('Attempting to delete image ID:', imageId);
+
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -644,58 +606,82 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Make API call to delete from server
+                    // Show loading state
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                    button.disabled = true;
+
+                    // Send AJAX request to delete the image
                     fetch(`/admin/uploads/${imageId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Remove from array
-                            uploadedImages = uploadedImages.filter(img => img.id != imageId);
-                            
-                            // Remove from DOM with animation
-                            const imageCard = button.closest('.image-card');
-                            imageCard.style.opacity = '0';
-                            imageCard.style.transform = 'translateX(100px)';
-                            
-                            setTimeout(() => {
-                                renderImages();
-                                updateImageCount();
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            console.log('Response status:', response.status);
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Delete response:', data);
+
+                            if (data.success) {
+                                // Remove from DOM with animation
+                                const imageCard = button.closest('.image-card');
+                                imageCard.style.transition = 'all 0.3s ease';
+                                imageCard.style.opacity = '0';
+                                imageCard.style.transform = 'translateX(100px)';
+
+                                setTimeout(() => {
+                                    imageCard.remove();
+                                    updateImageCount();
+
+                                    Swal.fire({
+                                        toast: true,
+                                        icon: 'success',
+                                        title: 'Image deleted successfully',
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    });
+                                }, 300);
+                            } else {
+                                // Reset button state
+                                button.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                                button.disabled = false;
+
                                 Swal.fire(
-                                    'Deleted!',
-                                    'Your image has been deleted.',
-                                    'success'
+                                    'Error!',
+                                    data.message || 'There was a problem deleting the image.',
+                                    'error'
                                 );
-                            }, 300);
-                        } else {
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Delete error:', error);
+
+                            // Reset button state
+                            button.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                            button.disabled = false;
+
                             Swal.fire(
                                 'Error!',
-                                'Failed to delete image.',
+                                'There was a problem deleting the image. Please try again.',
                                 'error'
                             );
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Delete error:', error);
-                        Swal.fire(
-                            'Error!',
-                            'Failed to delete image.',
-                            'error'
-                        );
-                    });
+                        });
                 }
             });
         }
 
         // Update image count
         function updateImageCount() {
-            imageCount.textContent = `${uploadedImages.length} ${uploadedImages.length === 1 ? 'image' : 'images'}`;
+            const count = document.querySelectorAll('.image-card').length;
+            imageCount.textContent = `${count} ${count === 1 ? 'image' : 'images'}`;
         }
 
         // Copy to clipboard function
@@ -726,7 +712,7 @@
         uploadArea.addEventListener('drop', function(e) {
             e.preventDefault();
             this.classList.remove('dragover');
-            
+
             if (e.dataTransfer.files.length) {
                 handleFiles(e.dataTransfer.files);
             }
@@ -735,7 +721,7 @@
         // Handle selected files
         function handleFiles(files) {
             uploadedFiles.innerHTML = '';
-            
+
             Array.from(files).forEach(file => {
                 if (!file.type.match('image.*')) {
                     Swal.fire({
@@ -748,7 +734,7 @@
                     });
                     return;
                 }
-                
+
                 if (file.size > 10 * 1024 * 1024) { // 10MB limit
                     Swal.fire({
                         toast: true,
@@ -760,7 +746,7 @@
                     });
                     return;
                 }
-                
+
                 // Show file in upload list
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
@@ -769,26 +755,25 @@
                         <i class="fas fa-file-image file-icon"></i>
                         <span class="file-name">${file.name}</span>
                     </div>
-                    <div class="file-status">Uploading...</div>
+                    <div class="file-status">Ready to upload</div>
                 `;
                 uploadedFiles.appendChild(fileItem);
-                
-                // Upload file to server
-                uploadFile(file, fileItem);
+
+                // Upload file
+                uploadFile(file);
             });
         }
 
-        // Upload file to server
-        function uploadFile(file, fileItem) {
+        // Upload file via AJAX
+        function uploadFile(file) {
             uploadProgress.style.display = 'block';
-            
+
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            formData.append('_token', csrfToken);
 
             const xhr = new XMLHttpRequest();
-            
-            // Track upload progress
+
             xhr.upload.addEventListener('progress', function(e) {
                 if (e.lengthComputable) {
                     const percentComplete = (e.loaded / e.total) * 100;
@@ -796,29 +781,20 @@
                     progressText.textContent = Math.round(percentComplete) + '%';
                 }
             });
-            
+
             xhr.addEventListener('load', function() {
-                uploadProgress.style.display = 'none';
-                progressFill.style.width = '0%';
-                progressText.textContent = '0%';
-                
-                try {
+                if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-                    
+
                     if (response.success) {
-                        fileItem.querySelector('.file-status').textContent = 'Uploaded';
-                        fileItem.querySelector('.file-status').style.color = '#28a745';
-                        
                         // Add new image to gallery
-                        uploadedImages.unshift(response.upload);
-                        renderImages();
-                        updateImageCount();
-                        
-                        // Clear uploaded files list after 2 seconds
-                        setTimeout(() => {
-                            uploadedFiles.innerHTML = '';
-                        }, 2000);
-                        
+                        addImageToGallery(response.upload);
+
+                        uploadProgress.style.display = 'none';
+                        progressFill.style.width = '0%';
+                        progressText.textContent = '0%';
+                        uploadedFiles.innerHTML = '';
+
                         Swal.fire({
                             toast: true,
                             icon: 'success',
@@ -828,20 +804,16 @@
                             timer: 3000
                         });
                     } else {
-                        fileItem.querySelector('.file-status').textContent = 'Failed';
-                        fileItem.querySelector('.file-status').style.color = '#dc3545';
                         Swal.fire({
                             toast: true,
                             icon: 'error',
-                            title: response.message || 'Upload failed',
+                            title: response.message,
                             position: 'top-end',
                             showConfirmButton: false,
                             timer: 3000
                         });
                     }
-                } catch (e) {
-                    fileItem.querySelector('.file-status').textContent = 'Failed';
-                    fileItem.querySelector('.file-status').style.color = '#dc3545';
+                } else {
                     Swal.fire({
                         toast: true,
                         icon: 'error',
@@ -852,15 +824,8 @@
                     });
                 }
             });
-            
+
             xhr.addEventListener('error', function() {
-                uploadProgress.style.display = 'none';
-                progressFill.style.width = '0%';
-                progressText.textContent = '0%';
-                
-                fileItem.querySelector('.file-status').textContent = 'Failed';
-                fileItem.querySelector('.file-status').style.color = '#dc3545';
-                
                 Swal.fire({
                     toast: true,
                     icon: 'error',
@@ -869,19 +834,91 @@
                     showConfirmButton: false,
                     timer: 3000
                 });
+                uploadProgress.style.display = 'none';
             });
-            
-            xhr.open('POST', '{{ route("admin.uploads.store") }}');
+
+            xhr.open('POST', '{{ route('admin.uploads.store') }}');
             xhr.send(formData);
         }
 
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        // Add new image to gallery
+        function addImageToGallery(upload) {
+            const imageCard = document.createElement('div');
+            imageCard.className = 'image-card';
+            imageCard.setAttribute('data-id', upload.id);
+
+            imageCard.innerHTML = `
+                <div class="image-preview-container">
+                    <img src="${upload.url}" alt="${upload.filename}" class="image-preview">
+                </div>
+                <div class="image-info">
+                    <div class="image-name">${upload.filename}</div>
+                    
+                    <div class="card-actions">
+                        <button class="action-button copy-button" data-url="${upload.url}">
+                            <i class="fas fa-copy"></i> Copy URL
+                        </button>
+                        <button class="action-button view-button-small" data-url="${upload.url}">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-button delete-button" data-deleteId="${upload.id}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            imageGallery.insertBefore(imageCard, imageGallery.firstChild);
+
+            // Update image count
+            updateImageCount();
+
+            attachEventListenersToCard(imageCard);
+        }
+
+        function attachEventListenersToCard(card) {
+            // Copy button
+            const copyButton = card.querySelector('.copy-button');
+            copyButton.addEventListener('click', function() {
+                const imageUrl = this.getAttribute('data-url');
+                copyToClipboard(imageUrl);
+
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                this.classList.add('copied');
+
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('copied');
+                }, 2000);
+            });
+
+            // View button
+            const viewButton = card.querySelector('.view-button-small');
+            viewButton.addEventListener('click', function() {
+                const imageUrl = this.getAttribute('data-url');
+                const imageName = card.querySelector('.image-name').textContent;
+
+                Swal.fire({
+                    title: 'Image Preview',
+                    html: `
+                        <div style="text-align: center;">
+                            <img src="${imageUrl}" 
+                                 style="max-width: 100%; max-height: 400px; border-radius: 8px;">
+                            <p style="margin-top: 15px; font-weight: 500;">${imageName}</p>
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Close'
+                });
+            });
+
+            // Delete button
+            const deleteButton = card.querySelector('.delete-button');
+            deleteButton.addEventListener('click', function() {
+                const imageId = this.getAttribute('data-deleteId');
+                deleteImage(imageId, this);
+            });
         }
 
         // View toggle functionality

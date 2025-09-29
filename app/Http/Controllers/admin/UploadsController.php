@@ -5,15 +5,11 @@ use App\Http\Controllers\Controller;
 use App\Models\PropertyStatus;
 use App\Models\Upload;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; 
 
 class UploadsController extends Controller
 {
-    // public function index()
-    // {
-    //     // $statuses = PropertyStatus::orderBy('sort_order')->paginate(10);
-    //     return view('admin.uploads.index');
-    // }
-
+   
      public function index()
     {
         $uploads = Upload::latest()->get();
@@ -32,7 +28,7 @@ class UploadsController extends Controller
             // Store file
             $filePath = $file->store('uploads', 'public');
             
-            // Create upload record
+            // Create upload record - ONLY filename
             $upload = Upload::create([
                 'filename' => basename($filePath)
             ]);
@@ -42,10 +38,8 @@ class UploadsController extends Controller
                 'message' => 'File uploaded successfully',
                 'upload' => [
                     'id' => $upload->id,
-                    'name' => $upload->original_name,
-                    'size' => $upload->formatted_file_size,
-                    'url' => $upload->file_url,
-                    'preview' => $upload->file_url
+                    'filename' => $upload->filename,
+                    'url' => asset('storage/uploads/' . $upload->filename) // Direct URL
                 ]
             ]);
 
@@ -79,17 +73,31 @@ class UploadsController extends Controller
     }
     public function destroy($id)
     {
-        $upload = Upload::findOrFail($id);
-        
-        // Delete file from storage
-        Storage::disk('public')->delete($upload->file_path);
-        
-        // Delete record from database
-        $upload->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'File deleted successfully'
-        ]);
+        try {
+            // Find the upload record
+            $upload = Upload::findOrFail($id);
+            
+            // Get the filename before deleting the record
+            $filename = $upload->filename;
+            
+            // Delete the file from storage
+            if (Storage::disk('public')->exists('uploads/' . $filename)) {
+                Storage::disk('public')->delete('uploads/' . $filename);
+            }
+            
+            // Delete the database record
+            $upload->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Image deleted successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting image: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -80,12 +80,13 @@ class PagesController extends Controller
 
     public function pageUpdate(Request $request, $id)
     {
-        $request->validate([
-            'name'   => 'required|string|max:255|unique:pages,name',
-            'slug'   => 'required|string|max:255|unique:pages,slug',
-            'status' => 'required|string',
-        ]);
         $page = Page::findOrFail($id);
+
+        $request->validate([
+            'name'   => 'required|string|max:255|unique:pages,name,' . $id,
+            'slug'   => 'required|string|max:255|unique:pages,slug,' . $id,
+            'status' => 'required|string|in:draft,published',
+        ]);
 
         $page->update([
             'name' => $request->name,
@@ -100,8 +101,8 @@ class PagesController extends Controller
             'og_image_url' => $request->og_image,
         ]);
 
-         return redirect()->route('admin.pages-list.list')
-            ->with('success',  'Page Updated successfully.');
+        return redirect()->route('admin.pages-list.list')
+            ->with('success', 'Page updated successfully.');
     }
 
     
@@ -140,7 +141,7 @@ class PagesController extends Controller
                 'section_template_id' => $request->section_template_id,
                 'order' => $request->order,
             ]);
-            return redirect()->route('admin.pages.index')
+            return redirect()->back()
                 ->with('success', 'Page Section added successfully.');
 
         } catch (ValidationException $e) {

@@ -22,5 +22,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191); 
+        require_once app_path('Helpers/CommonHelper.php');
     }
 }

@@ -9,11 +9,8 @@ class Upload extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'upload_images';
+
     protected $fillable = [
         'filename',
     ];
