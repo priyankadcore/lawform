@@ -16,6 +16,13 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->string('status');
+            $table->string('meta_title')->nullable();
+            $table->string('canonical_url')->nullable();
+            $table->text('meta_keywords')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('og_title')->nullable();
+            $table->text('og_description')->nullable();
+            $table->string('og_image_url')->nullable();
             $table->timestamps();
         });
     }

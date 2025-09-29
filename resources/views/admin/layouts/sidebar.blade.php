@@ -25,6 +25,16 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-home"></i>
+                        <span>Pages</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.pages-list.list') }}">All Pages</a></li>
+                        <li><a href="{{ route('admin.pages.index') }}">Add Pages</a></li>
+                    </ul>
+                </li>
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -36,24 +46,16 @@
                                 All Section
                             </a>
                         </li>
-                        {{-- <li>
-                            <a href="{{ route('admin.property_statuses.index') }}">
-                                Footer Menu
-                            </a>
-                        </li> --}}
                     </ul>
+                </li>
+                <li>
+                    <a href="{{ route('admin.uploads.index') }}" >
+                        <i class="fas fa-upload"></i>
+                        <span>Uploads</span>
+                    </a>
                 </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="fas fa-home"></i>
-                        <span>Pages</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.pages-list.list') }}">All Pages</a></li>
-                        <li><a href="{{ route('admin.pages.index') }}">Add Pages</a></li>
-                    </ul>
-                </li>
+                
 
             </ul>
         </div>

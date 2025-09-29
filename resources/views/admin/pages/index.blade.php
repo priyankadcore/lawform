@@ -265,31 +265,81 @@
 
         <!-- Add Page Modal -->
         <div class="modal fade" id="addPageModal" tabindex="-1" aria-labelledby="addPageModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <form action="{{ route('admin.pages.store') }}" method="POST">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addPageModalLabel">Add New Page</h5>
+                            <h5 class="modal-title text-black" id="addPageModalLabel">Add New Page</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="pageName" class="form-label">Name</label>
-                                <input type="text" name="name" class="form-control" id="pageName" required>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="pageName" class="form-label">Name</label>
+                                    <input type="text" name="name" class="form-control" id="pageName" required placeholder="Enter page name">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="pageSlug" class="form-label">Slug</label>
+                                    <input type="text" name="slug" class="form-control" id="pageSlug" required placeholder="eg - /page-name-example" >
+                                </div>
+                                 <div class="col-md-4 mb-3">
+                                    <label for="pageStatus" class="form-label">Status</label>
+                                    <select name="status" class="form-select" id="pageStatus" required>
+                                        <option value="draft">Draft</option>
+                                        <option value="published">Published</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="pageSlug" class="form-label">Slug</label>
-                                <input type="text" name="slug" class="form-control" id="pageSlug" required>
+                            <h5 class="mt-4 text-black">SEO Meta Tags</h5>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                <label for="metaTitle" class="form-label">Meta Title</label>
+                                <input type="text" name="meta_title" class="form-control" id="metaTitle" placeholder="Enter meta title">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                <label for="canonicalUrl" class="form-label">Canonical URL</label>
+                                <input type="text" name="canonical_url" class="form-control" id="canonicalUrl" placeholder="https://example.com/page-url">
+                                </div>
+                                
                             </div>
-                            <div class="mb-3">
-                                <label for="pageStatus" class="form-label">Status</label>
-                                <select name="status" class="form-select" id="pageStatus" required>
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
-                                </select>
+
+                            <div class="row">
+                                <div class="mb-3">
+                                <label for="metaKeywords" class="form-label">Meta Keywords</label>
+                                <input type="text" name="meta_keywords" class="form-control" id="metaKeywords" placeholder="keyword1, keyword2, keyword3">
+                                </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="mb-3">
+                                <label for="metaDescription" class="form-label">Meta Description</label>
+                                <textarea type="text" name="meta_description" class="form-control" id="metaDescription" placeholder="Enter meta description"> </textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="mt-4 text-black">Open Graph Tags</h5>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                <label for="ogTitle" class="form-label">OG Title</label>
+                                <input type="text" name="og_title" class="form-control" id="ogTitle" placeholder="Enter OG title">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                <label for="ogImage" class="form-label">OG Image URL</label>
+                                <input type="text" name="og_image" class="form-control" id="ogImage" placeholder="https://example.com/image.jpg">
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="mb-3">
+                                <label for="ogDescription" class="form-label">OG Description</label>
+                                <textarea type="text" name="og_description" class="form-control" id="ogDescription"></textarea>
+                                </div>
+                            </div>
+                            </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary">Save Page</button>
@@ -359,6 +409,26 @@
         </div>
 
     </div>
+
+  <!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Section</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <!-- Dynamic fields will be injected here -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="editForm" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -519,53 +589,182 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const pageDropdown = document.getElementById('pageDropdown');
-        const tableBody = document.getElementById('sectionsTableBody');
+    const pageDropdown = document.getElementById('pageDropdown');
+    const tableBody = document.getElementById('sectionsTableBody');
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    const editForm = document.getElementById('editForm');
 
-        pageDropdown.addEventListener('change', function () {
-            const pageId = this.value;
+    // Handle page dropdown change
+    pageDropdown.addEventListener('change', function () {
+        const pageId = this.value;
 
-            if (!pageId) {
+        if (!pageId) {
+            tableBody.innerHTML = '';
+            return;
+        }
+
+        fetch(`/admin/pages/${pageId}/sections`)
+            .then(response => response.json())
+            .then(data => {
                 tableBody.innerHTML = '';
-                return;
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No sections found.</td></tr>';
+                    return;
+                }
+
+                data.forEach(section => {
+                    const row = `
+                        <tr>
+                            <td><h6 class="mb-0">${section.sectionType.type}</h6></td>
+                            <td>${section.sectionTemplate.style_variant}</td>
+                            <td>${section.order}</td>
+                            <td class="action-btns">
+                                <button class="btn btn-sm btn-outline-primary edit-section-btn"
+                                   
+                                    data-pageid="${section.id}"
+                                    data-templateid="${section.sectionTemplate.template_id}"
+                                    data-fields='${section.sectionTemplate.fields}'
+                                    title="Edit">
+                                    <i class="mdi mdi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" data-id="${section.id}" title="Delete">
+                                    <i class="mdi mdi-delete"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching sections:', error);
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-danger text-center">Failed to load sections.</td></tr>';
+            });
+    });
+
+    // Handle edit button click
+        tableBody.addEventListener('click', function (e) {
+            const editBtn = e.target.closest('.edit-section-btn');
+            if (!editBtn) return;
+
+            const sectionId = editBtn.getAttribute('data-sectionid');
+            const pageId = editBtn.getAttribute('data-pageid');
+            const templateId = editBtn.getAttribute('data-templateid');
+            const fieldsData = editBtn.getAttribute('data-fields');
+
+            let fields;
+            try {
+                fields = JSON.parse(fieldsData);
+                console.log('Total objects in array:', fields.length);
+                
+                // Har {} object ko access karo
+                for(let i = 0; i < fields.length; i++) {
+                    console.log(`Object ${i}:`, fields[i]);
+                    console.log(`  key: ${fields[i].key}`);
+                    console.log(`  label: ${fields[i].label}`); 
+                    console.log(`  type: ${fields[i].type}`);
+                }
+                
+            } catch (err) {
+                console.error('JSON parse error:', err);
+                fields = [];
+            }
+            
+            editForm.innerHTML = '';
+
+            // Add hidden inputs
+            editForm.insertAdjacentHTML('beforeend', `
+                <input type="hidden" name="section_id" value="${sectionId}">
+                <input type="hidden" name="page_id" value="${pageId}">
+                <input type="hidden" name="template_id" value="${templateId}">
+            `);
+
+            // Har {} object par loop lagao
+            if (Array.isArray(fields) && fields.length > 0) {
+                fields.forEach(fieldObject => {
+                    // fieldObject = {} object jo ki {key: "...", label: "...", type: "..."}
+                    const key = fieldObject.key;       // "headline", "description", "image"
+                    const label = fieldObject.label;   // "Headline", "Description", "Image"  
+                    const type = fieldObject.type;     // "text", "textarea", "file"
+                    
+                    console.log('Creating field:', { key, label, type });
+                    
+                    if (type === 'textarea') {
+                        const fieldHTML = `
+                            <div class="mb-3">
+                                <label for="${key}" class="form-label">${label}</label>
+                                <textarea class="form-control" id="${key}" name="${key}" rows="3"></textarea>
+                            </div>
+                        `;
+                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                    } 
+                    else if (type === 'file') {
+                        const fieldHTML = `
+                            <div class="mb-3">
+                                <label for="${key}" class="form-label">${label}</label>
+                                <input type="file" class="form-control" id="${key}" name="${key}">
+                            </div>
+                        `;
+                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                    }
+                    else {
+                        const fieldHTML = `
+                            <div class="mb-3">
+                                <label for="${key}" class="form-label">${label}</label>
+                                <input type="${type}" class="form-control" id="${key}" name="${key}">
+                            </div>
+                        `;
+                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                    }
+                });
+            } else {
+                editForm.insertAdjacentHTML('beforeend', `
+                    <div class="alert alert-info">No editable fields available for this template.</div>
+                `);
             }
 
-            fetch(`/admin/pages/${pageId}/sections`)
-                .then(response => response.json())
-                .then(data => {
-                    tableBody.innerHTML = '';
+            // Show modal
+            editModal.show();
+        });
 
-                    if (data.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No sections found.</td></tr>';
-                        return;
-                    }
+    // Handle form submission
+    editForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        // Convert FormData to JSON
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
 
-                    data.forEach(section => {
-                       
-                        const row = `
-                            <tr>
-                                <td><h6 class="mb-0">${section.sectionType.type}</h6></td>
-                                <td>${section.sectionTemplate.style_variant}</td>
-                                <td>${section.order}</td>
-                                <td class="action-btns">
-                                    <button class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="mdi mdi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" data-id="${section.id}" title="Delete">
-                                        <i class="mdi mdi-delete"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                        tableBody.insertAdjacentHTML('beforeend', row);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching sections:', error);
-                    tableBody.innerHTML = '<tr><td colspan="5" class="text-danger text-center">Failed to load sections.</td></tr>';
-                });
+        // Send update request
+        fetch('/admin/sections/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                editModal.hide();
+                // Refresh the table
+                pageDropdown.dispatchEvent(new Event('change'));
+            } else {
+                alert('Error updating section: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating section:', error);
+            alert('Failed to update section');
         });
     });
+});
+
 
     document.addEventListener('click', function (e) {
     if (e.target.closest('.btn-outline-danger')) {

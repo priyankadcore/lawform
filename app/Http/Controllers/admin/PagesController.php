@@ -54,10 +54,54 @@ class PagesController extends Controller
             'name'   => $request->name,
             'slug'   => $request->slug,
             'status' => $request->status,
+            'meta_title' => $request->meta_title,
+            'canonical_url' => $request->canonical_url,
+            'meta_keywords' => $request->meta_keywords,
+            'meta_description' => $request->meta_description,
+            'og_title' => $request->og_title,
+            'og_description' => $request->og_description,
+            'og_image_url' => $request->og_image,
         ]);
 
         return redirect()->route('admin.pages.index')
             ->with('success',  'Page added successfully.');
+    }
+     public function destroyPage($id)
+    {
+        try {
+            $page = Page::findOrFail($id);
+            $page->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Page deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Failed to delete Page.'], 500);
+        }
+    }
+
+    public function pageUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'name'   => 'required|string|max:255|unique:pages,name',
+            'slug'   => 'required|string|max:255|unique:pages,slug',
+            'status' => 'required|string',
+        ]);
+        $page = Page::findOrFail($id);
+
+        $page->update([
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'status' => $request->status,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_keywords' => $request->meta_keywords,
+            'canonical_url' => $request->canonical_url,
+            'og_title' => $request->og_title,
+            'og_description' => $request->og_description,
+            'og_image_url' => $request->og_image,
+        ]);
+
+         return redirect()->route('admin.pages-list.list')
+            ->with('success',  'Page Updated successfully.');
     }
 
     
@@ -131,6 +175,8 @@ class PagesController extends Controller
                     ],
                     'sectionTemplate' => [
                         'style_variant' => $section->sectionTemplate->style_variant ?? 'N/A',
+                        'template_id' => $section->sectionTemplate->id ?? null,
+                        'fields' => $section->sectionTemplate->fields ?? null,
                     ],
                 ];
             });

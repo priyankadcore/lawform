@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PropertyStatusController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\PagesController;
+use App\Http\Controllers\Admin\UploadsController;
 
 
 Route::name('admin.')->group(function () {
@@ -24,16 +25,7 @@ Route::name('admin.')->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
         });
 
-        
-        
-        Route::controller(PropertyStatusController::class)->prefix('property_statuses')->name('property_statuses.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{propertyStatus}/edit', 'edit')->name('edit');
-            Route::put('/{propertyStatus}', 'update')->name('update');
-            Route::delete('/{propertyStatus}', 'destroy')->name('destroy');
-        });
+       
     
         Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -59,17 +51,26 @@ Route::name('admin.')->group(function () {
         Route::get('/', 'index')->name('index');
         // Route::get('/list', 'list')->name('list');
         Route::post('/', 'store')->name('store');
-        // Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'pageUpdate')->name('update');
         // Route::put('/{id}', 'template_update')->name('update');
         Route::delete('/sections/{id}', 'deletePageSection')->name('sections.delete');
         Route::get('/get-templates/{section_type_id}', 'getTemplates')->name('getTemplates');
         Route::post('/section-add', 'section_add')->name('section-add');
         Route::get('/{id}/sections', 'getSections')->name('sections');
+        Route::delete('/delete/{id}', 'destroyPage')->name('destroyPage');
     
       
     });
      Route::controller(PagesController::class)->prefix('pages-list')->name('pages-list.')->group(function () {
         Route::get('/', 'list')->name('list');
+    });
+
+    Route::controller(UploadsController::class)->prefix('uploads')->name('uploads.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
 
