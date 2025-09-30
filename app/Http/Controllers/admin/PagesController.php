@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\SectionType;
 use App\Models\SectionTemplate;
 use App\Models\PageSection;
+use App\Models\Upload;
 use Illuminate\Support\Facades\Storage;
 
 class PagesController extends Controller
@@ -25,12 +26,13 @@ class PagesController extends Controller
     {
         $pages = Page::all();
         $sectionTypes = SectionType::all();
+        $upload_images = Upload::latest()->get();
      
         $pageSections = PageSection::with(['page', 'sectionType', 'sectionTemplate'])
             ->get()
             ->groupBy('page_id');
         
-        return view('admin.pages.index', compact('pages', 'sectionTypes', 'pageSections'));
+        return view('admin.pages.index', compact('pages', 'sectionTypes', 'pageSections','upload_images'));
     }
 
     

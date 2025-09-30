@@ -6,6 +6,10 @@
 @section('css')
     <link href="{{ asset('build/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
+        .selected-image {
+            box-shadow: 0 0 0 4px #198754; /* Bootstrap success green */
+            transition: box-shadow 0.3s ease;
+        }
         /* Space between breadcrumb and card */
         .page-content-wrapper {
             margin-top: 20px;
@@ -430,6 +434,8 @@
                 <div class="modal-body">
                     <form id="editForm">
                         <!-- Dynamic fields will be injected here -->
+
+                     
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -438,6 +444,40 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Selection Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Select an Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="imageGallery" class="row g-3">
+                    @foreach ($upload_images as $upload)
+                    <div class="col-md-3 col-sm-4 col-6 mb-3">
+                        <div class="image-card position-relative">
+                            <img src="{{ asset('storage/uploads/' . $upload->filename) }}" 
+                                 alt="{{ $upload->filename }}" 
+                                 class="img-thumbnail w-100"
+                                 style="height: 150px; object-fit: cover; cursor: pointer;"
+                                 onclick="selectImage('{{ asset('storage/uploads/' . $upload->filename) }}', '{{ $upload->filename }}')">
+                            
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
 @endsection
 
 @section('scripts')
@@ -721,7 +761,16 @@
                             </div>
                         `;
                             editForm.insertAdjacentHTML('beforeend', fieldHTML);
-                        } else {
+                        }else if (type === 'button') {
+                                // Agar type button hai toh button show karo
+                                const fieldHTML = `
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-primary" id="${key}">${label}</button>
+                                </div>
+                            `;
+                                editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                            }
+                         else {
                             const fieldHTML = `
                             <div class="mb-3">
                                 <label for="${key}" class="form-label">${label}</label>
@@ -730,12 +779,20 @@
                         `;
                             editForm.insertAdjacentHTML('beforeend', fieldHTML);
                         }
+                       
                     });
                 } else {
                     editForm.insertAdjacentHTML('beforeend', `
                     <div class="alert alert-info">No editable fields available for this template.</div>
                 `);
                 }
+                 // Add static "Choose Existing Image" button
+                        editForm.insertAdjacentHTML('beforeend', `
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-secondary" id="chooseImageBtn"
+                                data-bs-toggle="modal"  data-bs-target="#imageModal">Choose Existing Image</button>
+                            </div>
+                        `);
 
                 // Show modal
                 editModal.show();
@@ -824,4 +881,33 @@
             }
         });
     </script>
+
+    <script>
+    function selectImage(imageUrl, filename) {
+        // Remove 'selected' class from all images
+        document.querySelectorAll('.image-card img').forEach(img => {
+            img.classList.remove('border-success');
+            img.classList.remove('selected-image');
+        });
+
+        // Highlight selected image
+        const clickedImage = document.querySelector(`img[onclick*="${filename}"]`);
+        if (clickedImage) {
+            clickedImage.classList.add('border-success');
+            clickedImage.classList.add('selected-image');
+        }
+
+        // Store selected image filename in hidden input
+        let hiddenInput = document.querySelector('#editForm input[name="selected_image"]');
+        if (!hiddenInput) {
+            hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'selected_image';
+            editForm.appendChild(hiddenInput);
+        }
+        hiddenInput.value = filename;
+
+        console.log('Selected image:', filename);
+    }
+</script>
 @endsection

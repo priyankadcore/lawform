@@ -38,26 +38,9 @@
     </style>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        
 
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
+        .top-header{
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
@@ -225,26 +208,29 @@
             color: #28a745;
         }
 
-        .search-bar {
+        .search-container {
             display: flex;
+            align-items: center;
             margin-bottom: 20px;
+            gap: 15px;
         }
 
         .search-input {
             flex: 1;
             padding: 12px 15px;
             border: 1px solid #ddd;
-            border-radius: 4px 0 0 4px;
+            border-radius: 4px;
             font-size: 14px;
         }
 
         .search-button {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
+            display: none; /* Hide the search button since we're using auto-search */
+        }
+
+        .search-count-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .gallery {
@@ -313,16 +299,16 @@
 
         .action-button {
             flex: 1;
-            padding: 8px 12px;
+            padding: 5px 5px;
             border: none;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 10px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 3px;
         }
 
         .copy-button {
@@ -403,10 +389,19 @@
                 width: 100%;
             }
 
-            header {
+           .top-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-count-container {
+                justify-content: space-between;
             }
         }
     </style>
@@ -415,7 +410,7 @@
 @section('content')
     <x-breadcrub pagetitle="Admin" subtitle="Uploads" title="Uploads Image" />
     <div class="container-fluid">
-        <header>
+        <div class="top-header">
             <div>
                 <h1>Media Gallery</h1>
                 <p class="subtitle">Upload and manage your images</p>
@@ -430,7 +425,7 @@
                     </button>
                 </div>
             </div>
-        </header>
+        </div>
 
         <section class="upload-section">
             <h2>Upload Images</h2>
@@ -454,17 +449,18 @@
                 <div class="uploaded-files" id="uploadedFiles"></div>
             </form>
 
-            <div class="search-bar">
-                <input type="text" class="search-input" placeholder="Search images...">
-                <button class="search-button">Search</button>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search images...">
+                <div class="search-count-container">
+                    <div class="image-count" id="imageCount">{{ $uploads->count() }} images</div>
+                </div>
             </div>
-            <div class="image-count" id="imageCount">{{ $uploads->count() }} images</div>
         </section>
 
         <section class="gallery-section">
             <div class="gallery" id="imageGallery">
                 @foreach ($uploads as $upload)
-                    <div class="image-card" data-id="{{ $upload->id }}">
+                    <div class="image-card" data-id="{{ $upload->id }}" data-name="{{ $upload->filename }}">
                         <div class="image-preview-container">
                             <img src="{{ asset('storage/uploads/' . $upload->filename) }}" alt="{{ $upload->filename }}"
                                 class="image-preview">
@@ -474,7 +470,7 @@
                             <div class="card-actions">
                                 <button class="action-button copy-button"
                                     data-url="{{ asset('storage/uploads/' . $upload->filename) }}">
-                                    <i class="fas fa-copy"></i> Copy URL
+                                    <i class="fas fa-copy"></i> Copy
                                 </button>
                                 <button class="action-button view-button-small"
                                     data-url="{{ asset('storage/uploads/' . $upload->filename) }}">
@@ -533,6 +529,7 @@
         const gridViewBtn = document.getElementById('gridView');
         const listViewBtn = document.getElementById('listView');
         const imageCount = document.getElementById('imageCount');
+        const searchInput = document.getElementById('searchInput');
 
         // CSRF token for AJAX requests
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -540,6 +537,35 @@
         // Initialize the gallery
         function initializeGallery() {
             attachEventListeners();
+            initializeSearch();
+        }
+
+        // Initialize search functionality
+        function initializeSearch() {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                filterImages(searchTerm);
+            });
+        }
+
+        // Filter images based on search term
+        function filterImages(searchTerm) {
+            const imageCards = document.querySelectorAll('.image-card');
+            let visibleCount = 0;
+            
+            imageCards.forEach(card => {
+                const imageName = card.getAttribute('data-name').toLowerCase();
+                
+                if (imageName.includes(searchTerm)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Update image count
+            imageCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'image' : 'images'}`;
         }
 
         // Attach event listeners to action buttons
@@ -846,6 +872,7 @@
             const imageCard = document.createElement('div');
             imageCard.className = 'image-card';
             imageCard.setAttribute('data-id', upload.id);
+            imageCard.setAttribute('data-name', upload.filename);
 
             imageCard.innerHTML = `
                 <div class="image-preview-container">
@@ -856,7 +883,7 @@
                     
                     <div class="card-actions">
                         <button class="action-button copy-button" data-url="${upload.url}">
-                            <i class="fas fa-copy"></i> Copy URL
+                            <i class="fas fa-copy"></i> Copy 
                         </button>
                         <button class="action-button view-button-small" data-url="${upload.url}">
                             <i class="fas fa-eye"></i> View

@@ -64,21 +64,51 @@ class SectionController extends Controller
         return view('admin.section.index', compact('templates','sectionTypes'));
     }
 
-  public function template_save(Request $request)
+//   public function template_save(Request $request)
+//     {
+//         $request->validate([
+//             'title' => 'required|string|max:255',
+//             'style_variant' => 'nullable|string|max:255',
+//             'section_type_id' => 'required|exists:section_types,id',
+//             'fields' => 'required|array', // 👈 ab array validate karo
+//             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+//         ]);
+
+//         $data = [
+//             'title' => $request->title,
+//             'style_variant' => $request->style_variant,
+//             'section_type_id' => $request->section_type_id,
+//             'fields' => json_encode($request->fields), // 👈 array ko JSON string bna ke save karo
+//         ];
+
+//         if ($request->hasFile('image')) {
+//             $data['image'] = $request->file('image')->store('templates', 'public');
+//         }
+
+//         SectionTemplate::create($data);
+
+//         return redirect()->route('admin.section_template.index')
+//             ->with('success', 'Template created successfully.');
+//     }
+
+    public function template_save(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'style_variant' => 'nullable|string|max:255',
             'section_type_id' => 'required|exists:section_types,id',
-            'fields' => 'required|array', // 👈 ab array validate karo
+            'fields' => 'required|array',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        // Process fields to handle nested structure
+        $processedFields = $this->processFields($request->fields);
+        
         $data = [
             'title' => $request->title,
             'style_variant' => $request->style_variant,
             'section_type_id' => $request->section_type_id,
-            'fields' => json_encode($request->fields), // 👈 array ko JSON string bna ke save karo
+            'fields' => json_encode($processedFields), // Processed fields ko encode karo
         ];
 
         if ($request->hasFile('image')) {
@@ -89,6 +119,46 @@ class SectionController extends Controller
 
         return redirect()->route('admin.section_template.index')
             ->with('success', 'Template created successfully.');
+    }
+
+    private function processFields($fields)
+    {
+        $processed = [];
+        
+        foreach ($fields as $index => $field) {
+            $processedField = [
+                'key' => $field['key'] ?? '',
+                'label' => $field['label'] ?? '',
+                'type' => $field['type'] ?? 'text',
+            ];
+            
+            // Agar field type 'list' hai aur usme nested fields hain
+            if (($field['type'] ?? '') === 'list' && isset($field['fields'])) {
+                $processedField['fields'] = $this->processNestedFields($field['fields']);
+            }
+            
+            $processed[] = $processedField;
+        }
+        
+        return $processed;
+    }
+
+    private function processNestedFields($nestedFields)
+    {
+        $processedNested = [];
+        
+        // Nested fields ko properly structure karo
+        foreach ($nestedFields as $nestedIndex => $nestedField) {
+            if (isset($nestedField['key']) && isset($nestedField['label']) && isset($nestedField['type'])) {
+                $processedNested[] = [
+                    'key' => $nestedField['key'],
+                    'label' => $nestedField['label'],
+                    'type' => $nestedField['type'],
+                ];
+            }
+        }
+        
+        return $processedNested;
     }
 
 
@@ -113,6 +183,86 @@ class SectionController extends Controller
         }
     }
 
+    // public function template_update(Request $request, $id)
+    // {
+    //     $template = SectionTemplate::findOrFail($id);
+
+    //     try {
+    //         $request->validate([
+    //             'title' => 'required|string|max:255',
+    //             'style_variant' => 'nullable|string|max:255',
+    //             'section_type_id' => 'required|exists:section_types,id',
+    //             'fields' => 'required|array',
+    //             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+    //         ]);
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         \Log::error('Validation failed: ' . json_encode($e->errors()));
+    //         return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+    //     }
+
+    //     try {
+    //         // Process fields (array of objects to JSON)
+    //         $fieldsArray = [];
+    //         foreach ($request->fields as $field) {
+    //             $fieldsArray[] = [
+    //                 'key' => trim($field['key']),
+    //                 'label' => trim($field['label']),
+    //                 'type' => trim($field['type'])
+    //             ];
+    //         }
+
+    //         $data = [
+    //             'title' => $request->title,
+    //             'style_variant' => $request->style_variant,
+    //             'section_type_id' => $request->section_type_id,
+    //             'fields' => json_encode($fieldsArray),
+    //         ];
+
+    //         if ($request->hasFile('image')) {
+    //             // Delete old image if exists
+    //             if ($template->image && Storage::disk('public')->exists($template->image)) {
+    //                 Storage::disk('public')->delete($template->image);
+    //             }
+    //             $data['image'] = $request->file('image')->store('templates', 'public');
+    //         }
+
+    //         $template->update($data);
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Template updated successfully!'
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         \Log::error('Template update error: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to update template: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+
+    public function template_destroy($id)
+    {
+        try {
+            $template = SectionTemplate::findOrFail($id);
+
+            if ($template->image && Storage::disk('public')->exists($template->image)) {
+                Storage::disk('public')->delete($template->image);
+            }
+
+            $template->delete();
+
+            return response()->json(['success' => true, 'message' => 'Template deleted successfully!']);
+
+        } catch (\Exception $e) {
+            \Log::error('Template delete error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to delete template: ' . $e->getMessage()], 500);
+        }
+    }
+
+
     public function template_update(Request $request, $id)
     {
         $template = SectionTemplate::findOrFail($id);
@@ -131,21 +281,14 @@ class SectionController extends Controller
         }
 
         try {
-            // Process fields (array of objects to JSON)
-            $fieldsArray = [];
-            foreach ($request->fields as $field) {
-                $fieldsArray[] = [
-                    'key' => trim($field['key']),
-                    'label' => trim($field['label']),
-                    'type' => trim($field['type'])
-                ];
-            }
-
+            // Process fields with nested structure
+            $processedFields = $this->processFieldsRecursive($request->fields);
+            
             $data = [
                 'title' => $request->title,
                 'style_variant' => $request->style_variant,
                 'section_type_id' => $request->section_type_id,
-                'fields' => json_encode($fieldsArray),
+                'fields' => json_encode($processedFields, JSON_PRETTY_PRINT),
             ];
 
             if ($request->hasFile('image')) {
@@ -172,24 +315,31 @@ class SectionController extends Controller
         }
     }
 
-
-    public function template_destroy($id)
+    private function processFieldsRecursive($fields)
     {
-        try {
-            $template = SectionTemplate::findOrFail($id);
-
-            if ($template->image && Storage::disk('public')->exists($template->image)) {
-                Storage::disk('public')->delete($template->image);
+        $processed = [];
+        
+        foreach ($fields as $field) {
+            // Skip if required fields are missing
+            if (!isset($field['key']) || !isset($field['label']) || !isset($field['type'])) {
+                continue;
             }
-
-            $template->delete();
-
-            return response()->json(['success' => true, 'message' => 'Template deleted successfully!']);
-
-        } catch (\Exception $e) {
-            \Log::error('Template delete error: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to delete template: ' . $e->getMessage()], 500);
+            
+            $processedField = [
+                'key' => trim($field['key']),
+                'label' => trim($field['label']),
+                'type' => trim($field['type'])
+            ];
+            
+            // Handle nested fields for list type
+            if ($field['type'] === 'list' && isset($field['fields']) && is_array($field['fields'])) {
+                $processedField['fields'] = $this->processFieldsRecursive($field['fields']);
+            }
+            
+            $processed[] = $processedField;
         }
+        
+        return $processed;
     }
 
 

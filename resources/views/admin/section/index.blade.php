@@ -5,6 +5,19 @@
 
 @section('css')
     <style>
+        .nested-fields-container {
+                border: 1px dashed #ccc;
+                background-color: #f9f9f9 !important;
+            }
+
+            .nested-fields-container .field-row {
+                background-color: #fff;
+                margin-bottom: 10px;
+            }
+
+            .nested-fields-container .nested-fields-container {
+                background-color: #f0f0f0 !important;
+            }
         .template-type-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -387,499 +400,576 @@
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Image preview functionality
-            function setupImagePreview(inputId, previewId) {
-                const input = document.getElementById(inputId);
-                const preview = document.getElementById(previewId);
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Image preview functionality
+        function setupImagePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
 
-                if (input && preview) {
-                    input.addEventListener('change', function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            if (file.size > 2 * 1024 * 1024) {
-                                Swal.fire({
-                                    toast: true,
-                                    icon: 'error',
-                                    title: 'Image size must be less than 2MB',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000
-                                });
-                                input.value = '';
-                                preview.style.display = 'none';
-                                return;
-                            }
-
-                            preview.src = URL.createObjectURL(file);
-                            preview.style.display = 'block';
-                        } else {
-                            preview.src = '';
+            if (input && preview) {
+                input.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Image size must be less than 2MB',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            input.value = '';
                             preview.style.display = 'none';
+                            return;
                         }
-                    });
-                }
-            }
 
-            // Setup image previews
-            setupImagePreview('templateImage', 'templateImagePreview');
-            setupImagePreview('editTemplateImage', 'editTemplatePreview');
-
-            // Search and filter functionality
-            const searchInput = document.getElementById('searchTemplates');
-            const filterSectionType = document.getElementById('filterSectionType');
-            const templateItems = document.querySelectorAll('.template-item');
-            const emptyState = document.getElementById('emptyState');
-
-            function filterTemplates() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const selectedType = filterSectionType.value;
-                let visibleCount = 0;
-
-                templateItems.forEach(item => {
-                    const templateText = item.textContent.toLowerCase();
-                    const templateType = item.getAttribute('data-type');
-
-                    const matchesSearch = searchTerm === '' || templateText.includes(searchTerm);
-                    const matchesType = selectedType === 'all' || selectedType === templateType;
-
-                    if (matchesSearch && matchesType) {
-                        item.style.display = 'block';
-                        visibleCount++;
+                        preview.src = URL.createObjectURL(file);
+                        preview.style.display = 'block';
                     } else {
-                        item.style.display = 'none';
+                        preview.src = '';
+                        preview.style.display = 'none';
                     }
                 });
+            }
+        }
 
-                if (visibleCount === 0) {
-                    emptyState.classList.remove('d-none');
+        // Setup image previews
+        setupImagePreview('templateImage', 'templateImagePreview');
+        setupImagePreview('editTemplateImage', 'editTemplatePreview');
+
+        // Search and filter functionality
+        const searchInput = document.getElementById('searchTemplates');
+        const filterSectionType = document.getElementById('filterSectionType');
+        const templateItems = document.querySelectorAll('.template-item');
+        const emptyState = document.getElementById('emptyState');
+
+        function filterTemplates() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedType = filterSectionType.value;
+            let visibleCount = 0;
+
+            templateItems.forEach(item => {
+                const templateText = item.textContent.toLowerCase();
+                const templateType = item.getAttribute('data-type');
+
+                const matchesSearch = searchTerm === '' || templateText.includes(searchTerm);
+                const matchesType = selectedType === 'all' || selectedType === templateType;
+
+                if (matchesSearch && matchesType) {
+                    item.style.display = 'block';
+                    visibleCount++;
                 } else {
-                    emptyState.classList.add('d-none');
-                }
-            }
-
-            searchInput.addEventListener('input', filterTemplates);
-            filterSectionType.addEventListener('change', filterTemplates);
-
-            // Add Template Modal - Dynamic Fields Management
-            let fieldCount = 1;
-            const fieldsContainer = document.getElementById('fieldsContainer');
-            const addFieldBtn = document.querySelector('.add-field-btn');
-
-            // Add field to add modal
-            function addField(fieldData = {
-                key: '',
-                label: '',
-                type: 'text'
-            }) {
-                const newFieldRow = document.createElement('div');
-                newFieldRow.className = 'field-row';
-                newFieldRow.innerHTML = `
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <label class="form-label">Key <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-key" name="fields[${fieldCount}][key]" 
-                                   value="${fieldData.key}" required placeholder="e.g., Key">
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label class="form-label">Label <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-label" name="fields[${fieldCount}][label]" 
-                                   value="${fieldData.label}" required placeholder="e.g., Label">
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <label class="form-label">Type <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-type" name="fields[${fieldCount}][type]" 
-                                   value="${fieldData.type}" required placeholder="e.g., Type">
-                        </div>
-                        <div class="col-md-1 mb-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-field-btn">
-                                <i class="mdi mdi-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                fieldsContainer.appendChild(newFieldRow);
-                fieldCount++;
-
-                // Enable remove buttons if there's more than one field
-                if (fieldCount > 1) {
-                    document.querySelectorAll('.remove-field-btn').forEach(btn => {
-                        btn.disabled = false;
-                    });
-                }
-            }
-
-            // Add field button for add modal
-            addFieldBtn.addEventListener('click', function() {
-                addField();
-            });
-
-            // Remove field from add modal
-            fieldsContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-field-btn') ||
-                    e.target.parentElement.classList.contains('remove-field-btn')) {
-
-                    const btn = e.target.classList.contains('remove-field-btn') ?
-                        e.target : e.target.parentElement;
-                    const fieldRow = btn.closest('.field-row');
-
-                    if (fieldsContainer.children.length > 1) {
-                        fieldRow.remove();
-                        fieldCount--;
-
-                        // Re-index the fields
-                        const fieldRows = fieldsContainer.querySelectorAll('.field-row');
-                        fieldRows.forEach((row, index) => {
-                            const inputs = row.querySelectorAll('input, select');
-                            inputs.forEach(input => {
-                                const name = input.getAttribute('name');
-                                if (name) {
-                                    input.setAttribute('name', name.replace(/\[\d+\]/,
-                                        `[${index}]`));
-                                }
-                            });
-                        });
-
-                        // Disable remove button for the first field if there's only one
-                        if (fieldCount === 1) {
-                            document.querySelectorAll('.remove-field-btn')[0].disabled = true;
-                        }
-                    }
+                    item.style.display = 'none';
                 }
             });
 
-            // Edit Template Modal - Dynamic Fields Management
-            let editFieldCount = 0;
+            if (visibleCount === 0) {
+                emptyState.classList.remove('d-none');
+            } else {
+                emptyState.classList.add('d-none');
+            }
+        }
 
-            // Function to add a field to the edit form
-            function addEditField(index, fieldData = {
-                key: '',
-                label: '',
-                type: 'text'
-            }) {
-                const editFieldsContainer = document.getElementById('editFieldsContainer');
-                const fieldRow = document.createElement('div');
-                fieldRow.className = 'field-row';
-                fieldRow.innerHTML = `
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <label class="form-label">Key <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-key" name="fields[${index}][key]" 
-                                   value="${fieldData.key || ''}" required placeholder="e.g., title">
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label class="form-label">Label <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control field-label" name="fields[${index}][label]" 
-                                   value="${fieldData.label || ''}" required placeholder="e.g., Title">
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <label class="form-label">Type <span class="text-danger">*</span></label>
-                             <input type="text" class="form-control field-type" name="fields[${index}][type]" 
-                                   value="${fieldData.type || ''}" required placeholder="e.g., Title">
+        searchInput.addEventListener('input', filterTemplates);
+        filterSectionType.addEventListener('change', filterTemplates);
 
-                            
-                        </div>
-                        <div class="col-md-1 mb-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-edit-field-btn" 
-                                    ${index === 0 ? 'disabled' : ''}>
-                                <i class="mdi mdi-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                editFieldsContainer.appendChild(fieldRow);
+        // Field Management Functions
+        let fieldCount = 1;
+        let editFieldCount = 0;
+
+        // Function to generate a unique ID for nested fields
+        function generateFieldId() {
+            return 'field_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Function to add a field (for both add and edit modals)
+        function addField(container, index, fieldData = { key: '', label: '', type: 'text', fields: [] }, isNested = false, parentId = null) {
+            const fieldId = generateFieldId();
+            const newFieldRow = document.createElement('div');
+            newFieldRow.className = 'field-row';
+            newFieldRow.setAttribute('data-field-id', fieldId);
+            if (parentId) {
+                newFieldRow.setAttribute('data-parent-id', parentId);
             }
 
-            // Edit template functionality
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const templateId = this.getAttribute('data-id');
-
-                    fetch(`/admin/section_template/${templateId}/edit`)
-                        .then(response => response.json())
-                        .then(template => {
-                            // Fill basic form data
-                            document.getElementById('editTemplateName').value = template
-                                .title || '';
-                            document.getElementById('editSectionType').value = template
-                                .section_type_id || '';
-                            document.getElementById('editStyleVariant').value = template
-                                .style_variant || '';
-
-                            // Show current image
-                            const currentImageContainer = document.getElementById(
-                                'currentImageContainer');
-                            if (template.image) {
-                                currentImageContainer.innerHTML = `
-                                    <img src="/storage/${template.image}" class="image-preview" style="max-width: 150px;">
-                                    <small class="text-muted d-block mt-1">Current image</small>
-                                `;
-                            } else {
-                                currentImageContainer.innerHTML =
-                                    '<span class="text-muted">No image</span>';
-                            }
-
-                            // Parse and display fields
-                            const editFieldsContainer = document.getElementById(
-                                'editFieldsContainer');
-                            editFieldsContainer.innerHTML = ''; // Clear existing fields
-
-                            let fields = [];
-                            try {
-                                // Try to parse as JSON
-                                fields = JSON.parse(template.fields);
-                            } catch (e) {
-                                // If parsing fails, try to handle as string
-                                console.error('Error parsing fields JSON:', e);
-                                fields = [];
-                            }
-
-                            // If fields is still empty or not an array, create a default field
-                            if (!Array.isArray(fields) || fields.length === 0) {
-                                fields = [{
-                                    key: 'title',
-                                    label: 'Title',
-                                    type: 'text'
-                                }];
-                            }
-
-                            // Reset edit field count
-                            editFieldCount = fields.length;
-
-                            // Add fields to the edit form
-                            fields.forEach((field, index) => {
-                                addEditField(index, field);
-                            });
-
-                            // Update form action
-                            document.getElementById('editTemplateForm').action =
-                                `/admin/section_template/${templateId}`;
-
-                            // Show modal
-                            const editModal = new bootstrap.Modal(document.getElementById(
-                                'editTemplateModal'));
-                            editModal.show();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching template:', error);
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: 'Error loading template data',
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                        });
+            // Determine if this is a nested field
+            const isListType = fieldData.type === 'list';
+            
+            // Correct naming for nested fields
+            let fieldNamePrefix;
+            if (isNested) {
+                // Nested fields: fields[parentIndex][fields][nestedIndex]
+                fieldNamePrefix = `fields${index}`;
+            } else {
+                // Top-level fields: fields[index]
+                fieldNamePrefix = `fields[${index}]`;
+            }
+            
+            newFieldRow.innerHTML = `
+                <div class="row">
+                    <div class="${isListType ? 'col-md-3' : 'col-md-4'} mb-2">
+                        <label class="form-label">Key <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control field-key" name="${fieldNamePrefix}[key]" 
+                               value="${fieldData.key || ''}" required placeholder="e.g., title">
+                    </div>
+                    <div class="${isListType ? 'col-md-3' : 'col-md-4'} mb-2">
+                        <label class="form-label">Label <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control field-label" name="${fieldNamePrefix}[label]" 
+                               value="${fieldData.label || ''}" required placeholder="e.g., Title">
+                    </div>
+                    <div class="${isListType ? 'col-md-3' : 'col-md-3'} mb-2">
+                        <label class="form-label">Type <span class="text-danger">*</span></label>
+                        <select class="form-select field-type" name="${fieldNamePrefix}[type]" required>
+                            <option value="text" ${fieldData.type === 'text' ? 'selected' : ''}>Text</option>
+                            <option value="textarea" ${fieldData.type === 'textarea' ? 'selected' : ''}>Textarea</option>
+                            <option value="image" ${fieldData.type === 'image' ? 'selected' : ''}>Image</option>
+                            <option value="list" ${fieldData.type === 'list' ? 'selected' : ''}>List/Array</option>
+                        </select>
+                    </div>
+                    <div class="${isListType ? 'col-md-3' : 'col-md-1'} mb-2 d-flex align-items-end">
+                        ${isListType ? `
+                            <button type="button" class="btn btn-info btn-sm me-1 add-nested-field-btn" title="Add Nested Field">
+                                <i class="mdi mdi-plus-box"></i>
+                            </button>
+                        ` : ''}
+                        <button type="button" class="btn btn-danger btn-sm remove-field-btn" ${isNested && container.children.length === 1 ? 'disabled' : ''}>
+                            <i class="mdi mdi-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+                ${isListType ? `
+                    <div class="nested-fields-container mt-3 p-3 bg-light rounded" data-parent-id="${fieldId}">
+                        <h6 class="mb-3">Nested Fields for List</h6>
+                        <!-- Nested fields will be added here -->
+                    </div>
+                ` : ''}
+            `;
+            
+            container.appendChild(newFieldRow);
+            
+            // If this is a list type and has nested fields, add them
+            if (isListType && fieldData.fields && fieldData.fields.length > 0) {
+                const nestedContainer = newFieldRow.querySelector('.nested-fields-container');
+                fieldData.fields.forEach((nestedField, nestedIndex) => {
+                    // For nested fields, use: fields[parentIndex][fields][nestedIndex]
+                    addField(nestedContainer, `[${index}][fields][${nestedIndex}]`, nestedField, true, fieldId);
                 });
-            });
-
-            // Add field button for edit modal
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('add-edit-field-btn')) {
-                    const editFieldsContainer = document.getElementById('editFieldsContainer');
-                    addEditField(editFieldCount);
-                    editFieldCount++;
-
-                    // Enable remove buttons if there's more than one field
-                    if (editFieldCount > 1) {
-                        editFieldsContainer.querySelectorAll('.remove-edit-field-btn').forEach(btn => {
-                            btn.disabled = false;
-                        });
-                    }
+            }
+            
+            // Add event listener for type change
+            const typeSelect = newFieldRow.querySelector('.field-type');
+            typeSelect.addEventListener('change', function() {
+                const isNowListType = this.value === 'list';
+                const nestedContainer = newFieldRow.querySelector('.nested-fields-container');
+                
+                if (isNowListType && !nestedContainer) {
+                    // Add nested container for list type
+                    const nestedHtml = `
+                        <div class="nested-fields-container mt-3 p-3 bg-light rounded" data-parent-id="${fieldId}">
+                            <h6 class="mb-3">Nested Fields for List</h6>
+                        </div>
+                    `;
+                    newFieldRow.insertAdjacentHTML('beforeend', nestedHtml);
+                    
+                    // Update the button layout
+                    const buttonCol = newFieldRow.querySelector('.col-md-1');
+                    buttonCol.className = 'col-md-3 mb-2 d-flex align-items-end';
+                    
+                    const addNestedBtn = document.createElement('button');
+                    addNestedBtn.type = 'button';
+                    addNestedBtn.className = 'btn btn-info btn-sm me-1 add-nested-field-btn';
+                    addNestedBtn.title = 'Add Nested Field';
+                    addNestedBtn.innerHTML = '<i class="mdi mdi-plus-box"></i>';
+                    buttonCol.insertBefore(addNestedBtn, buttonCol.querySelector('.remove-field-btn'));
+                } else if (!isNowListType && nestedContainer) {
+                    // Remove nested container for non-list types
+                    nestedContainer.remove();
+                    
+                    // Update the button layout
+                    const buttonCol = newFieldRow.querySelector('.col-md-3');
+                    buttonCol.className = 'col-md-1 mb-2 d-flex align-items-end';
+                    buttonCol.querySelector('.add-nested-field-btn').remove();
                 }
+            });
+            
+            return fieldId;
+        }
 
-                // Remove field button for edit modal
-                if (e.target.classList.contains('remove-edit-field-btn') ||
-                    e.target.parentElement.classList.contains('remove-edit-field-btn')) {
+        // Add Template Modal - Dynamic Fields Management
+        const fieldsContainer = document.getElementById('fieldsContainer');
+        const addFieldBtn = document.querySelector('.add-field-btn');
 
-                    const btn = e.target.classList.contains('remove-edit-field-btn') ?
-                        e.target : e.target.parentElement;
-                    const fieldRow = btn.closest('.field-row');
-                    const editFieldsContainer = document.getElementById('editFieldsContainer');
+        // Add field button for add modal
+        addFieldBtn.addEventListener('click', function() {
+            addField(fieldsContainer, fieldCount);
+            fieldCount++;
+            
+            // Enable remove buttons if there's more than one field
+            if (fieldCount > 1) {
+                document.querySelectorAll('.remove-field-btn').forEach(btn => {
+                    btn.disabled = false;
+                });
+            }
+        });
 
-                    if (editFieldsContainer.children.length > 1) {
-                        fieldRow.remove();
-                        editFieldCount--;
+        // Remove field from add modal
+        fieldsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-field-btn') ||
+                e.target.parentElement.classList.contains('remove-field-btn')) {
 
-                        // Re-index fields
-                        const fieldRows = editFieldsContainer.querySelectorAll('.field-row');
-                        fieldRows.forEach((row, index) => {
-                            const inputs = row.querySelectorAll('input, select');
-                            inputs.forEach(input => {
-                                const name = input.getAttribute('name');
-                                if (name) {
-                                    input.setAttribute('name', name.replace(/\[\d+\]/,
-                                        `[${index}]`));
-                                }
-                            });
+                const btn = e.target.classList.contains('remove-field-btn') ?
+                    e.target : e.target.parentElement;
+                const fieldRow = btn.closest('.field-row');
 
-                            // Disable remove button for first field
-                            const removeBtn = row.querySelector('.remove-edit-field-btn');
-                            if (removeBtn) {
-                                removeBtn.disabled = index === 0;
+                if (fieldsContainer.children.length > 1) {
+                    fieldRow.remove();
+                    fieldCount--;
+
+                    // Re-index the fields
+                    const fieldRows = fieldsContainer.querySelectorAll('.field-row');
+                    fieldRows.forEach((row, index) => {
+                        const inputs = row.querySelectorAll('input, select');
+                        inputs.forEach(input => {
+                            const name = input.getAttribute('name');
+                            if (name) {
+                                input.setAttribute('name', name.replace(/fields\[\d+\]/, `fields[${index}]`));
                             }
                         });
+                    });
+
+                    // Disable remove button for the first field if there's only one
+                    if (fieldCount === 1) {
+                        document.querySelectorAll('.remove-field-btn')[0].disabled = true;
                     }
                 }
-            });
+            }
+            
+            // Add nested field button
+            if (e.target.classList.contains('add-nested-field-btn') ||
+                e.target.parentElement.classList.contains('add-nested-field-btn')) {
+                
+                const btn = e.target.classList.contains('add-nested-field-btn') ?
+                    e.target : e.target.parentElement;
+                const fieldRow = btn.closest('.field-row');
+                const fieldId = fieldRow.getAttribute('data-field-id');
+                const nestedContainer = fieldRow.querySelector('.nested-fields-container');
+                
+                if (nestedContainer) {
+                    const nestedFieldCount = nestedContainer.querySelectorAll('.field-row').length;
+                    const parentIndex = getFieldIndex(fieldRow);
+                    // Correct naming: fields[parentIndex][fields][nestedIndex]
+                    addField(nestedContainer, `[${parentIndex}][fields][${nestedFieldCount}]`, {}, true, fieldId);
+                }
+            }
+        });
 
-            // Handle edit form submission
-            document.getElementById('editTemplateForm').addEventListener('submit', function(e) {
-                e.preventDefault();
+        // Helper function to get field index from name attribute
+        function getFieldIndex(fieldRow) {
+            const keyInput = fieldRow.querySelector('.field-key');
+            const name = keyInput.getAttribute('name');
+            const match = name.match(/fields\[(\d+)\]/);
+            return match ? match[1] : '';
+        }
 
-                const formData = new FormData(this);
-                const url = this.action;
+        // Edit Template Modal - Dynamic Fields Management
 
-                fetch(url, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
+        // Edit template functionality
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const templateId = this.getAttribute('data-id');
+
+                fetch(`/admin/section_template/${templateId}/edit`)
                     .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: data.message,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
+                    .then(template => {
+                        // Fill basic form data
+                        document.getElementById('editTemplateName').value = template.title || '';
+                        document.getElementById('editSectionType').value = template.section_type_id || '';
+                        document.getElementById('editStyleVariant').value = template.style_variant || '';
 
-                            bootstrap.Modal.getInstance(document.getElementById('editTemplateModal'))
-                                .hide();
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
+                        // Show current image
+                        const currentImageContainer = document.getElementById('currentImageContainer');
+                        if (template.image) {
+                            currentImageContainer.innerHTML = `
+                                <img src="/storage/${template.image}" class="image-preview" style="max-width: 150px;">
+                                <small class="text-muted d-block mt-1">Current image</small>
+                            `;
                         } else {
-                            Swal.fire({
-                                toast: true,
-                                icon: 'error',
-                                title: data.message,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
+                            currentImageContainer.innerHTML = '<span class="text-muted">No image</span>';
                         }
+
+                        // Parse and display fields
+                        const editFieldsContainer = document.getElementById('editFieldsContainer');
+                        editFieldsContainer.innerHTML = ''; // Clear existing fields
+
+                        let fields = [];
+                        try {
+                            // Try to parse as JSON
+                            fields = JSON.parse(template.fields);
+                        } catch (e) {
+                            // If parsing fails, try to handle as string
+                            console.error('Error parsing fields JSON:', e);
+                            fields = [];
+                        }
+
+                        // If fields is still empty or not an array, create a default field
+                        if (!Array.isArray(fields) || fields.length === 0) {
+                            fields = [{
+                                key: 'title',
+                                label: 'Title',
+                                type: 'text'
+                            }];
+                        }
+
+                        // Reset edit field count
+                        editFieldCount = fields.length;
+
+                        // Add fields to the edit form
+                        fields.forEach((field, index) => {
+                            addField(editFieldsContainer, index, field);
+                        });
+
+                        // Update form action
+                        document.getElementById('editTemplateForm').action = `/admin/section_template/${templateId}`;
+
+                        // Show modal
+                        const editModal = new bootstrap.Modal(document.getElementById('editTemplateModal'));
+                        editModal.show();
                     })
                     .catch(error => {
-                        console.error('Error updating template:', error);
+                        console.error('Error fetching template:', error);
                         Swal.fire({
                             toast: true,
                             icon: 'error',
-                            title: 'Error updating template',
+                            title: 'Error loading template data',
                             position: 'top-end',
                             showConfirmButton: false,
                             timer: 3000
                         });
                     });
             });
+        });
 
-            // Delete template functionality
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const templateId = this.getAttribute('data-id');
-                    const templateName = this.closest('.template-item').querySelector('.card-title')
-                        .textContent;
+        // Add field button for edit modal
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-edit-field-btn')) {
+                const editFieldsContainer = document.getElementById('editFieldsContainer');
+                addField(editFieldsContainer, editFieldCount);
+                editFieldCount++;
 
+                // Enable remove buttons if there's more than one field
+                if (editFieldCount > 1) {
+                    editFieldsContainer.querySelectorAll('.remove-field-btn').forEach(btn => {
+                        btn.disabled = false;
+                    });
+                }
+            }
+
+            // Remove field button for edit modal
+            if (e.target.classList.contains('remove-edit-field-btn') ||
+                e.target.parentElement.classList.contains('remove-edit-field-btn')) {
+
+                const btn = e.target.classList.contains('remove-edit-field-btn') ?
+                    e.target : e.target.parentElement;
+                const fieldRow = btn.closest('.field-row');
+                const editFieldsContainer = document.getElementById('editFieldsContainer');
+
+                if (editFieldsContainer.children.length > 1) {
+                    fieldRow.remove();
+                    editFieldCount--;
+
+                    // Re-index fields
+                    const fieldRows = editFieldsContainer.querySelectorAll('.field-row');
+                    fieldRows.forEach((row, index) => {
+                        const inputs = row.querySelectorAll('input, select');
+                        inputs.forEach(input => {
+                            const name = input.getAttribute('name');
+                            if (name) {
+                                input.setAttribute('name', name.replace(/fields\[\d+\]/, `fields[${index}]`));
+                            }
+                        });
+
+                        // Disable remove button for first field
+                        const removeBtn = row.querySelector('.remove-edit-field-btn');
+                        if (removeBtn) {
+                            removeBtn.disabled = index === 0;
+                        }
+                    });
+                }
+            }
+            
+            // Add nested field button for edit modal
+            if (e.target.classList.contains('add-nested-field-btn') ||
+                e.target.parentElement.classList.contains('add-nested-field-btn')) {
+                
+                const btn = e.target.classList.contains('add-nested-field-btn') ?
+                    e.target : e.target.parentElement;
+                const fieldRow = btn.closest('.field-row');
+                const fieldId = fieldRow.getAttribute('data-field-id');
+                const nestedContainer = fieldRow.querySelector('.nested-fields-container');
+                
+                if (nestedContainer) {
+                    const nestedFieldCount = nestedContainer.querySelectorAll('.field-row').length;
+                    const parentIndex = getFieldIndex(fieldRow);
+                    // Correct naming: fields[parentIndex][fields][nestedIndex]
+                    addField(nestedContainer, `[${parentIndex}][fields][${nestedFieldCount}]`, {}, true, fieldId);
+                }
+            }
+        });
+
+        // Handle edit form submission
+        document.getElementById('editTemplateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const url = this.action;
+
+            fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: data.message,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+
+                        bootstrap.Modal.getInstance(document.getElementById('editTemplateModal')).hide();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            icon: 'error',
+                            title: data.message,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating template:', error);
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: `You are about to delete "${templateName}". This action cannot be undone.`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            fetch(`/admin/section_template/${templateId}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json'
-                                    }
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        Swal.fire({
-                                            toast: true,
-                                            icon: 'success',
-                                            title: data.message,
-                                            position: 'top-end',
-                                            showConfirmButton: false,
-                                            timer: 3000
-                                        });
+                        toast: true,
+                        icon: 'error',
+                        title: 'Error updating template',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+        });
 
-                                        // Remove template from DOM
-                                        this.closest('.template-item').remove();
+        // Delete template functionality
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const templateId = this.getAttribute('data-id');
+                const templateName = this.closest('.template-item').querySelector('.card-title').textContent;
 
-                                        // Check if any templates left
-                                        filterTemplates();
-                                    } else {
-                                        Swal.fire({
-                                            toast: true,
-                                            icon: 'error',
-                                            title: data.message ||
-                                                'Error deleting template!',
-                                            position: 'top-end',
-                                            showConfirmButton: false,
-                                            timer: 3000
-                                        });
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error deleting template:', error);
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `You are about to delete "${templateName}". This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/admin/section_template/${templateId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
                                     Swal.fire({
                                         toast: true,
-                                        icon: 'error',
-                                        title: 'Error deleting template!',
+                                        icon: 'success',
+                                        title: data.message,
                                         position: 'top-end',
                                         showConfirmButton: false,
                                         timer: 3000
                                     });
+
+                                    // Remove template from DOM
+                                    this.closest('.template-item').remove();
+
+                                    // Check if any templates left
+                                    filterTemplates();
+                                } else {
+                                    Swal.fire({
+                                        toast: true,
+                                        icon: 'error',
+                                        title: data.message || 'Error deleting template!',
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error deleting template:', error);
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'error',
+                                    title: 'Error deleting template!',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000
                                 });
-                        }
-                    });
+                            });
+                    }
                 });
             });
-
-            // SweetAlert notifications
-            @if (session('success'))
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: "{{ session('success') }}",
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-            @endif
-
-            @if (session('error'))
-                Swal.fire({
-                    toast: true,
-                    icon: 'error',
-                    title: "{{ session('error') }}",
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-            @endif
-
-            // Show add modal if there are validation errors
-            @if ($errors->any() && old('_token'))
-                document.addEventListener('DOMContentLoaded', function() {
-                    const addModal = new bootstrap.Modal(document.getElementById('addTemplateModal'));
-                    addModal.show();
-                });
-            @endif
         });
-    </script>
+
+        // SweetAlert notifications
+        @if (session('success'))
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: "{{ session('success') }}",
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: "{{ session('error') }}",
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        @endif
+
+        // Show add modal if there are validation errors
+        @if ($errors->any() && old('_token'))
+            document.addEventListener('DOMContentLoaded', function() {
+                const addModal = new bootstrap.Modal(document.getElementById('addTemplateModal'));
+                addModal.show();
+            });
+        @endif
+    });
+</script>
 @endsection
