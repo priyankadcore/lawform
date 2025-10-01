@@ -5,6 +5,7 @@
 @endsection
 @section('css')
     <link href="{{ asset('build/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">
     <style>
         .selected-image {
             box-shadow: 0 0 0 4px #198754; /* Bootstrap success green */
@@ -425,7 +426,7 @@
 
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Edit Section</h5>
@@ -479,6 +480,7 @@
 
     
 @endsection
+
 
 @section('scripts')
     <script src="{{ asset('build/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
@@ -699,8 +701,7 @@
                 const editBtn = e.target.closest('.edit-section-btn');
                 if (!editBtn) return;
 
-                const sectionId = editBtn.getAttribute('data-sectionid');
-                const pageId = editBtn.getAttribute('data-pageid');
+                const pageSectionId = editBtn.getAttribute('data-pageid');
                 const templateId = editBtn.getAttribute('data-templateid');
                 const fieldsData = editBtn.getAttribute('data-fields');
 
@@ -726,15 +727,11 @@
 
                 // Add hidden inputs
                 editForm.insertAdjacentHTML('beforeend', `
-                <input type="hidden" name="section_id" value="${sectionId}">
-                <input type="hidden" name="page_id" value="${pageId}">
-                <input type="hidden" name="template_id" value="${templateId}">
+                <input type="hidden" name="page_section_id" value="${pageSectionId}">
             `);
 
-                // Har {} object par loop lagao
                 if (Array.isArray(fields) && fields.length > 0) {
                     fields.forEach(fieldObject => {
-                        // fieldObject = {} object jo ki {key: "...", label: "...", type: "..."}
                         const key = fieldObject.key; // "headline", "description", "image"
                         const label = fieldObject.label; // "Headline", "Description", "Image"  
                         const type = fieldObject.type; // "text", "textarea", "file"
@@ -762,7 +759,6 @@
                         `;
                             editForm.insertAdjacentHTML('beforeend', fieldHTML);
                         }else if (type === 'button') {
-                                // Agar type button hai toh button show karo
                                 const fieldHTML = `
                                 <div class="mb-3">
                                     <button type="button" class="btn btn-primary" id="${key}">${label}</button>
@@ -770,6 +766,78 @@
                             `;
                                 editForm.insertAdjacentHTML('beforeend', fieldHTML);
                             }
+                            else if (type === 'list' && Array.isArray(fieldObject.fields)) {
+                            const listContainer = document.createElement('div');
+                            listContainer.className = 'mb-3';
+                            listContainer.id = `${key}-container`;
+
+                            const labelEl = document.createElement('label');
+                            labelEl.textContent = label;
+                            labelEl.className = 'form-label d-block mb-2';
+                            listContainer.appendChild(labelEl);
+
+                            const itemsWrapper = document.createElement('div');
+                            itemsWrapper.className = 'list-items';
+                            listContainer.appendChild(itemsWrapper);
+
+                            const addButton = document.createElement('button');
+                            addButton.type = 'button';
+                            addButton.className = 'btn btn-success mb-2';
+                            addButton.textContent = 'Add Item';
+                            listContainer.appendChild(addButton);
+
+                            editForm.appendChild(listContainer);
+
+                            function createListCard() {
+                                const card = document.createElement('div');
+                               card.className = 'card p-3 mb-2 position-relative shadow border border-black';
+
+                                fieldObject.fields.forEach(subField => {
+                                    const subKey = subField.key;
+                                    const subLabel = subField.label;
+                                    const subType = subField.type;
+
+                                    const fieldGroup = document.createElement('div');
+                                    fieldGroup.className = 'mb-2';
+
+                                    const fieldLabel = document.createElement('label');
+                                    fieldLabel.textContent = subLabel;
+                                    fieldLabel.className = 'form-label';
+
+                                    let input;
+                                    if (subType === 'text') {
+                                        input = document.createElement('input');
+                                        input.type = 'text';
+                                        input.className = 'form-control';
+                                    } else if (subType === 'textarea') {
+                                        input = document.createElement('textarea');
+                                        input.className = 'form-control';
+                                        input.rows = 3;
+                                    }
+
+                                    input.name = `${key}[${subKey}][]`;
+
+                                    fieldGroup.appendChild(fieldLabel);
+                                    fieldGroup.appendChild(input);
+                                    card.appendChild(fieldGroup);
+                                });
+
+                                const deleteBtn = document.createElement('button');
+                                deleteBtn.type = 'button';
+                                deleteBtn.className = 'btn position-absolute top-0 end-0 m-2';
+                                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                                deleteBtn.onclick = () => card.remove();
+                                card.appendChild(deleteBtn);
+
+                                itemsWrapper.appendChild(card);
+                            }
+
+                            // Initial card
+                            createListCard();
+
+                            // Add new card on button click
+                            addButton.addEventListener('click', createListCard);
+                        }
                          else {
                             const fieldHTML = `
                             <div class="mb-3">
@@ -787,52 +855,54 @@
                 `);
                 }
                  // Add static "Choose Existing Image" button
-                        editForm.insertAdjacentHTML('beforeend', `
-                            <div class="mb-3">
-                                <button type="button" class="btn btn-secondary" id="chooseImageBtn"
-                                data-bs-toggle="modal"  data-bs-target="#imageModal">Choose Existing Image</button>
-                            </div>
-                        `);
+                        // editForm.insertAdjacentHTML('beforeend', `
+                        //     <div class="mb-3">
+                        //         <button type="button" class="btn btn-secondary" id="chooseImageBtn"
+                        //         data-bs-toggle="modal"  data-bs-target="#imageModal">Choose Existing Image</button>
+                        //     </div>
+                        // `);
 
                 // Show modal
                 editModal.show();
             });
 
             // Handle form submission
-            editForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+            // editForm.addEventListener('submit', function(e) {
+            //     e.preventDefault();
 
-                const formData = new FormData(this);
+            //     const formData = new FormData(this);
 
-                // Convert FormData to JSON
-                const data = {};
-                formData.forEach((value, key) => {
-                    data[key] = value;
-                });
+            //     // Convert FormData to JSON
+            //     const data = {};
+            //     formData.forEach((value, key) => {
+            //         data[key] = value;
+            //     });
 
-                // Send update request
-                fetch('/admin/sections/update', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            editModal.hide();
-                            // Refresh the table
-                            pageDropdown.dispatchEvent(new Event('change'));
-                        } else {
-                            alert('Error updating section: ' + result.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error updating section:', error);
-                        alert('Failed to update section');
-                    });
-            });
+            //     // Send update request
+            //     fetch('/admin/pages/section-update', {
+            //             method: 'POST',
+            //             headers: {
+            //                 'Content-Type': 'application/json',
+            //             },
+            //             body: JSON.stringify(data)
+            //         })
+            //         .then(response => response.json())
+            //         .then(result => {
+            //             if (result.success) {
+            //                 editModal.hide();
+            //                 // Refresh the table
+            //                 pageDropdown.dispatchEvent(new Event('change'));
+            //             } else {
+            //                 alert('Error updating section: ' + result.message);
+            //             }
+            //         })
+            //         .catch(error => {
+            //             console.error('Error updating section:', error);
+            //             alert('Failed to update section');
+            //         });
+            // });
+
+            
         });
 
 
@@ -883,31 +953,128 @@
     </script>
 
     <script>
-    function selectImage(imageUrl, filename) {
-        // Remove 'selected' class from all images
-        document.querySelectorAll('.image-card img').forEach(img => {
-            img.classList.remove('border-success');
-            img.classList.remove('selected-image');
+        function selectImage(imageUrl, filename) {
+            // Remove 'selected' class from all images
+            document.querySelectorAll('.image-card img').forEach(img => {
+                img.classList.remove('border-success');
+                img.classList.remove('selected-image');
+            });
+
+            // Highlight selected image
+            const clickedImage = document.querySelector(`img[onclick*="${filename}"]`);
+            if (clickedImage) {
+                clickedImage.classList.add('border-success');
+                clickedImage.classList.add('selected-image');
+            }
+
+            // Store selected image filename in hidden input
+            let hiddenInput = document.querySelector('#editForm input[name="selected_image"]');
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selected_image';
+                editForm.appendChild(hiddenInput);
+            }
+            hiddenInput.value = filename;
+
+            console.log('Selected image:', filename);
+        }
+    </script>
+
+    <script>
+        // Handle form submission - Modified version
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const pageSectionId = formData.get('page_section_id');
+
+            // Agar file upload hai toh FormData hi use karo, nahi toh JSON use karo
+            let hasFiles = false;
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    hasFiles = true;
+                    break;
+                }
+            }
+
+            if (hasFiles) {
+                // File upload ke liye FormData use karo
+                fetch('/admin/pages/section-update', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        editModal.hide();
+                        pageDropdown.dispatchEvent(new Event('change'));
+                        alert('Section updated successfully!');
+                    } else {
+                        alert('Error updating section: ' + result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating section:', error);
+                    alert('Failed to update section');
+                });
+            } else {
+                // No files - JSON use karo
+                const data = {};
+                formData.forEach((value, key) => {
+                    // Array fields ko properly handle karo
+                    if (key.includes('[') && key.includes(']')) {
+                        this.parseArrayField(data, key, value);
+                    } else {
+                        data[key] = value;
+                    }
+                });
+
+                fetch('/admin/pages/section-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        editModal.hide();
+                        pageDropdown.dispatchEvent(new Event('change'));
+                        alert('Section updated successfully!');
+                    } else {
+                        alert('Error updating section: ' + result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating section:', error);
+                    alert('Failed to update section');
+                });
+            }
         });
 
-        // Highlight selected image
-        const clickedImage = document.querySelector(`img[onclick*="${filename}"]`);
-        if (clickedImage) {
-            clickedImage.classList.add('border-success');
-            clickedImage.classList.add('selected-image');
+        // Array fields ko parse karne ka helper function
+        function parseArrayField(data, key, value) {
+            const matches = key.match(/(\w+)\[(\w+)\]\[(\d+)\]/);
+            
+            if (matches) {
+                const mainKey = matches[1]; // headline
+                const subKey = matches[2];  // title
+                const index = matches[3];   // 0
+                
+                if (!data[mainKey]) {
+                    data[mainKey] = {};
+                }
+                if (!data[mainKey][subKey]) {
+                    data[mainKey][subKey] = [];
+                }
+                data[mainKey][subKey][index] = value;
+            }
         }
-
-        // Store selected image filename in hidden input
-        let hiddenInput = document.querySelector('#editForm input[name="selected_image"]');
-        if (!hiddenInput) {
-            hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'selected_image';
-            editForm.appendChild(hiddenInput);
-        }
-        hiddenInput.value = filename;
-
-        console.log('Selected image:', filename);
-    }
-</script>
+        </script>
 @endsection
