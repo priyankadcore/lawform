@@ -1,307 +1,505 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful & Innovative Websites</title>
+    <title>Modern Banner Design</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        
-        
-        header {
-            text-align: center;
-            padding: 60px 0 30px;
-            margin-bottom: 40px;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            font-size: 3rem;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-            position: relative;
-            display: inline-block;
-        }
-        
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            border-radius: 2px;
-        }
-        
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 20px auto 0;
-        }
-        
-        .banner-section {
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            gap: 70px;
-            margin-bottom: 80px;
-        }
-        
-        .banner {
-            overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            position: relative;
-            min-height: 600px;
-            display: flex;
+            justify-content: center;
             align-items: center;
+            padding: 20px;
         }
-        
-        .banner:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+        .banner-container {
+            width: 100%;
+            background: white;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-        
+
         .banner-content {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .text-content {
+            flex: 1;
+            padding: 60px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .visual-content {
+            flex: 1;
+            height: 500px;
+            position: relative;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            overflow: hidden;
+        }
+
+        .banner-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .banner-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #2d3748;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .banner-subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            max-width: 90%;
+        }
+
+        .banner-features {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .feature i {
+            color: #48bb78;
+            font-size: 1.1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .shape-1 {
+            width: 150px;
+            height: 150px;
+            background: #667eea;
+            top: 10%;
+            right: 15%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 100px;
+            height: 100px;
+            background: #764ba2;
+            bottom: 20%;
+            right: 25%;
+            animation: float 6s ease-in-out infinite 1s;
+        }
+
+        .shape-3 {
+            width: 80px;
+            height: 80px;
+            background: #48bb78;
+            top: 50%;
+            right: 40%;
+            animation: float 7s ease-in-out infinite 0.5s;
+        }
+
+        .main-visual {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: morphing 10s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 5rem;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
             position: relative;
             z-index: 2;
         }
 
-        
-        .banner-2 {
-            background: 
-                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80') center/cover no-repeat;
-            color: white;
-            flex-direction: row-reverse;
-        }
-        
-        .banner h2 {
-            font-size: 3.8rem;
-            margin-bottom: 25px;
-            position: relative;
-            display: inline-block;
-            color: white;
-            font-weight: 700;
-        }
-        
-        
-        .banner-2 h2::after {
-            content: '';
+        .floating-elements {
             position: absolute;
-            bottom: -15px;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            border-radius: 2px;
+            width: 100%;
+            height: 100%;
         }
-        
-        .banner p {
-           font-size: 2.2rem;
-            margin-bottom: 35px;
-            line-height: 1.8;
-            color: white;
+
+        .floating-element {
+            position: absolute;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: float-element 6s ease-in-out infinite;
+        }
+
+        .element-1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .element-2 {
+            bottom: 30%;
+            left: 5%;
+            animation-delay: 2s;
+        }
+
+        .element-3 {
+            top: 40%;
+            right: 15%;
+            animation-delay: 4s;
+        }
+
+        .floating-element i {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        .floating-element span {
+            font-weight: 600;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        @keyframes float-element {
+
+            0%,
+            100% {
+                transform: translateY(0) translateX(0);
+            }
+
+            50% {
+                transform: translateY(-15px) translateX(5px);
+            }
+        }
+
+        @keyframes morphing {
+            0% {
+                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            }
+
+            25% {
+                border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%;
+            }
+
+            50% {
+                border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
+            }
+
+            75% {
+                border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%;
+            }
+
+            100% {
+                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            }
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #718096;
             font-weight: 500;
         }
-        
-        .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            background-color: white!important;
-            color: #000000ff  !important;
-            border: none;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            align-self: flex-start;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        .banner-2 .btn::before {
-            background: white;
-        }
-        
-        .banner-2 .btn:hover {
-            color: #3498db;
-        }
-        
-        .banner-decoration {
-            position: absolute;
-            z-index: 1;
-        }
-        .banner-2 .banner-decoration {
-            bottom: 20px;
-            left: 30px;
-            font-size: 100px;
-            opacity: 0.15;
-            color: #333;
-            animation: float 6s ease-in-out infinite;
-        }
-         
-        /* Animations */
-        @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-15px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate {
-            animation: fadeInUp 0.8s ease forwards;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 992px) {
+
+        @media (max-width: 1024px) {
             .banner-content {
-                width: 70%;
+                flex-direction: column;
+                text-align: center;
             }
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
+
+            .text-content {
+                padding: 40px;
             }
-            
-            .banner {
-                min-height: auto;
-            }
-            
-            .banner-content {
-                padding: 40px 30px;
+
+            .visual-content {
+                height: 400px;
                 width: 100%;
             }
-            
-            .banner h2 {
-                font-size: 2.2rem;
+
+            .main-visual {
+                width: 300px;
+                height: 300px;
             }
-            
-            .banner-decoration {
+
+            .banner-title {
+                font-size: 2.5rem;
+            }
+
+            .banner-subtitle {
+                max-width: 100%;
+            }
+
+            .banner-features {
+                justify-content: center;
+            }
+
+            .cta-buttons {
+                justify-content: center;
+            }
+
+            .floating-element {
                 display: none;
             }
-            
         }
-        
-        @media (max-width: 576px) {
-            h1 {
+
+        @media (max-width: 768px) {
+            .banner-title {
                 font-size: 2rem;
             }
-            
-            .banner-content {
-                padding: 30px 20px;
+
+            .text-content {
+                padding: 30px 25px;
             }
-            
-            .banner h2 {
-                font-size: 1.8rem;
+
+            .main-visual {
+                width: 250px;
+                height: 250px;
+                font-size: 4rem;
             }
-            
-            .banner p {
-                font-size: 1rem;
+
+            .stats {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .stat {
+                flex: 1;
+                min-width: 120px;
             }
         }
     </style>
 </head>
+
 <body>
-       
-        
-        {{-- <section class="banner-section">
-            <div class="banner banner-1">
-                <div class="banner-content">
-                    <h2>Modern Web Design</h2>
-                    <p>We create visually stunning websites that combine aesthetics with functionality. Our designs are tailored to reflect your brand identity while providing an exceptional user experience.</p>
-                    <a href="#" class="btn">View Portfolio</a>
-                    <div class="banner-decoration">
-                        <i class="fas fa-palette"></i>
+    <div class="banner-container">
+        <div class="banner-content">
+            <div class="text-content">
+                <div class="banner-badge">
+                    <i class="fas fa-star"></i> Limited Time Offer
+                </div>
+
+                <h1 class="banner-title">
+                    Transform Your Digital Experience Today
+                </h1>
+
+                <p class="banner-subtitle">
+                    Discover our innovative solutions that help businesses grow faster, work smarter, and achieve
+                    remarkable results. Join thousands of satisfied customers worldwide.
+                </p>
+
+                <div class="banner-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Credit Card Required</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Free 30-Day Trial</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>24/7 Expert Support</span>
+                    </div>
+                </div>
+
+                <div class="cta-buttons">
+                    <button class="btn-primary">
+                        <i class="fas fa-rocket"></i> Get Started Free
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-play-circle"></i> Watch Demo
+                    </button>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">4.9/5</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
                     </div>
                 </div>
             </div>
-        </section> --}}
 
-        <section class="banner-section">
-            <div class="banner banner-2">
-                <div class="banner-content text-center">
-                    <h2>Innovative Solutions</h2>
-                    <p>Our team leverages cutting-edge technologies to build websites that are not only beautiful but also highly functional, responsive, and optimized for performance.</p>
-                    <a href="#" class="btn ">Learn More</a>
-                   
-                </div>
+            <div class="visual-content">
+                <img src="{{ asset('images/banner.png') }}" alt="Banner Image" style="    width: 500px;height: 500px;">
+
+
+
             </div>
-        </section>
-        
-        
-    
-  
+        </div>
+    </div>
 
-    <script>
-        // Add some interactive effects
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const banners = document.querySelectorAll('.banner');
-            
-            banners.forEach(banner => {
-                banner.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-10px)';
+            // Add some interactive animations
+            const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
                 });
-                
-                banner.addEventListener('mouseleave', function() {
+
+                button.addEventListener('mouseleave', function() {
                     this.style.transform = 'translateY(0)';
                 });
             });
-            
-            // Add animation on scroll
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate');
-                    }
-                });
-            }, observerOptions);
-            
-            // Observe banners and features
-            document.querySelectorAll('.banner, .feature').forEach(el => {
-                el.style.opacity = 0;
-                observer.observe(el);
-            });
-            
-            // Button hover effect
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(button => {
-                button.addEventListener('mouseenter', function(e) {
-                    const x = e.pageX - this.offsetLeft;
-                    const y = e.pageY - this.offsetTop;
-                    
-                    this.style.setProperty('--x', x + 'px');
-                    this.style.setProperty('--y', y + 'px');
-                });
+
+            // Animate stats on load
+            const statNumbers = document.querySelectorAll('.stat-number');
+
+            statNumbers.forEach(stat => {
+                const originalText = stat.textContent;
+                stat.textContent = '0';
+
+                setTimeout(() => {
+                    let current = 0;
+                    const target = parseInt(originalText);
+                    const increment = target / 30;
+
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            stat.textContent = originalText;
+                            clearInterval(timer);
+                        } else {
+                            stat.textContent = Math.floor(current) + (originalText.includes(
+                                '/') ? '/5' : '+');
+                        }
+                    }, 50);
+                }, 1000);
             });
         });
-    </script>
+    </script> --}}
 </body>
+
 </html>
