@@ -5,6 +5,7 @@
 @endsection
 @section('css')
     <link href="{{ asset('build/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">
     <style>
         .selected-image {
             box-shadow: 0 0 0 4px #198754;
@@ -427,7 +428,7 @@
 
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Edit Section</h5>
@@ -478,12 +479,41 @@
     </div>
 @endsection
 
+
 @section('scripts')
     <script src="{{ asset('build/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('build/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script>
+        function selectImage(imageUrl, filename) {
+            // Remove 'selected' class from all images
+            document.querySelectorAll('.image-card img').forEach(img => {
+                img.classList.remove('border-success');
+                img.classList.remove('selected-image');
+            });
+
+            // Highlight selected image
+            const clickedImage = document.querySelector(`img[onclick*="${filename}"]`);
+            if (clickedImage) {
+                clickedImage.classList.add('border-success');
+                clickedImage.classList.add('selected-image');
+            }
+
+            // Store selected image filename in hidden input
+            let hiddenInput = document.querySelector('#editForm input[name="selected_image"]');
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selected_image';
+                editForm.appendChild(hiddenInput);
+            }
+            hiddenInput.value = filename;
+
+            console.log('Selected image:', filename);
+        }
+    </script>
     <script>
         $(document).ready(function() {
             $('.datatable').DataTable({
@@ -634,205 +664,449 @@
         });
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const pageDropdown = document.getElementById('pageDropdown');
-            const tableBody = document.getElementById('sectionsTableBody');
-            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-            const editForm = document.getElementById('editForm');
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pageDropdown = document.getElementById('pageDropdown');
+        const tableBody = document.getElementById('sectionsTableBody');
+        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+        const editForm = document.getElementById('editForm');
 
-            // Handle page dropdown change
-            pageDropdown.addEventListener('change', function() {
-                const pageId = this.value;
+        // Handle page dropdown change
+        pageDropdown.addEventListener('change', function() {
+            const pageId = this.value;
 
-                if (!pageId) {
+            if (!pageId) {
+                tableBody.innerHTML = '';
+                return;
+            }
+
+            fetch(`/admin/pages/${pageId}/sections`)
+                .then(response => response.json())
+                .then(data => {
                     tableBody.innerHTML = '';
-                    return;
-                }
 
-                fetch(`/admin/pages/${pageId}/sections`)
-                    .then(response => response.json())
-                    .then(data => {
-                        tableBody.innerHTML = '';
-
-                        if (data.length === 0) {
-                            tableBody.innerHTML =
-                                '<tr><td colspan="5" class="text-center">No sections found.</td></tr>';
-                            return;
-                        }
-
-                        data.forEach(section => {
-                            const row = `
-                        <tr>
-                            <td><h6 class="mb-0">${section.sectionType.type}</h6></td>
-                            <td>${section.sectionTemplate.style_variant}</td>
-                            <td>${section.order}</td>
-                            <td class="action-btns">
-                                <button class="btn btn-sm btn-outline-primary edit-section-btn"
-                                   
-                                    data-pageid="${section.id}"
-                                    data-templateid="${section.sectionTemplate.template_id}"
-                                    data-fields='${section.sectionTemplate.fields}'
-                                    title="Edit">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" data-id="${section.id}" title="Delete">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                            tableBody.insertAdjacentHTML('beforeend', row);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching sections:', error);
+                    if (data.length === 0) {
                         tableBody.innerHTML =
-                            '<tr><td colspan="5" class="text-danger text-center">Failed to load sections.</td></tr>';
-                    });
-            });
-
-            // Handle edit button click
-            tableBody.addEventListener('click', function(e) {
-                const editBtn = e.target.closest('.edit-section-btn');
-                if (!editBtn) return;
-
-                const sectionId = editBtn.getAttribute('data-sectionid');
-                const pageId = editBtn.getAttribute('data-pageid');
-                const templateId = editBtn.getAttribute('data-templateid');
-                const fieldsData = editBtn.getAttribute('data-fields');
-
-                let fields;
-                try {
-                    fields = JSON.parse(fieldsData);
-                    console.log('Total objects in array:', fields.length);
-
-                    // Har {} object ko access karo
-                    for (let i = 0; i < fields.length; i++) {
-                        console.log(`Object ${i}:`, fields[i]);
-                        console.log(`  key: ${fields[i].key}`);
-                        console.log(`  label: ${fields[i].label}`);
-                        console.log(`  type: ${fields[i].type}`);
+                            '<tr><td colspan="5" class="text-center">No sections found.</td></tr>';
+                        return;
                     }
 
-                } catch (err) {
-                    console.error('JSON parse error:', err);
-                    fields = [];
-                }
+                    data.forEach(section => {
+                        const row = `
+                    <tr>
+                        <td><h6 class="mb-0">${section.sectionType.type}</h6></td>
+                        <td>${section.sectionTemplate.style_variant}</td>
+                        <td>${section.order}</td>
+                        <td class="action-btns">
+                            <button class="btn btn-sm btn-outline-primary edit-section-btn"
+                                data-pageid="${section.id}"
+                                data-templateid="${section.sectionTemplate.template_id}"
+                                data-fields='${section.sectionTemplate.fields}'
+                                title="Edit">
+                                <i class="mdi mdi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" data-id="${section.id}" title="Delete">
+                                <i class="mdi mdi-delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                        tableBody.insertAdjacentHTML('beforeend', row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching sections:', error);
+                    tableBody.innerHTML =
+                        '<tr><td colspan="5" class="text-danger text-center">Failed to load sections.</td></tr>';
+                });
+        });
 
-                editForm.innerHTML = '';
+        tableBody.addEventListener('click', function(e) {
+            const editBtn = e.target.closest('.edit-section-btn');
+            if (!editBtn) return;
 
-                // Add hidden inputs
-                editForm.insertAdjacentHTML('beforeend', `
-                <input type="hidden" name="section_id" value="${sectionId}">
-                <input type="hidden" name="page_id" value="${pageId}">
+            const pageSectionId = editBtn.getAttribute('data-pageid');
+            const templateId = editBtn.getAttribute('data-templateid');
+            const fieldsData = editBtn.getAttribute('data-fields');
+
+            let fields;
+            try {
+                fields = JSON.parse(fieldsData);
+                console.log('Parsed fields:', fields);
+            } catch (err) {
+                console.error('JSON parse error:', err);
+                fields = [];
+            }
+
+            editForm.innerHTML = '';
+
+            // Add hidden inputs for metadata
+            editForm.insertAdjacentHTML('beforeend', `
+                <input type="hidden" name="page_section_id" value="${pageSectionId}">
                 <input type="hidden" name="template_id" value="${templateId}">
             `);
 
-                // Har {} object par loop lagao
-                if (Array.isArray(fields) && fields.length > 0) {
-                    fields.forEach(fieldObject => {
-                        // fieldObject = {} object jo ki {key: "...", label: "...", type: "..."}
-                        const key = fieldObject.key; // "headline", "description", "image"
-                        const label = fieldObject.label; // "Headline", "Description", "Image"  
-                        const type = fieldObject.type; // "text", "textarea", "file"
-
-                        console.log('Creating field:', {
-                            key,
-                            label,
-                            type
-                        });
-
-                        if (type === 'textarea') {
-                            const fieldHTML = `
-                            <div class="mb-3">
-                                <label for="${key}" class="form-label">${label}</label>
-                                <textarea class="form-control" id="${key}" name="${key}" rows="3"></textarea>
-                            </div>
-                        `;
-                            editForm.insertAdjacentHTML('beforeend', fieldHTML);
-                        } else if (type === 'file') {
-                            const fieldHTML = `
-                            <div class="mb-3">
-                                <label for="${key}" class="form-label">${label}</label>
-                                <input type="file" class="form-control" id="${key}" name="${key}">
-                            </div>
-                        `;
-                            editForm.insertAdjacentHTML('beforeend', fieldHTML);
-                        } else if (type === 'button') {
-                            // Agar type button hai toh button show karo
-                            const fieldHTML = `
-                                <div class="mb-3">
-                                    <button type="button" class="btn btn-primary" id="${key}">${label}</button>
-                                </div>
-                            `;
-                            editForm.insertAdjacentHTML('beforeend', fieldHTML);
-                        } else {
-                            const fieldHTML = `
-                            <div class="mb-3">
-                                <label for="${key}" class="form-label">${label}</label>
-                                <input type="${type}" class="form-control" id="${key}" name="${key}">
-                            </div>
-                        `;
-                            editForm.insertAdjacentHTML('beforeend', fieldHTML);
-                        }
-
-                    });
-                } else {
-                    editForm.insertAdjacentHTML('beforeend', `
-                    <div class="alert alert-info">No editable fields available for this template.</div>
-                `);
-                }
-                // Add static "Choose Existing Image" button
-                editForm.insertAdjacentHTML('beforeend', `
-                            <div class="mb-3">
-                                <button type="button" class="btn btn-secondary" id="chooseImageBtn"
-                                data-bs-toggle="modal"  data-bs-target="#imageModal">Choose Existing Image</button>
-                            </div>
-                        `);
-
-                // Show modal
-                editModal.show();
-            });
-
-            // Handle form submission
-            editForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-
-                // Convert FormData to JSON
-                const data = {};
-                formData.forEach((value, key) => {
-                    data[key] = value;
+            // Fetch existing data from database
+            fetch(`/admin/pages/sections/${pageSectionId}/fields`)
+                .then(response => response.json())
+                .then(existingData => {
+                    console.log('Existing data:', existingData);
+                    populateEditForm(fields, existingData, pageSectionId);
+                    editModal.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching existing data:', error);
+                    // If error, show empty form
+                    populateEditForm(fields, [], pageSectionId);
+                    editModal.show();
                 });
-
-                // Send update request
-                fetch('/admin/sections/update', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            editModal.hide();
-                            // Refresh the table
-                            pageDropdown.dispatchEvent(new Event('change'));
-                        } else {
-                            alert('Error updating section: ' + result.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error updating section:', error);
-                        alert('Failed to update section');
-                    });
-            });
         });
 
+        // Function to populate edit form with existing data
+        function populateEditForm(fields, existingData, pageSectionId) {
+            editForm.innerHTML = '';
 
+            // Add hidden inputs for metadata
+            editForm.insertAdjacentHTML('beforeend', `
+                <input type="hidden" name="page_section_id" value="${pageSectionId}">
+            `);
+
+            if (Array.isArray(fields) && fields.length > 0) {
+                fields.forEach((fieldObject, index) => {
+                    const key = fieldObject.key;
+                    const label = fieldObject.label;
+                    const type = fieldObject.type;
+
+                    console.log(`Creating field ${index}:`, { key, label, type });
+
+                    // Find existing value for this field
+                    const existingField = existingData.find(field => field.field_key === key);
+                    const existingValue = existingField ? existingField.field_value : '';
+
+                    // Hidden fields for field metadata
+                    const metadataHTML = `
+                        <input type="hidden" name="field_key[${index}]" value="${key}">
+                        <input type="hidden" name="field_label[${index}]" value="${label}">
+                        <input type="hidden" name="field_type[${index}]" value="${type}">
+                    `;
+                    editForm.insertAdjacentHTML('beforeend', metadataHTML);
+
+                    // Create visible form fields based on type
+                    if (type === 'textarea') {
+                        const fieldHTML = `
+                        <div class="mb-3">
+                            <label for="field_value_${index}" class="form-label">${label}</label>
+                            <textarea class="form-control" id="field_value_${index}" name="field_value[${index}]" rows="3">${existingValue}</textarea>
+                        </div>
+                    `;
+                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                    } else if (type === 'file') {
+                        // Show existing image if available
+                        const existingImageHTML = existingValue ? `
+                            <div class="mb-2">
+                                <small class="text-muted d-block mb-1">Current image:</small>
+                               <img src="/storage/${existingValue}" alt="${label}" class="img-thumbnail" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+                            </div>
+                        ` : '<small class="text-muted">No image uploaded</small>';
+                        
+                        const fieldHTML = `
+                        <div class="mb-3">
+                            <label for="field_value_${index}" class="form-label">${label}</label>
+                            ${existingImageHTML}
+                            <input type="file" class="form-control mt-2" id="field_value_${index}" name="field_value[${index}]" accept="image/*">
+                            <small class="text-muted">Leave empty to keep current image</small>
+                        </div>
+                    `;
+                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                    } else if (type === 'button') {
+                        const fieldHTML = `
+                        <div class="mb-3">
+                            <label class="form-label">${label}</label>
+                            <div>
+                                <button type="button" class="btn btn-primary" id="field_value_${index}">${label}</button>
+                                <input type="hidden" name="field_value[${index}]" value="${existingValue || label}">
+                            </div>
+                        </div>
+                    `;
+                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                    } else if (type === 'list' && Array.isArray(fieldObject.fields)) {
+                        createListField(fieldObject, index, existingValue);
+                    } else {
+                        const fieldHTML = `
+                        <div class="mb-3">
+                            <label for="field_value_${index}" class="form-label">${label}</label>
+                            <input type="${type}" class="form-control" id="field_value_${index}" name="field_value[${index}]" value="${existingValue}">
+                        </div>
+                    `;
+                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
+                    }
+                });
+            } else {
+                editForm.insertAdjacentHTML('beforeend', `
+                <div class="alert alert-info">No editable fields available for this template.</div>
+            `);
+            }
+        }
+
+        // Function to create list field with existing data
+        function createListField(fieldObject, index, existingValue) {
+            const key = fieldObject.key;
+            const label = fieldObject.label;
+            
+            const listContainer = document.createElement('div');
+            listContainer.className = 'mb-3 border p-3 rounded';
+            listContainer.id = `${key}-container`;
+
+            const labelEl = document.createElement('label');
+            labelEl.textContent = label;
+            labelEl.className = 'form-label d-block mb-2 fw-bold';
+            listContainer.appendChild(labelEl);
+
+            const itemsWrapper = document.createElement('div');
+            itemsWrapper.className = 'list-items';
+            listContainer.appendChild(itemsWrapper);
+
+            const addButton = document.createElement('button');
+            addButton.type = 'button';
+            addButton.className = 'btn btn-success btn-sm mb-2';
+            addButton.textContent = 'Add Item';
+            listContainer.appendChild(addButton);
+
+            editForm.appendChild(listContainer);
+
+            let itemCount = 0;
+
+            // Parse existing list data
+            let existingListData = [];
+            if (existingValue) {
+                try {
+                    existingListData = JSON.parse(existingValue);
+                } catch (e) {
+                    console.error('Error parsing list data:', e);
+                }
+            }
+
+            // Function to create list card
+            function createListCard(itemData = null) {
+                const card = document.createElement('div');
+                card.className = 'card p-3 mb-2 position-relative';
+
+                // Hidden input for list item count
+                const itemIndexInput = document.createElement('input');
+                itemIndexInput.type = 'hidden';
+                itemIndexInput.name = `list_item_index[${index}][]`;
+                itemIndexInput.value = itemCount;
+                card.appendChild(itemIndexInput);
+
+                fieldObject.fields.forEach((subField, subIndex) => {
+                    const subKey = subField.key;
+                    const subLabel = subField.label;
+                    const subType = subField.type;
+
+                    const fieldGroup = document.createElement('div');
+                    fieldGroup.className = 'mb-2';
+
+                    const fieldLabel = document.createElement('label');
+                    fieldLabel.textContent = subLabel;
+                    fieldLabel.className = 'form-label small';
+
+                    // Hidden metadata for sub-fields
+                    const subMetadataHTML = `
+                        <input type="hidden" name="list_field_key[${index}][${itemCount}][${subIndex}]" value="${subKey}">
+                        <input type="hidden" name="list_field_label[${index}][${itemCount}][${subIndex}]" value="${subLabel}">
+                        <input type="hidden" name="list_field_type[${index}][${itemCount}][${subIndex}]" value="${subType}">
+                    `;
+                    fieldGroup.insertAdjacentHTML('beforeend', subMetadataHTML);
+
+                    let input;
+                    let existingSubValue = '';
+                    
+                    // Get existing value for this sub-field
+                    if (itemData) {
+                        if (typeof itemData[subKey] === 'object' && itemData[subKey] !== null) {
+                            existingSubValue = itemData[subKey].value || '';
+                        } else {
+                            existingSubValue = itemData[subKey] || '';
+                        }
+                    }
+
+                    if (subType === 'textarea') {
+                        input = document.createElement('textarea');
+                        input.className = 'form-control';
+                        input.rows = 2;
+                        input.value = existingSubValue;
+                    } else if (subType === 'file') {
+                        // For file fields in list, show existing image if available
+                        if (existingSubValue) {
+                            const existingImageHTML = `
+                                <div class="mb-2">
+                                    <small class="text-muted d-block mb-1">Current image:</small>
+                                    <img src="/storage/${existingSubValue}" alt="${subLabel}" class="img-thumbnail" style="max-width: 80px; max-height: 80px; object-fit: cover;">
+                                </div>
+                            `;
+                            fieldGroup.insertAdjacentHTML('beforeend', existingImageHTML);
+                        }
+                        
+                        input = document.createElement('input');
+                        input.type = 'file';
+                        input.className = 'form-control';
+                        input.accept = 'image/*';
+                        
+                        if (existingSubValue) {
+                            const helpText = document.createElement('small');
+                            helpText.className = 'text-muted d-block mt-1';
+                            helpText.textContent = 'Leave empty to keep current image';
+                            fieldGroup.appendChild(helpText);
+                        }
+                    } else {
+                        input = document.createElement('input');
+                        input.type = subType;
+                        input.className = 'form-control';
+                        input.value = existingSubValue;
+                    }
+                    
+                    input.name = `list_field_value[${index}][${itemCount}][${subIndex}]`;
+                    input.placeholder = subLabel;
+
+                    fieldGroup.appendChild(fieldLabel);
+                    fieldGroup.appendChild(input);
+                    card.appendChild(fieldGroup);
+                });
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'btn btn-danger btn-sm position-absolute top-0 end-0 m-2';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.onclick = () => card.remove();
+                card.appendChild(deleteBtn);
+
+                itemsWrapper.appendChild(card);
+                itemCount++;
+            }
+
+            // Create cards for existing data
+            if (existingListData.length > 0) {
+                existingListData.forEach(itemData => {
+                    createListCard(itemData);
+                });
+            } else {
+                // Create one empty card if no existing data
+                createListCard();
+            }
+
+            // Add new card on button click
+            addButton.addEventListener('click', () => createListCard());
+        }
+
+        // Handle form submission
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            // Check if there are any files
+            let hasFiles = false;
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    hasFiles = true;
+                    break;
+                }
+            }
+
+            if (hasFiles) {
+                // File upload - use FormData
+                fetch('/admin/pages/section-update', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        editModal.hide();
+                        pageDropdown.dispatchEvent(new Event('change'));
+                         Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: "Section fields updated successfully!",
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                         Swal.fire({
+                            toast: true,
+                            icon: 'error',
+                            title: result.message || "Failed to update section",
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating section:', error);
+                    alert('Failed to update section');
+                });
+            } else {
+                // No files - use FormData but convert to proper format
+                const data = new FormData();
+                
+                // Convert all form data to ensure proper array handling
+                const formElements = editForm.elements;
+                for (let element of formElements) {
+                    if (element.name && element.value) {
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            if (element.checked) {
+                                data.append(element.name, element.value);
+                            }
+                        } else {
+                            data.append(element.name, element.value);
+                        }
+                    }
+                }
+
+                fetch('/admin/pages/section-update', {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        editModal.hide();
+                        pageDropdown.dispatchEvent(new Event('change'));
+                         Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: "page Section updated successfully!",
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                         Swal.fire({
+                            toast: true,
+                            icon: 'error',
+                            title: result.message || "Failed to update section",
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating section:', error);
+                    alert('Failed to update section');
+                });
+            }
+        });
+
+        // Delete section handler
         document.addEventListener('click', function(e) {
             if (e.target.closest('.btn-outline-danger')) {
                 const button = e.target.closest('.btn-outline-danger');
@@ -868,7 +1142,6 @@
                                 showConfirmButton: false,
                                 timer: 3000
                             });
-                            ss
                         }
                     })
                     .catch(err => {
@@ -877,34 +1150,6 @@
                     });
             }
         });
-    </script>
-
-    <script>
-        function selectImage(imageUrl, filename) {
-            // Remove 'selected' class from all images
-            document.querySelectorAll('.image-card img').forEach(img => {
-                img.classList.remove('border-success');
-                img.classList.remove('selected-image');
-            });
-
-            // Highlight selected image
-            const clickedImage = document.querySelector(`img[onclick*="${filename}"]`);
-            if (clickedImage) {
-                clickedImage.classList.add('border-success');
-                clickedImage.classList.add('selected-image');
-            }
-
-            // Store selected image filename in hidden input
-            let hiddenInput = document.querySelector('#editForm input[name="selected_image"]');
-            if (!hiddenInput) {
-                hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'selected_image';
-                editForm.appendChild(hiddenInput);
-            }
-            hiddenInput.value = filename;
-
-            console.log('Selected image:', filename);
-        }
-    </script>
+    });
+</script>
 @endsection

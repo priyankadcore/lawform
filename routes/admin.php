@@ -52,15 +52,15 @@ Route::name('admin.')->group(function () {
         // Route::get('/list', 'list')->name('list');
         Route::post('/', 'store')->name('store');
         Route::put('/{id}', 'pageUpdate')->name('update');
-        // Route::put('/{id}', 'template_update')->name('update');
+        Route::post('/section-update', 'updateSectionFields')->name('section-update');
         Route::delete('/sections/{id}', 'deletePageSection')->name('sections.delete');
         Route::get('/get-templates/{section_type_id}', 'getTemplates')->name('getTemplates');
         Route::post('/section-add', 'section_add')->name('section-add');
         Route::get('/{id}/sections', 'getSections')->name('sections');
         Route::delete('/delete/{id}', 'destroyPage')->name('destroyPage');
-    
-      
+        Route::get('sections/{pageSectionId}/fields', 'getSectionFields')->name('sections.fields');
     });
+
      Route::controller(PagesController::class)->prefix('pages-list')->name('pages-list.')->group(function () {
         Route::get('/', 'list')->name('list');
     });
@@ -70,6 +70,7 @@ Route::name('admin.')->group(function () {
         Route::post('/', 'store')->name('store');
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
+   
 
 
 
