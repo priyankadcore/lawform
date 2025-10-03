@@ -7,7 +7,7 @@
         <div class="user-sidebar text-center">
             <div class="dropdown">
                 <div class="user-img">
-                    <h4 class="mt-3 font-size-16 text-white"> Admin dashboard</h4>
+                    <h4 class="mt-3 font-size-16 text-white"> Admin Dashboard</h4>
                 </div>
 
             </div>

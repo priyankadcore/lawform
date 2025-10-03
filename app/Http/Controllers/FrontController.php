@@ -22,7 +22,7 @@ class FrontController extends Controller
         // $socialLinks = json_decode($settings->social_links, true) ?? [];
         // $blogs = Blog::with('author')->where('status', 1)->take(3)->get();
 
-        return view('index');
+        return view('frontend.index');
     }
     public function second()
     {

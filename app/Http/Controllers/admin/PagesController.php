@@ -18,7 +18,7 @@ class PagesController extends Controller
     // {
     //     $pages = Page::all();
     //     $templates = SectionTemplate::all();
-    //     $sectionTypes = SectionType::all();
+    //     $result = PageSectionFields::where('page_section_id',pageSectionId)->get();
     //     $PageSection = PageSection::all();
     //     return view('admin.pages.index', compact('pages','sectionTypes'));
     // }
@@ -202,119 +202,272 @@ class PagesController extends Controller
 
     
 
-    //  update section fields functions
+//    public function updateSectionFields(Request $request)
+//     {
+//         $pageSectionId = $request->input('page_section_id');
+    
+//         $fieldKeys = $request->input('field_key', []);
+//         $fieldLabels = $request->input('field_label', []);
+//         $fieldTypes = $request->input('field_type', []);
+//         $fieldValues = $request->input('field_value', []);
+
+//         if (!$pageSectionId ) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'Invalid page section ID.'
+//             ]);
+//         }
+
+//         try {
+
+//             $savedFields = [];
+//             foreach ($fieldKeys as $index => $fieldKey) {
+//                 $fieldLabel = $fieldLabels[$index] ?? '';
+//                 $fieldType = $fieldTypes[$index] ?? '';
+//                 $fieldValue = $fieldValues[$index] ?? '';
+                
+//                 // Handle file upload
+//                 if ($fieldType === 'file' && $request->hasFile("field_value.$index")) {
+//                     $file = $request->file("field_value.$index");
+//                     $fileName = time() . '_' . $fieldKey . '_' . $file->getClientOriginalName();
+//                     $filePath = $file->storeAs('public/section_images', $fileName);
+//                     $fieldValue = 'section_images/' . $fileName; // Store relative path
+//                 }
+                
+//                 $existingField = PageSectionFields::where('page_section_id', $pageSectionId)
+//                     ->where('field_key', $fieldKey)
+//                     ->first();
+
+//                 if ($existingField) {
+//                     // Update existing field
+//                     $existingField->update([
+//                         'field_label' => $fieldLabel,
+//                         'field_type' => $fieldType,
+//                         'field_value' => $fieldValue
+//                     ]);
+//                     $savedFields[] = $existingField;
+//                 } else {
+//                     // Create new field
+//                     $pageSectionField = PageSectionFields::create([
+//                         'page_section_id' => $pageSectionId,
+//                         'field_key' => $fieldKey,
+//                         'field_label' => $fieldLabel,
+//                         'field_type' => $fieldType,
+//                         'field_value' => $fieldValue
+//                     ]);
+//                     $savedFields[] = $pageSectionField;
+//                 }
+//             }
+
+//             return response()->json([
+//                 'success' => true,
+//                 'message' => 'Section fields updated successfully!',
+//                 'saved_fields' => count($savedFields)
+//             ]);
+
+//         } catch (\Exception $e) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'Error updating section fields: ' . $e->getMessage()
+//             ]);
+//         }
+//     }
+
+public function getSectionFields($pageSectionId)
+    {
+        try {
+            $fields = PageSectionFields::where('page_section_id', $pageSectionId)
+                ->get()
+                ->map(function($field) {
+                    return [
+                        'field_key' => $field->field_key,
+                        'field_label' => $field->field_label,
+                        'field_type' => $field->field_type,
+                        'field_value' => $field->field_value
+                    ];
+                });
+
+            return response()->json($fields);
+
+        } catch (\Exception $e) {
+            return response()->json([], 500);
+        }
+    }
+
     public function updateSectionFields(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'page_section_id' => 'required|integer|exists:page_sections,id',
-        ]);
+        $pageSectionId = $request->input('page_section_id');
 
-        if ($validator->fails()) {
+        $fieldKeys = $request->input('field_key', []);
+        $fieldLabels = $request->input('field_label', []);
+        $fieldTypes = $request->input('field_type', []);
+        $fieldValues = $request->input('field_value', []);
+
+        // List fields data
+        $listItemIndexes = $request->input('list_item_index', []);
+        $listFieldKeys = $request->input('list_field_key', []);
+        $listFieldLabels = $request->input('list_field_label', []);
+        $listFieldTypes = $request->input('list_field_type', []);
+        $listFieldValues = $request->input('list_field_value', []);
+
+        if (!$pageSectionId) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Invalid page section ID.'
+            ]);
         }
 
-        DB::beginTransaction();
         try {
-            $pageSectionId = $request->input('page_section_id');
-            $formData = $request->except(['_token', 'page_section_id']);
+            $savedFields = [];
+            
+            // Process each field
+            foreach ($fieldKeys as $index => $fieldKey) {
+                $fieldLabel = $fieldLabels[$index] ?? '';
+                $fieldType = $fieldTypes[$index] ?? '';
+                $fieldValue = $fieldValues[$index] ?? '';
+                
+                // Check if field already exists
+                $existingField = PageSectionFields::where('page_section_id', $pageSectionId)
+                    ->where('field_key', $fieldKey)
+                    ->first();
 
-            foreach ($formData as $fieldKey => $fieldValue) {
-                if (is_array($fieldValue)) {
-                    $this->processArrayField($pageSectionId, $fieldKey, $fieldValue);
+                // Handle different field types
+                if ($fieldType === 'file' && $request->hasFile("field_value.$index")) {
+                    // File upload handling - new file selected
+                    $file = $request->file("field_value.$index");
+                    
+                    // Generate unique filename
+                    $fileName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                    
+                    // Store in public disk
+                    $filePath = $file->storeAs('section_images', $fileName, 'public');
+                    
+                    // Save only the relative path for database
+                    $fieldValue = 'section_images/' . $fileName;
+                    
+                    // Debug log
+                    \Log::info("File uploaded: ", [
+                        'original_name' => $file->getClientOriginalName(),
+                        'stored_path' => $filePath,
+                        'field_value' => $fieldValue
+                    ]);
+                    
+                } elseif ($fieldType === 'file' && $existingField) {
+                    // If it's a file field and no new file was uploaded, keep the existing value
+                    $fieldValue = $existingField->field_value;
+                    
+                } elseif ($fieldType === 'list') {
+                    // Handle list type field - store as JSON
+                    $listData = $this->processListFieldData(
+                        $index, 
+                        $listItemIndexes, 
+                        $listFieldKeys, 
+                        $listFieldLabels, 
+                        $listFieldTypes, 
+                        $listFieldValues,
+                        $request // Add request parameter for file handling
+                    );
+                    
+                    $fieldValue = json_encode($listData, JSON_PRETTY_PRINT);
+                }
+                
+                if ($existingField) {
+                    // Update existing field
+                    $existingField->update([
+                        'field_label' => $fieldLabel,
+                        'field_type' => $fieldType,
+                        'field_value' => $fieldValue
+                    ]);
+                    $savedFields[] = $existingField;
                 } else {
-                    $this->processSingleField($pageSectionId, $fieldKey, $fieldValue);
+                    // Create new field
+                    $pageSectionField = PageSectionFields::create([
+                        'page_section_id' => $pageSectionId,
+                        'field_key' => $fieldKey,
+                        'field_label' => $fieldLabel,
+                        'field_type' => $fieldType,
+                        'field_value' => $fieldValue
+                    ]);
+                    $savedFields[] = $pageSectionField;
                 }
             }
-
-            DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Section data saved successfully!'
+                'message' => 'Section fields updated successfully!',
+                'saved_fields' => count($savedFields)
             ]);
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Section update error: ' . $e->getMessage());
-            
+            \Log::error('Error updating section fields: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to save section data: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    private function processSingleField($pageSectionId, $fieldKey, $fieldValue)
-    {
-        $existingRecord = PageSectionField::where([
-            'page_section_id' => $pageSectionId,
-            'field_key' => $fieldKey
-        ])->first();
-
-        if ($existingRecord) {
-            $existingRecord->update([
-                'field_value' => $fieldValue ?? '',
-                'field_type' => $this->detectFieldType($fieldKey)
-            ]);
-        } else {
-            PageSectionField::create([
-                'page_section_id' => $pageSectionId,
-                'field_key' => $fieldKey,
-                'field_label' => $this->generateFieldLabel($fieldKey),
-                'field_type' => $this->detectFieldType($fieldKey),
-                'field_value' => $fieldValue ?? ''
+                'message' => 'Error updating section fields: ' . $e->getMessage()
             ]);
         }
     }
 
-    private function processArrayField($pageSectionId, $fieldKey, $fieldArray)
+    private function processListFieldData($fieldIndex, $listItemIndexes, $listFieldKeys, $listFieldLabels, $listFieldTypes, $listFieldValues, $request = null)
     {
-        PageSectionField::where('page_section_id', $pageSectionId)
-            ->where('field_key', 'like', $fieldKey . '[%')
-            ->delete();
-
-        foreach ($fieldArray as $subKey => $values) {
-            if (is_array($values)) {
-                foreach ($values as $index => $value) {
-                    PageSectionField::create([
-                        'page_section_id' => $pageSectionId,
-                        'field_key' => $fieldKey . '[' . $subKey . '][' . $index . ']',
-                        'field_label' => $this->generateFieldLabel($subKey),
-                        'field_type' => $this->detectFieldType($subKey),
-                        'field_value' => $value ?? ''
-                    ]);
+        $listData = [];
+        
+        // Check if we have data for this field index
+        if (!isset($listItemIndexes[$fieldIndex]) || !isset($listFieldValues[$fieldIndex])) {
+            return $listData;
+        }
+        
+        $itemIndexes = $listItemIndexes[$fieldIndex];
+        
+        foreach ($itemIndexes as $itemIndex) {
+            $itemData = [];
+            
+            // Get all sub-fields for this item
+            if (isset($listFieldKeys[$fieldIndex][$itemIndex])) {
+                $subFieldKeys = $listFieldKeys[$fieldIndex][$itemIndex];
+                $subFieldLabels = $listFieldLabels[$fieldIndex][$itemIndex] ?? [];
+                $subFieldTypes = $listFieldTypes[$fieldIndex][$itemIndex] ?? [];
+                $subFieldValues = $listFieldValues[$fieldIndex][$itemIndex] ?? [];
+                
+                // Process each sub-field in this item
+                foreach ($subFieldKeys as $subIndex => $subFieldKey) {
+                    $subFieldLabel = $subFieldLabels[$subIndex] ?? '';
+                    $subFieldType = $subFieldTypes[$subIndex] ?? '';
+                    $subFieldValue = $subFieldValues[$subIndex] ?? '';
+                    
+                    // Handle file uploads in list fields
+                    if ($subFieldType === 'file' && $request && $request->hasFile("list_field_value.$fieldIndex.$itemIndex.$subIndex")) {
+                        $file = $request->file("list_field_value.$fieldIndex.$itemIndex.$subIndex");
+                        
+                        // Generate unique filename
+                        $fileName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                        
+                        // Store in public disk
+                        $filePath = $file->storeAs('section_images', $fileName, 'public');
+                        
+                        // Save only the relative path for database
+                        $subFieldValue = 'section_images/' . $fileName;
+                        
+                        \Log::info("List field file uploaded: ", [
+                            'field_index' => $fieldIndex,
+                            'item_index' => $itemIndex,
+                            'sub_index' => $subIndex,
+                            'stored_path' => $filePath
+                        ]);
+                    }
+                    
+                    $itemData[$subFieldKey] = [
+                        'value' => $subFieldValue,
+                        'label' => $subFieldLabel,
+                        'type' => $subFieldType
+                    ];
                 }
             }
+            
+            if (!empty($itemData)) {
+                $listData[] = $itemData;
+            }
         }
+        
+        return $listData;
     }
-
-    private function generateFieldLabel($fieldKey)
-    {
-        $cleanKey = preg_replace('/\[.*?\]/', '', $fieldKey);
-        return ucwords(str_replace(['_', '-'], ' ', $cleanKey));
-    }
-
-    private function detectFieldType($fieldKey)
-    {
-        $key = strtolower($fieldKey);
-
-        if (str_contains($key, 'image') || str_contains($key, 'img') || str_contains($key, 'photo')) {
-            return 'file';
-        } elseif (str_contains($key, 'description') || str_contains($key, 'content') || str_contains($key, 'text')) {
-            return 'textarea';
-        } elseif (str_contains($key, 'email')) {
-            return 'email';
-        } elseif (str_contains($key, 'url') || str_contains($key, 'link')) {
-            return 'url';
-        } elseif (str_contains($key, 'phone') || str_contains($key, 'mobile')) {
-            return 'tel';
-        } else {
-            return 'text';
-        }
-    }
-    // end update section fields functions
 }

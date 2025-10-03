@@ -36,21 +36,10 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
     <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-
 </head>
 
 <body>
-    <!-- Page Wrap ===========================================-->
     <div id="wrap" class="home-1">
-
-
-        @include('layouts.topbar')
 
 
         @include('layouts.header')
@@ -59,12 +48,7 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
 
         @include('layouts.footer')
 
-        <!--======= RIGHTS =========-->
-        <div class="rights">
-            <div class="container">
-                <p class="font-montserrat">© 2015 Realtor. All rights reserved</p>
-            </div>
-        </div>
+     
     </div>
     <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
     <script src="{{ asset('js/wow.min.js') }}"></script>
@@ -79,9 +63,7 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
     <script src="{{ asset('js/google-map-home.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script type="text/javascript">
-        /*-----------------------------------------------------------------------------------*/
-        /*    PRICE RANGE
-        /*-----------------------------------------------------------------------------------*/
+
         $("#price-range").noUiSlider({
             range: {
                 'min': [0],

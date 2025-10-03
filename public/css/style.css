@@ -120,30 +120,7 @@ section {
 	overflow: hidden;
 	width: 100%;
 }
-/*=======================================================
-			BUTTON
-========================================================*/
-.btn {
-	background: #4caf50;
-	text-transform: uppercase;
-	color: #fff;
-	border-radius: 0px;
-	display: inline-block;
-	padding: 10px 30px;
-	margin: 0 auto;
-	margin-top: 15px;
-	font-weight: bold;
-	font-family: 'Montserrat', sans-serif;
-	-webkit-transition: all 0.4s ease-in-out;
-	-moz-transition: all 0.4s ease-in-out;
-	-o-transition: all 0.4s ease-in-out;
-	-ms-transition: all 0.4s ease-in-out;
-	transition: all 0.4s ease-in-out;
-}
-.btn:hover {
-	background: #ff5722;
-	color: #fff;
-}
+
 /*=======================================================
 			MARGIN 20px
 ========================================================*/
@@ -323,7 +300,6 @@ header:before {
 	content: "";
 	position: absolute;
 	width: 38%;
-	background: #f2f0f0;
 	height: 100%;
 	z-index: -1;
 }
@@ -346,18 +322,7 @@ header nav .ownmenu {
 .sticky-wrapper {
 	height: auto !important;
 }
-header nav li a {
-	line-height: 20px;
-	text-transform: uppercase;
-	color: #222222;
-	float: left;
-	font-size: 14px;
-	font-weight: 500;
-	font-size: 14px;
-	padding: 0 18px;
-	border-right: 1px dashed #ffffff;
-	padding-bottom: 25px;
-}
+
 header nav li {
 	padding-top: 22px;
 	margin-top: 20px;
@@ -4924,7 +4889,6 @@ footer button {
 	text-transform: uppercase;
 	line-height: 34px;
 	float: right;
-	margin-top: -34px;
 	position: relative;
 	z-index: 1;
 	border: none;
@@ -4955,7 +4919,6 @@ footer .social_icons a {
 	height: 35px;
 	width: 35px;
 	line-height: 35px;
-	color: #fff;
 }
 /*=======================================================
 			404 PAGES

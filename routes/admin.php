@@ -58,6 +58,7 @@ Route::name('admin.')->group(function () {
         Route::post('/section-add', 'section_add')->name('section-add');
         Route::get('/{id}/sections', 'getSections')->name('sections');
         Route::delete('/delete/{id}', 'destroyPage')->name('destroyPage');
+        Route::get('sections/{pageSectionId}/fields', 'getSectionFields')->name('sections.fields');
     });
 
      Route::controller(PagesController::class)->prefix('pages-list')->name('pages-list.')->group(function () {
@@ -69,6 +70,7 @@ Route::name('admin.')->group(function () {
         Route::post('/', 'store')->name('store');
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
+   
 
 
 

@@ -481,6 +481,7 @@
     
 @endsection
 
+
 @section('scripts')
     <script src="{{ asset('build/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('build/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>

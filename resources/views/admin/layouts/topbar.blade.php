@@ -11,19 +11,19 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
             <div class="navbar-brand-box">
                 <a href="{{ route('home') }}" target="_blank" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{ $logo }}" alt="" height="55" width="50%">
+                         <img src="{{ asset('images/cms.png') }}" alt="" height="30" width="40"> 
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ $logo }}" alt="" height="55" width="50%">
+                        <img src="{{ asset('images/cms.png') }}" alt="" height="55" >
                     </span>
                 </a>
 
                 <a href="{{ route('home') }}" target="_blank" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{ $logo }}" alt="" height="55" width="50%">
+                          <img src="{{ asset('images/cms.png') }}" alt="" height="30" width="40">>
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ $logo }}" alt="" height="55" width="50%">
+                         <img src="{{ asset('images/cms.png') }}" alt="" height="55" >
                     </span>
                 </a>
             </div>
