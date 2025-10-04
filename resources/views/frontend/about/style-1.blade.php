@@ -79,14 +79,15 @@
             padding: 80px 0;
         }
 
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+        .section-title-desgin {
+            font-size: 3.5rem !important;
+            margin-bottom: 15px !important;
             text-align: center;
             position: relative;
+            color : #4caf50;
         }
 
-        .section-title::after {
+        .section-title-desgin::after {
             content: '';
             position: absolute;
             width: 80px;
@@ -100,10 +101,10 @@
 
         .section-subtitle {
             text-align: center;
-            color: #aaaaaa;
-            font-size: 1.1rem;
+            color: #ffffffff !important;
+            font-size: 19px !important;
             max-width: 700px;
-            margin: 0 auto 50px;
+            margin: 0 auto 30px !important;
             line-height: 1.6;
         }
 
@@ -348,7 +349,7 @@
                 padding: 60px 0;
             }
 
-            .section-title {
+            .section-title-desgin {
                 font-size: 2rem;
             }
 
@@ -371,175 +372,34 @@
 </head>
 
 <body>
-    <!-- Hero Section -->
-    {{-- <section class="hero-section">
-        <div class="about-container">
-            <div class="hero-content">
-                <h1 class="hero-title">About Our Company</h1>
-                <p class="hero-subtitle">We are a team of passionate professionals dedicated to delivering exceptional
-                    solutions that drive success for our clients worldwide.</p>
-                <a href="#our-story" class="cta-button">Explore Our Journey</a>
-            </div>
-        </div>
-    </section> --}}
-
-    <!-- Our Story Section -->
-    {{-- <section id="our-story" class="section story-section">
-        <div class="about-container">
-            <h2 class="section-title">Our Story</h2>
-            <p class="section-subtitle">From humble beginnings to industry leadership, our journey has been defined by
-                innovation and commitment.</p>
-
-            <div class="story-content">
-                <div class="story-text">
-                    <h3>Building The Future Together</h3>
-                    <p>Founded in 2010, we started as a small team with a big vision: to transform the digital landscape
-                        through innovative solutions and exceptional service. What began as a startup in a garage has
-                        grown into a global company serving clients across 50+ countries.</p>
-                    <p>Our growth has been fueled by our commitment to quality, our passion for technology, and our
-                        unwavering focus on client success. We believe that great things happen when talented people
-                        come together with a shared purpose.</p>
-                    <p>Today, we continue to push boundaries, explore new technologies, and create solutions that make a
-                        real difference in people's lives and businesses.</p>
-                </div>
-                <div class="story-image">
-                    <i class="fas fa-rocket"></i>
-                </div>
-            </div>
-        </div>
-    </section> --}}
-
-    <!-- Mission & Vision Section -->
-    {{-- <section class="section mission-vision">
-        <div class="about-container">
-            <h2 class="section-title">Mission & Vision</h2>
-            <p class="section-subtitle">Our guiding principles that drive everything we do</p>
-
-            <div class="mv-cards">
-                <div class="mv-card">
-                    <div class="mv-icon">
-                        <i class="fas fa-bullseye"></i>
-                    </div>
-                    <h3>Our Mission</h3>
-                    <p>To empower businesses with innovative digital solutions that drive growth, efficiency, and
-                        competitive advantage in an ever-evolving technological landscape.</p>
-                </div>
-
-                <div class="mv-card">
-                    <div class="mv-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h3>Our Vision</h3>
-                    <p>To be the world's most trusted technology partner, recognized for our commitment to excellence,
-                        innovation, and positive impact on society.</p>
-                </div>
-
-                <div class="mv-card">
-                    <div class="mv-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h3>Our Promise</h3>
-                    <p>We deliver exceptional value through cutting-edge solutions, unparalleled support, and lasting
-                        partnerships built on trust and mutual success.</p>
-                </div>
-            </div>
-        </div>
-    </section> --}}
-
-    <!-- Team Section -->
-    {{-- <section class="section team-section">
-        <div class="about-container">
-            <h2 class="section-title">Meet Our Team</h2>
-            <p class="section-subtitle">The brilliant minds behind our success story</p>
-
-            <div class="team-members">
-                <div class="team-member">
-                    <div class="member-image">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="member-info">
-                        <h3>Sarah Johnson</h3>
-                        <p>CEO & Founder</p>
-                        <p class="bio">Visionary leader with 15+ years of experience in technology and business
-                            strategy.</p>
-                    </div>
-                </div>
-
-                <div class="team-member">
-                    <div class="member-image">
-                        <i class="fas fa-user-cog"></i>
-                    </div>
-                    <div class="member-info">
-                        <h3>Michael Chen</h3>
-                        <p>CTO</p>
-                        <p class="bio">Tech innovator specializing in AI, machine learning, and scalable
-                            architecture.</p>
-                    </div>
-                </div>
-
-                <div class="team-member">
-                    <div class="member-image">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <div class="member-info">
-                        <h3>Emily Rodriguez</h3>
-                        <p>Head of Design</p>
-                        <p class="bio">Creative director with a passion for user-centered design and brand
-                            storytelling.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> --}}
-
-
-
     <!-- Values Section -->
-    <section class="section values-section">
-        <div class="about-container">
-            <h2 class="section-title">About Our Company</h2>
-            <p class="section-subtitle">We are a team of passionate professionals dedicated to delivering exceptional
-                solutions that drive success for our clients worldwide.</p>
+   <section class="section values-section">
+    <div class="about-container">
+        <h2 class="section-title-desgin">{{ $fields['title'] ?? '' }}</h2>
+        <p class="section-subtitle">{{ $fields['short-description'] ?? '' }}</p>
 
-            <div class="values-grid">
-                <div class="value-card">
-                    <h3><i class="fas fa-lightbulb"></i> Innovation</h3>
-                    <p>We constantly push boundaries and explore new possibilities to deliver cutting-edge solutions
-                        that set industry standards.</p>
-                </div>
+        <div class="values-grid">
+            @php
+                $data = isset($fields['data']) ? json_decode($fields['data'], true) : [];
+                $icons = ['fas fa-lightbulb', 'fas fa-users', 'fas fa-shield-alt', 'fas fa-trophy', 'fas fa-heart', 'fas fa-hand-holding-heart'];
+            @endphp
 
-                <div class="value-card">
-                    <h3><i class="fas fa-users"></i> Collaboration</h3>
-                    <p>We believe in the power of teamwork and partnerships, both within our organization and with our
-                        clients.</p>
-                </div>
-
-                <div class="value-card">
-                    <h3><i class="fas fa-shield-alt"></i> Integrity</h3>
-                    <p>We conduct business with honesty, transparency, and ethical practices, building trust that lasts.
-                    </p>
-                </div>
-
-                <div class="value-card">
-                    <h3><i class="fas fa-trophy"></i> Excellence</h3>
-                    <p>We strive for the highest quality in everything we do, from our solutions to our customer
-                        service.</p>
-                </div>
-
-                <div class="value-card">
-                    <h3><i class="fas fa-heart"></i> Passion</h3>
-                    <p>We love what we do, and that passion fuels our creativity, dedication, and commitment to success.
-                    </p>
-                </div>
-
-                <div class="value-card">
-                    <h3><i class="fas fa-hand-holding-heart"></i> Responsibility</h3>
-                    <p>We are committed to making a positive impact on our community and environment through sustainable
-                        practices.</p>
-                </div>
-            </div>
+            @if(!empty($data))
+                @foreach($data as $index => $item)
+                    <div class="value-card">
+                        <h3>
+                            <i class="{{ $icons[$index] ?? 'fas fa-star' }}"></i> 
+                            {{ $item['title']['value'] ?? 'Default Title' }}
+                        </h3>
+                        <p>{{ $item['description']['value'] ?? 'Default description text.' }}</p>
+                    </div>
+                @endforeach
+            @else
+                <p style="text-align: center; color: #888;">No values data available.</p>
+            @endif
         </div>
-    </section>
+    </div>
+</section>
 
     <script>
         // Simple animation for stats counting

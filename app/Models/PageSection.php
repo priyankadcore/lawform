@@ -31,4 +31,8 @@ class PageSection extends Model
     {
         return $this->belongsTo(SectionTemplate::class);
     }
+    public function fields()
+    {
+        return $this->hasMany(PageSectionFields::class);
+    }
 }

@@ -60,7 +60,7 @@
         }
 
         .template-image-container {
-            height: 180px;
+          
             overflow: hidden;
             position: relative;
             border-bottom: 1px solid #e9ecef;
@@ -68,7 +68,7 @@
 
         .template-image {
             width: 100%;
-            height: 100%;
+            height: 130px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
@@ -524,8 +524,10 @@
                         <select class="form-select field-type" name="${fieldNamePrefix}[type]" required>
                             <option value="text" ${fieldData.type === 'text' ? 'selected' : ''}>Text</option>
                             <option value="textarea" ${fieldData.type === 'textarea' ? 'selected' : ''}>Textarea</option>
-                            <option value="image" ${fieldData.type === 'image' ? 'selected' : ''}>Image</option>
+                           
                             <option value="list" ${fieldData.type === 'list' ? 'selected' : ''}>List/Array</option>
+                            <option value="file" ${fieldData.type === 'file' ? 'selected' : ''}>File</option>
+                            <option value="button" ${fieldData.type === 'button' ? 'selected' : ''}>Button</option>
                         </select>
                     </div>
                     <div class="${isListType ? 'col-md-3' : 'col-md-1'} mb-2 d-flex align-items-end">

@@ -1,108 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Banner Design</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+
+        /* Background image with overlay */
+        body::before {
+            
         }
 
         .banner-container {
             width: 100%;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+          
             position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            
         }
 
         .banner-content {
             display: flex;
             align-items: center;
-            min-height: 500px;
+            min-height: 600px;
             position: relative;
             overflow: hidden;
         }
 
         .text-content {
             flex: 1;
-            padding: 60px;
+            padding: 70px 60px;
             z-index: 2;
             position: relative;
         }
 
         .visual-content {
             flex: 1;
-            height: 500px;
+            height: 600px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border-left: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .banner-badge {
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 600;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
         }
 
+        .banner-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .banner-badge:hover::before {
+            left: 100%;
+        }
+
+    
         .banner-title {
-            font-size: 3.2rem;
+            font-size: 3.5rem;
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 20px;
-            color: #2d3748;
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            margin-bottom: 25px;
+            color: #020202;
+            background: linear-gradient(135deg, #000000 0%, #005eff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .banner-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
         }
 
         .banner-subtitle {
-            font-size: 1.2rem;
-            color: #718096;
-            margin-bottom: 30px;
+            font-size: 20px;
+            color: #000000;
+            margin-bottom: 35px;
             line-height: 1.6;
-            max-width: 90%;
+            max-width: 100%;
+            font-weight: 400;
         }
 
         .banner-features {
             display: flex;
-            gap: 20px;
-            margin-bottom: 35px;
+            gap: 25px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
         }
 
         .feature {
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #4a5568;
+            gap: 12px;
+            color: #000000;
             font-weight: 500;
+            background: rgb(0 0 0 / 8%);
+            padding: 12px 22px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            border: 1px solid rgb(0 0 0 / 10%);
+        }
+        .feature:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(5, 29, 136, 0.15);
+            background: rgba(7, 40, 185, 0.12);
         }
 
         .feature i {
             color: #48bb78;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
 
         .cta-buttons {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
         }
 
@@ -110,28 +161,45 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 35px;
+            padding: 18px 40px;
             border-radius: 50px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
         }
 
         .btn-secondary {
             background: transparent;
             color: #667eea;
             border: 2px solid #667eea;
-            padding: 15px 35px;
+            padding: 18px 40px;
             border-radius: 50px;
             font-size: 1.1rem;
             font-weight: 600;
@@ -139,12 +207,30 @@
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: rgba(102, 126, 234, 0.1);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-secondary:hover::before {
+            width: 100%;
         }
 
         .btn-secondary:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
         }
 
         .floating-shapes {
@@ -190,8 +276,8 @@
         }
 
         .main-visual {
-            width: 400px;
-            height: 400px;
+            width: 420px;
+            height: 420px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
             animation: morphing 10s ease-in-out infinite;
@@ -200,9 +286,15 @@
             justify-content: center;
             color: white;
             font-size: 5rem;
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
             position: relative;
             z-index: 2;
+            transition: all 0.5s ease;
+        }
+
+        .main-visual:hover {
+            transform: scale(1.05);
+            box-shadow: 0 30px 60px rgba(102, 126, 234, 0.4);
         }
 
         .floating-elements {
@@ -214,13 +306,20 @@
         .floating-element {
             position: absolute;
             background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             animation: float-element 6s ease-in-out infinite;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+
+        .floating-element:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
         .element-1 {
@@ -243,13 +342,14 @@
 
         .floating-element i {
             color: #667eea;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
         }
 
         .floating-element span {
             font-weight: 600;
             color: #4a5568;
             white-space: nowrap;
+            font-size: 0.95rem;
         }
 
         @keyframes float {
@@ -300,25 +400,40 @@
 
         .stats {
             display: flex;
-            gap: 30px;
-            margin-top: 40px;
-            padding-top: 30px;
+            gap: 40px;
+            margin-top: 50px;
+            padding-top: 35px;
             border-top: 1px solid #e2e8f0;
         }
 
         .stat {
             text-align: center;
+            position: relative;
+        }
+
+        .stat::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -20px;
+            height: 100%;
+            width: 1px;
+            background: #e2e8f0;
+        }
+
+        .stat:last-child::after {
+            display: none;
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #667eea;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #718096;
             font-weight: 500;
         }
@@ -330,21 +445,28 @@
             }
 
             .text-content {
-                padding: 40px;
+                padding: 50px 40px;
             }
 
             .visual-content {
                 height: 400px;
                 width: 100%;
+                border-left: none;
+                border-top: 1px solid rgba(0, 0, 0, 0.03);
             }
 
             .main-visual {
-                width: 300px;
-                height: 300px;
+                width: 320px;
+                height: 320px;
             }
 
             .banner-title {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
+            }
+
+            .banner-title::after {
+                left: 50%;
+                transform: translateX(-50%);
             }
 
             .banner-subtitle {
@@ -366,28 +488,40 @@
 
         @media (max-width: 768px) {
             .banner-title {
-                font-size: 2rem;
+                font-size: 2.3rem;
             }
 
             .text-content {
-                padding: 30px 25px;
+                padding: 40px 30px;
             }
 
             .main-visual {
-                width: 250px;
-                height: 250px;
+                width: 280px;
+                height: 280px;
                 font-size: 4rem;
             }
 
             .stats {
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 20px;
+                gap: 25px;
             }
 
             .stat {
                 flex: 1;
                 min-width: 120px;
+            }
+
+            .stat::after {
+                display: none;
+            }
+
+            .banner-features {
+                gap: 15px;
+            }
+
+            .feature {
+                padding: 8px 15px;
             }
         }
     </style>
@@ -395,111 +529,44 @@
 
 <body>
     <div class="banner-container">
-        <div class="banner-content">
-            <div class="text-content">
-                <div class="banner-badge">
-                    <i class="fas fa-star"></i> Limited Time Offer
-                </div>
+    <div class="banner-content">
+        <div class="text-content">
 
-                <h1 class="banner-title">
-                    Transform Your Digital Experience Today
-                </h1>
+            <h1 class="banner-title">
+                {{ $fields['title'] ?? 'Transform Your Digital Experience Today' }}
+            </h1>
 
-                <p class="banner-subtitle">
-                    Discover our innovative solutions that help businesses grow faster, work smarter, and achieve
-                    remarkable results. Join thousands of satisfied customers worldwide.
-                </p>
+            <p class="banner-subtitle">
+                {{ $fields['description'] ?? 'Discover our innovative solutions that help businesses grow faster, work smarter, and achieve remarkable results. Join thousands of satisfied customers worldwide.' }}
+            </p>
 
-                <div class="banner-features">
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>No Credit Card Required</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Free 30-Day Trial</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>24/7 Expert Support</span>
-                    </div>
-                </div>
-
-                <div class="cta-buttons">
+            <div class="cta-buttons">
+                @if(isset($fields['buttontext-1']))
                     <button class="btn-primary">
-                        <i class="fas fa-rocket"></i> Get Started Free
+                        <i class="fas fa-rocket"></i> {{ $fields['buttontext-1'] }}
                     </button>
+                @endif
+                
+                @if(isset($fields['buttontext-2']))
                     <button class="btn-secondary">
-                        <i class="fas fa-play-circle"></i> Watch Demo
+                        <i class="fas fa-play-circle"></i> {{ $fields['buttontext-2'] }}
                     </button>
-                </div>
-
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-number">10K+</div>
-                        <div class="stat-label">Happy Customers</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">4.9/5</div>
-                        <div class="stat-label">Rating</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Support</div>
-                    </div>
-                </div>
+                @endif
             </div>
 
-            <div class="visual-content">
-                <img src="{{ asset('images/banner.png') }}" alt="Banner Image" style="    width: 500px;height: 500px;">
+        </div>
 
-
-
-            </div>
+        <div class="visual-content">
+            @if(isset($fields['image']))
+                <img src="{{ asset('storage/' . $fields['image']) }}" alt="Main Visual" class="main-visual">
+            @else
+                <div class="main-visual">
+                    <i class="fas fa-image"></i>
+                </div>
+            @endif
         </div>
     </div>
+</div>
 
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add some interactive animations
-            const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
-
-            buttons.forEach(button => {
-                button.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-3px)';
-                });
-
-                button.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
-            });
-
-            // Animate stats on load
-            const statNumbers = document.querySelectorAll('.stat-number');
-
-            statNumbers.forEach(stat => {
-                const originalText = stat.textContent;
-                stat.textContent = '0';
-
-                setTimeout(() => {
-                    let current = 0;
-                    const target = parseInt(originalText);
-                    const increment = target / 30;
-
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            stat.textContent = originalText;
-                            clearInterval(timer);
-                        } else {
-                            stat.textContent = Math.floor(current) + (originalText.includes(
-                                '/') ? '/5' : '+');
-                        }
-                    }, 50);
-                }, 1000);
-            });
-        });
-    </script> --}}
 </body>
-
 </html>

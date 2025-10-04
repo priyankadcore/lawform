@@ -796,7 +796,7 @@
                         const fieldHTML = `
                         <div class="mb-3">
                             <label for="field_value_${index}" class="form-label">${label}</label>
-                            <textarea class="form-control" id="field_value_${index}" name="field_value[${index}]" rows="3">${existingValue}</textarea>
+                            <textarea class="form-control" id="field_value_${index}" name="field_value[${index}]" rows="3" required >${existingValue}</textarea>
                         </div>
                     `;
                         editForm.insertAdjacentHTML('beforeend', fieldHTML);
@@ -818,24 +818,13 @@
                         </div>
                     `;
                         editForm.insertAdjacentHTML('beforeend', fieldHTML);
-                    } else if (type === 'button') {
-                        const fieldHTML = `
-                        <div class="mb-3">
-                            <label class="form-label">${label}</label>
-                            <div>
-                                <button type="button" class="btn btn-primary" id="field_value_${index}">${label}</button>
-                                <input type="hidden" name="field_value[${index}]" value="${existingValue || label}">
-                            </div>
-                        </div>
-                    `;
-                        editForm.insertAdjacentHTML('beforeend', fieldHTML);
                     } else if (type === 'list' && Array.isArray(fieldObject.fields)) {
                         createListField(fieldObject, index, existingValue);
                     } else {
                         const fieldHTML = `
                         <div class="mb-3">
                             <label for="field_value_${index}" class="form-label">${label}</label>
-                            <input type="${type}" class="form-control" id="field_value_${index}" name="field_value[${index}]" value="${existingValue}">
+                            <input type="${type}" class="form-control" id="field_value_${index}" name="field_value[${index}]" value="${existingValue}" required>
                         </div>
                     `;
                         editForm.insertAdjacentHTML('beforeend', fieldHTML);

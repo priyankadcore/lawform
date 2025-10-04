@@ -17,7 +17,7 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title">Menu</li>
+                
 
                 <li>
                     <a href="{{ route('admin.dashboard') }}" class="waves-effect">
@@ -54,6 +54,26 @@
                         <span>Uploads</span>
                     </a>
                 </li>
+
+               <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-th-large"></i>
+                        <span>Menu</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{ route('admin.navbar.index') }}">
+                                <span>Navigation</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.pages.index') }}">   
+                                <span>Footer</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
 
                 
 

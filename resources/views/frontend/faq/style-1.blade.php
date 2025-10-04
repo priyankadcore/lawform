@@ -49,7 +49,7 @@
             border-radius: 2px;
         }
 
-        .section-subtitle {
+        .section-subtitle12 {
             text-align: center;
             color: #444;
             font-size: 1.1rem;
@@ -271,98 +271,36 @@
 
 <body>
     <div class="faq-container">
-        <h2 class="section-title">Frequently Asked Questions</h2>
-        <p class="section-subtitle">Find quick answers to common questions about our products and services.</p>
+    <h2 class="section-title">{{ $fields['title'] ?? 'Frequently Asked Questions' }}</h2>
 
+    <div class="faq-list">
+        @php
+            $data = isset($fields['data']) ? json_decode($fields['data'], true) : [];
+        @endphp
 
-
-
-        <div class="faq-list">
-            <!-- FAQ Item 1 -->
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>How do I create an account on your platform?</h3>
-                    <i class="fas fa-chevron-down faq-icon"></i>
+        @if(!empty($data))
+            @foreach($data as $index => $item)
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>{{ $item['question']['value'] ?? 'Question not available' }}</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>{{ $item['answer']['value'] ?? 'Answer not available' }}</p>
+                    </div>
                 </div>
-                <div class="faq-answer">
-                    <p>Creating an account is simple! Click on the "Sign Up" button at the top right of our homepage,
-                        fill in your details including your name, email address, and create a secure password. You'll
-                        receive a confirmation email to verify your account.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 2 -->
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>What payment methods do you accept?</h3>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank
-                        transfers. All payments are processed securely through encrypted channels to ensure your
-                        financial information is protected.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 3 -->
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>Can I cancel my subscription at any time?</h3>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes, you can cancel your subscription at any time without any cancellation fees. When you cancel,
-                        you'll continue to have access to your subscription benefits until the end of your current
-                        billing cycle.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 4 -->
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>How can I reset my password?</h3>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>If you've forgotten your password, click on the "Forgot Password" link on the login page. Enter
-                        your email address, and we'll send you a link to reset your password. The link will expire in 24
-                        hours for security reasons.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 5 -->
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>Do you offer customer support?</h3>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes, we offer 24/7 customer support through live chat, email, and phone. Our support team is
-                        available to help you with any questions or issues you may encounter. Response time is typically
-                        under 5 minutes for live chat and within 2 hours for email.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 6 -->
-            <div class="faq-item">
-                <div class="faq-question">
-                    <h3>Is there a free trial available?</h3>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes, we offer a 14-day free trial for all new users. You'll have full access to all features
-                        during the trial period. No credit card is required to start your trial. You can upgrade to a
-                        paid plan at any time during or after the trial.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="faq-actions">
-            <button class="contact-btn">
-                <i class="fas fa-headset"></i> Contact Support
-            </button>
-        </div>
+            @endforeach
+        @else
+            <p>No FAQs available at the moment.</p>
+        @endif
     </div>
+
+    <div class="faq-actions">
+        <button class="contact-btn">
+            <i class="fas fa-headset"></i> Contact Support
+        </button>
+    </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -85,14 +85,14 @@
             gap: 20px;
         }
         
-        .search-icon {
+        .search-icons {
             color: #e0e0e0;
             font-size: 20px;
             cursor: pointer;
             transition: color 0.3s ease;
         }
         
-        .search-icon:hover {
+        .search-icons:hover {
             color: white;
         }
         
@@ -182,9 +182,7 @@
                 <div class="logo-text">Content<span>Manager</span></div>
             </div>
             
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
+            
             
             <nav id="main-nav">
                 <ul>
@@ -199,7 +197,7 @@
             </nav>
             
             <div class="nav-actions">
-                <div class="search-icon">
+                <div class="search-icons">
                     <i class="fas fa-search"></i>
                 </div>
                 <button class="sign-in-btn">Sign In</button>

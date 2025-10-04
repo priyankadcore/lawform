@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\PagesController;
 use App\Http\Controllers\Admin\UploadsController;
+use App\Http\Controllers\Admin\NavbarController;
 
 
 Route::name('admin.')->group(function () {
@@ -69,6 +70,13 @@ Route::name('admin.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->name('store');
         Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+     Route::controller(NavbarController::class)->prefix('navbar')->name('navbar.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        // Route::get('/{id}/edit', 'edit')->name('edit');
+        // Route::put('/{id}', 'template_update')->name('update');
+        // Route::delete('/{id}', 'template_destroy')->name('destroy');
     });
    
 

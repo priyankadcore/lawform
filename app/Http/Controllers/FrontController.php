@@ -3,27 +3,83 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Service;
-use App\Models\Slider;
-use App\Models\Setting;
-use App\Models\Property;
-use App\Models\TeamMember;
-use App\Models\Blog;
+use App\Models\Page;
+use App\Models\SectionType;
+use App\Models\SectionTemplate;
+use App\Models\PageSection;
+use App\Models\PageSectionFields;
 
 class FrontController extends Controller
 {
+   
+
     public function index()
     {
-        // $home_sliders = Slider::all();
-        // $services = Service::where('status', 1)->get();
-        // $settings = Setting::first();
-        // $properties = Property::with(['propertyType','propertyStatus','country','state','city'])->where('status', 1)->take(6)->get();
-        // $teamMembers = TeamMember::where('status', 'active')->get();
-        // $socialLinks = json_decode($settings->social_links, true) ?? [];
-        // $blogs = Blog::with('author')->where('status', 1)->take(3)->get();
+        $Page = Page::where('slug', 'home')->first();
+        
+        $pageSections = PageSection::with([
+            'page', 
+            'sectionType', 
+            'sectionTemplate',
+            'fields'
+        ])
+        ->where('page_id', $Page->id)
+        ->orderBy('order', 'asc')
+        ->get();
 
-        return view('frontend.index');
+        // Fields ko properly format karein
+        $pageSections->each(function($section) {
+            $fieldsData = [];
+            
+            foreach($section->fields as $field) {
+                // field_key ke according data organize karein
+                $fieldsData[$field->field_key] = $field->field_value;
+            }
+            
+            $section->fields_data = $fieldsData;
+        });
+
+        return view('frontend.index', compact('pageSections'));
     }
+
+    // public function index($slug)
+    // {
+    //     // Home page ke liye alag handling
+    //     if($slug === '/') {
+    //         $slug = 'home';
+    //     }
+        
+    //     $Page = Page::where('slug', $slug)->first();
+        
+    //     // Agar page nahi mila toh 404
+    //     if(!$Page) {
+    //         abort(404);
+    //     }
+        
+    //     $pageSections = PageSection::with([
+    //         'page', 
+    //         'sectionType', 
+    //         'sectionTemplate',
+    //         'fields'
+    //     ])
+    //     ->where('page_id', $Page->id)
+    //     ->orderBy('order', 'asc')
+    //     ->get();
+
+    //     // Fields ko properly format karein
+    //     $pageSections->each(function($section) {
+    //         $fieldsData = [];
+            
+    //         foreach($section->fields as $field) {
+    //             $fieldsData[$field->field_key] = $field->field_value;
+    //         }
+            
+    //         $section->fields_data = $fieldsData;
+    //     });
+
+    //     return view('frontend.index', compact('pageSections', 'Page'));
+    // }
+    
     public function second()
     {
         return view('second');

@@ -273,7 +273,7 @@ class PagesController extends Controller
 //         }
 //     }
 
-public function getSectionFields($pageSectionId)
+   public function getSectionFields($pageSectionId)
     {
         try {
             $fields = PageSectionFields::where('page_section_id', $pageSectionId)
