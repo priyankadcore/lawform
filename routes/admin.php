@@ -74,9 +74,9 @@ Route::name('admin.')->group(function () {
      Route::controller(NavbarController::class)->prefix('navbar')->name('navbar.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->name('store');
-        // Route::get('/{id}/edit', 'edit')->name('edit');
-        // Route::put('/{id}', 'template_update')->name('update');
-        // Route::delete('/{id}', 'template_destroy')->name('destroy');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
     });
    
 

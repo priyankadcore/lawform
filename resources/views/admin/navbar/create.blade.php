@@ -78,39 +78,45 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    {{-- <tbody>
-                                        @foreach ($sectionTypes as $type)
+                                    <tbody>
+                                        @foreach ($Navigations as $navbar)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $type->name }}</td>
-                                                <td>{{ $type->type }}</td>
                                                 <td>
-                                                    @if ($type->status)
-                                                        <span class="badge badge-soft-success">Active</span>
-                                                    @else
-                                                        <span class="badge badge-soft-danger">Inactive</span>
+                                                    @if($navbar->parent_id)
+                                                        <span class="text-muted">↳</span> <!-- Sub menu indicator -->
+                                                    @endif
+                                                    {{ $navbar->title }}
+                                                    @if($navbar->parent_id)
+                                                        <br><small class="text-muted">Parent: {{ $navbar->parent->title ?? 'N/A' }}</small>
                                                     @endif
                                                 </td>
-                                                <td>{{ $type->created_at->format('d M, Y') }}</td>
+                                                <td>{{ $navbar->slug }}</td>
+                                                <td>{{ $navbar->order }}</td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-primary edit-btn"
-                                                        data-id="{{ $type->id }}" data-name="{{ $type->name }}"
-                                                        data-type="{{ $type->type }}" data-status="{{ $type->status }}">
+                                                    <button class="btn btn-sm btn-primary edit-btn" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#editNavbarModal"
+                                                            data-id="{{ $navbar->id }}"
+                                                            data-title="{{ $navbar->title }}"
+                                                            data-slug="{{ $navbar->slug }}"
+                                                            data-parent_id="{{ $navbar->parent_id }}"
+                                                            data-order="{{ $navbar->order }}">
                                                         <i class="mdi mdi-pencil font-size-14"></i>
                                                     </button>
-                                                    <form action="{{ route('admin.section_types.destroy', $type->id) }}"
+                                                    <form action="{{ route('admin.navbar.destroy', $navbar->id) }}" 
                                                         method="POST" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Are you sure you want to delete this section type?')">
+                                                        <button type="submit" class="btn btn-sm btn-danger" 
+                                                                onclick="return confirm('Are you sure?')">
                                                             <i class="mdi mdi-trash-can font-size-14"></i>
                                                         </button>
                                                     </form>
                                                 </td>
                                             </tr>
                                         @endforeach
-                                    </tbody> --}}
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -135,10 +141,12 @@
                     <div class="mb-3">
                         <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
                         <input type="text" id="title" name="title" class="form-control" required>
+                         @error('title')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                     <div class="mb-3">
                         <label for="slug" class="form-label">Slug <span class="text-danger">*</span></label>
                         <input type="text" id="slug" name="slug" class="form-control" required>
+                         @error('slug')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                     <div class="mb-3">
                         <label for="parent_id" class="form-label">Sub Menu</label>
@@ -148,10 +156,12 @@
                                 <option value="{{ $nav->id }}">{{ $nav->title }}</option>
                             @endforeach
                         </select>
+                          @error('parent_id')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                     <div class="mb-3">
                         <label for="order" class="form-label">Order</label>
                         <input type="number" id="order" name="order" class="form-control" value="0">
+                          @error('order')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -163,44 +173,49 @@
     </div>
 </div>
 
-    <!-- Edit Section Type Modal -->
-    <div class="modal fade" id="editSectionTypeModal" tabindex="-1" aria-labelledby="editSectionTypeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editSectionTypeModalLabel">Edit Section Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="editForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <input type="hidden" id="edit_id" name="id">
-                        <div class="mb-3">
-                            <label for="edit_name" class="form-label">Title <span class="text-danger">*</span></label>
-                            <input type="text" id="edit_name" name="name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_slug" class="form-label">Type</label>
-                            <input type="text" id="edit_type" name="type" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_status" class="form-label">Status</label>
-                            <select id="edit_status" name="status" class="form-control" required>
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update Section Type</button>
-                    </div>
-                </form>
+<!-- Edit Navbar Modal -->
+<div class="modal fade" id="editNavbarModal" tabindex="-1" aria-labelledby="editNavbarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNavbarModalLabel">Edit Navigation Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="editForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <input type="hidden" id="edit_id" name="id">
+                    <div class="mb-3">
+                        <label for="edit_title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <input type="text" id="edit_title" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_slug" class="form-label">Slug <span class="text-danger">*</span></label>
+                        <input type="text" id="edit_slug" name="slug" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_parent_id" class="form-label">Parent Menu</label>
+                        <select id="edit_parent_id" name="parent_id" class="form-control">
+                            <option value="0">Main Menu (No Parent)</option>
+                            @foreach($parentNavigations as $nav)
+                                <option value="{{ $nav->id }}">{{ $nav->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_order" class="form-label">Order</label>
+                        <input type="number" id="edit_order" name="order" class="form-control" min="0">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Navigation</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -252,24 +267,6 @@
                     [0, 'asc']
                 ] // Default sort by ID
             });
-
-           
-            // Edit button click handler
-            $('.edit-btn').on('click', function() {
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-                var type = $(this).data('type');
-                var status = $(this).data('status');
-
-                $('#edit_id').val(id);
-                $('#edit_name').val(name);
-                $('#edit_type').val(type);
-                $('#edit_status').val(status);
-                $('#editForm').attr('action', '{{ url('admin/section_types') }}/' + id);
-
-                $('#editSectionTypeModal').modal('show');
-            });
- 
         });
     </script>
     <script>
@@ -282,4 +279,23 @@
             }
         }, 3000);
     </script>
+    <script>
+       // Edit button click handler
+            $('.edit-btn').on('click', function() {
+                var id = $(this).data('id');
+                var title = $(this).data('title');
+                var slug = $(this).data('slug');
+                var parent_id = $(this).data('parent_id');
+                var order = $(this).data('order');
+
+                $('#edit_id').val(id);
+                $('#edit_title').val(title);
+                $('#edit_slug').val(slug);
+                $('#edit_parent_id').val(parent_id || '0'); // Convert null to '0'
+                $('#edit_order').val(order);
+                
+                // Set form action
+                $('#editForm').attr('action', '{{ url('admin/navbar') }}/' + id);
+            });
+        </script>
 @endsection

@@ -16,6 +16,18 @@ class Navigation extends Model
         'order'
     ];
 
+    // Default values
+    protected $attributes = [
+        'order' => 0,
+        'parent_id' => null
+    ];
+
+    // Casting for type safety
+    protected $casts = [
+        'order' => 'integer',
+        'parent_id' => 'integer'
+    ];
+
     // Parent relationship
     public function parent()
     {
@@ -43,5 +55,14 @@ class Navigation extends Model
         ->parents()
         ->orderBy('order')
         ->get();
+    }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($navigation) {
+            // Delete all children recursively
+            $navigation->children()->delete();
+        });
     }
 }
