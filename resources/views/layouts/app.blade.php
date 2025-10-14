@@ -1,5 +1,6 @@
 <?php
 $settings = \App\Models\Setting::first();
+ $header = \App\Models\Navigation::orderBy('order')->get();
 $site_title = $settings ? $settings->site_name : 'FindMyHomeZ | Real Estate';
 $site_description = $settings ? $settings->site_description : 'FindMyHomeZ | Real Estate';
 $site_keywords = $settings ? $settings->site_keywords : 'HTML5,CSS3,HTML,Template,Multi-Purpose,Mr_Bhuvi,Corporate FindMyHomeZ | Real Estate';
@@ -42,7 +43,7 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
     <div id="wrap" class="home-1">
 
 
-        @include('layouts.header')
+       @include('layouts.header', compact('header'))
 
         @yield('content')
 

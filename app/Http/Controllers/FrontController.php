@@ -13,48 +13,9 @@ class FrontController extends Controller
 {
    
 
-    public function index()
-    {
-        $Page = Page::where('slug', 'home')->first();
-        
-        $pageSections = PageSection::with([
-            'page', 
-            'sectionType', 
-            'sectionTemplate',
-            'fields'
-        ])
-        ->where('page_id', $Page->id)
-        ->orderBy('order', 'asc')
-        ->get();
-
-        // Fields ko properly format karein
-        $pageSections->each(function($section) {
-            $fieldsData = [];
-            
-            foreach($section->fields as $field) {
-                // field_key ke according data organize karein
-                $fieldsData[$field->field_key] = $field->field_value;
-            }
-            
-            $section->fields_data = $fieldsData;
-        });
-
-        return view('frontend.index', compact('pageSections'));
-    }
-
-    // public function index($slug)
+    // public function index()
     // {
-    //     // Home page ke liye alag handling
-    //     if($slug === '/') {
-    //         $slug = 'home';
-    //     }
-        
-    //     $Page = Page::where('slug', $slug)->first();
-        
-    //     // Agar page nahi mila toh 404
-    //     if(!$Page) {
-    //         abort(404);
-    //     }
+    //     $Page = Page::where('slug', 'home')->first();
         
     //     $pageSections = PageSection::with([
     //         'page', 
@@ -71,64 +32,45 @@ class FrontController extends Controller
     //         $fieldsData = [];
             
     //         foreach($section->fields as $field) {
+    //             // field_key ke according data organize karein
     //             $fieldsData[$field->field_key] = $field->field_value;
     //         }
             
     //         $section->fields_data = $fieldsData;
     //     });
 
-    //     return view('frontend.index', compact('pageSections', 'Page'));
+    //     return view('frontend.index', compact('pageSections'));
     // }
-    
-    public function second()
+
+    public function show($slug = 'home')
     {
-        return view('second');
-    }
-    public function third()
-    {
-        return view('third');
-    }
-    public function about()
-    {
-        return view('about');
-    }
-    public function contact()
-    {
-        return view('contact'); 
-    }
-    public function services()
-    {
-        return view('services');
-    }
-    public function properties()
-    {
-        return view('properties');
-    }
-    public function propertyDetail($id)
-    {
-        return view('property_detail', ['id' => $id]);
+        $Page = Page::where('slug', $slug)->firstOrFail();
+        
+        $pageSections = PageSection::with([
+            'page', 
+            'sectionType', 
+            'sectionTemplate',
+            'fields'
+        ])
+        ->where('page_id', $Page->id)
+        ->orderBy('order', 'asc')
+        ->get();
+
+        // Fields formatting
+        $pageSections->each(function($section) {
+            $fieldsData = [];
+            foreach($section->fields as $field) {
+                $fieldsData[$field->field_key] = $field->field_value;
+            }
+            $section->fields_data = $fieldsData;
+        });
+
+        // Header menu
+        $header = \App\Models\Navigation::orderBy('order')->get();
+
+        // Return same view always
+        return view('frontend.index', compact('pageSections', 'header', 'Page'));
     }
 
-    public function ourTeam()
-    {
-        return view('our_team');
-    }
-    public function blog()
-    {
-        return view('blog');
-    }
-    public function blogDetail($id)
-    {
-        return view('blog_detail', ['id' => $id]);
-    }
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-        return view('search_results', ['query' => $query]);     
-    }
 
-    public function propertyList()
-    {
-        return view('property_listing');
-    }
 }
