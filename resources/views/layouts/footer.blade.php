@@ -371,33 +371,32 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>About Us</h3>
-                    <p>Realtor is a premier real estate agency dedicated to helping clients navigate the property market with ease and confidence.</p>
+                    <p>{{$footer->about_us}}</p>
                     <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="{{$footer->facebook}}"><i class="fab fa-facebook-f"></i></a>
+                        <a href="{{$footer->twitter}}"><i class="fab fa-twitter"></i></a>
+                        <a href="{{$footer->instagram}}"><i class="fab fa-instagram"></i></a>
+                        <a href="{{$footer->linkedin}}"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Properties</a></li>
-                        <li><a href="#">Agents</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact</a></li>
+                        @foreach ($footerlinkheader as $headerlinks)
+                         <li><a href="{{$headerlinks->slug ?? '#'}}" >{{$headerlinks->title}}</a></li>   
+                        @endforeach
+                        
                     </ul>
                 </div>
                 
                 <div class="footer-column">
                     <h3>Contact Us</h3>
                     <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Main Street, Sydney, Australia</li>
-                        <li><i class="fas fa-phone"></i> +61 2 1234 5678</li>
-                        <li><i class="fas fa-envelope"></i> info@realtor.com</li>
-                        <li><i class="fas fa-clock"></i> Mon-Fri: 9am-5pm</li>
+                        <li><i class="fas fa-map-marker-alt"></i> {{$footer->address}}</li>
+                        <li><i class="fas fa-phone"></i> +91 {{$footer->phone}}</li>
+                        <li><i class="fas fa-envelope"></i> {{$footer->email}}</li>
+                        <li><i class="fas fa-clock"></i> {{$footer->timing}}</li>
                     </ul>
                 </div>
                 

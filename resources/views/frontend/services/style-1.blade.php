@@ -32,9 +32,9 @@
             border-radius: 2px;
         }
 
-        .section-subtitle {
-            color: #666;
-            font-size: 1.1rem;
+        .section-subtitle1 {
+            color: #0a0a0aff!important;
+            font-size: 15px;
             margin-bottom: 50px;
             max-width: 600px;
             margin-left: auto;
@@ -159,77 +159,38 @@
 </head>
 
 <body>
-    <div class="services-container">
-        <h2 class="section-title">Our Services</h2>
-        <p class="section-subtitle">We provide a wide range of professional services to help your business grow and
-            succeed in the digital world.</p>
+
+     
+      <div class="services-container">
+        <h2 class="section-title"> {{ $fields['headline'] ?? 'Our Services' }} </h2>
+        <h6 class="section-subtitle1" style="color:gray!important;">We provide a wide range of professional services to help your business grow and
+            succeed in the digital world.</h6>
 
         <div class="services-cards">
-            <!-- Card 1 -->
-            <div class="service-card">
-                <div class="card-icon">
-                    <i class="fas fa-code"></i>
-                </div>
-                <h3 class="card-title">Web Development</h3>
-                <p class="card-description">We create responsive, modern websites that work perfectly on all devices and
-                    help you achieve your online goals.</p>
-                <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
 
-            <!-- Card 2 -->
-            <div class="service-card">
-                <div class="card-icon">
-                    <i class="fas fa-paint-brush"></i>
-                </div>
-                <h3 class="card-title">UI/UX Design</h3>
-                <p class="card-description">Our design team creates beautiful, intuitive interfaces that provide
-                    exceptional user experiences.</p>
-                <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
+        @php
+            $data = isset($fields['data']) ? json_decode($fields['data'], true) : [];
+        @endphp
+            
 
-            <!-- Card 3 -->
+        @if(!empty($data))
+        @foreach($data as $index => $item)
             <div class="service-card">
                 <div class="card-icon">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="{{ $item['icon']['value']}}"></i>
                 </div>
-                <h3 class="card-title">Digital Marketing</h3>
-                <p class="card-description">We help you reach your target audience and grow your business with effective
-                    digital marketing strategies.</p>
-                <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                <h3 class="card-title">{{ $item['title']['value']}}</h3>
+                <p class="card-description">{{ $item['description']['value'] }}</p>
+                <a href="#" class="card-link">{{ $item['button-1']['value'] }}<i class="fas fa-arrow-right"></i></a>
             </div>
+         @endforeach
+        @else
+            <p>No Services available at the moment.</p>
+        @endif
 
-            <!-- Card 1 -->
-            <div class="service-card">
-                <div class="card-icon">
-                    <i class="fas fa-code"></i>
-                </div>
-                <h3 class="card-title">Web Development</h3>
-                <p class="card-description">We create responsive, modern websites that work perfectly on all devices and
-                    help you achieve your online goals.</p>
-                <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
+         
 
-            <!-- Card 2 -->
-            <div class="service-card">
-                <div class="card-icon">
-                    <i class="fas fa-paint-brush"></i>
-                </div>
-                <h3 class="card-title">UI/UX Design</h3>
-                <p class="card-description">Our design team creates beautiful, intuitive interfaces that provide
-                    exceptional user experiences.</p>
-                <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="service-card">
-                <div class="card-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3 class="card-title">Digital Marketing</h3>
-                <p class="card-description">We help you reach your target audience and grow your business with effective
-                    digital marketing strategies.</p>
-                <a href="#" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
-            </div>
+           
         </div>
     </div>
 

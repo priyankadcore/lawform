@@ -1,6 +1,13 @@
 <?php
 $settings = \App\Models\Setting::first();
- $header = \App\Models\Navigation::orderBy('order')->get();
+$header = \App\Models\Navigation::orderBy('order')->get();
+
+$footerlinkheader = \App\Models\Navigation::whereNull('parent_id')
+                                ->orderBy('order')
+                                ->limit(5)
+                                ->get();
+
+$footer = \App\Models\FooterSetting::first();
 $site_title = $settings ? $settings->site_name : 'FindMyHomeZ | Real Estate';
 $site_description = $settings ? $settings->site_description : 'FindMyHomeZ | Real Estate';
 $site_keywords = $settings ? $settings->site_keywords : 'HTML5,CSS3,HTML,Template,Multi-Purpose,Mr_Bhuvi,Corporate FindMyHomeZ | Real Estate';
@@ -47,7 +54,7 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
 
         @yield('content')
 
-        @include('layouts.footer')
+        @include('layouts.footer', compact('footerlinkheader','footer'))
 
      
     </div>

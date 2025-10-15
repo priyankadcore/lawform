@@ -12,6 +12,11 @@ use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\PagesController;
 use App\Http\Controllers\Admin\UploadsController;
 use App\Http\Controllers\Admin\NavbarController;
+use App\Http\Controllers\Admin\FooterController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\admin\BlogController;
+use App\Http\Controllers\admin\TeamController;
 
 
 Route::name('admin.')->group(function () {
@@ -78,7 +83,38 @@ Route::name('admin.')->group(function () {
         Route::put('/{id}', 'update')->name('update');
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
-   
+
+     Route::controller(FooterController::class)->prefix('footer')->name('footer.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+    });
+
+    Route::controller(BlogController::class)->prefix('blogs')->name('blogs.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{blog}/edit', 'edit')->name('edit'); 
+        Route::put('/{blog}', 'update')->name('update'); // Update route
+        Route::delete('/{blog}', 'destroy')->name('destroy');
+    });
+    Route::get('blogs-create', [BlogController::class, 'create'])->name('blogs.create');
+    Route::get('blogs-edit-{blog}', [BlogController::class, 'edit'])->name('blogs.edit');
+
+    Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+
+    Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+    Route::controller( TeamController::class)->prefix('team')->name('team.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{blog}/edit', 'edit')->name('edit'); 
+        Route::put('/{blog}', 'update')->name('update'); // Update route
+        Route::delete('/{blog}', 'destroy')->name('destroy');
+    });
 
 
 
