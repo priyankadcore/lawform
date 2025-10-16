@@ -179,7 +179,7 @@
         }
 
         .member-name {
-            font-size: 1.5rem;
+           font-size: 21px;
             font-weight: 700;
             color: #2d3748;
             margin-bottom: 8px;
@@ -189,7 +189,7 @@
             color: #667eea;
             font-weight: 600;
             margin-bottom: 15px;
-            font-size: 1.1rem;
+            font-size: 12px;
         }
 
         .member-description {
@@ -305,98 +305,25 @@
             </div>
 
             <div class="team-grid">
-                <!-- Team Member 1 -->
-                <div class="team-card">
+                
+                @foreach ($teams as $team)
+                   <div class="team-card">
                     <div class="card-header">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Johnathan Carter">
+                        <img src="{{ asset('storage/'.$team->team_image)}}" alt="Johnathan Carter">
                         <div class="card-overlay">
-                            <div class="social-links">
-                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-github"></i></a>
-                                <a href="#"><i class="fab fa-dribbble"></i></a>
-                            </div>
                         </div>
                     </div>
                     <div class="card-content">
-                        <h3 class="member-name">Johnathan Carter</h3>
-                        <div class="member-role">CEO & Founder</div>
-                        <p class="member-description">Visionary leader with 15+ years of experience in tech innovation. Johnathan founded the company with a mission to revolutionize digital experiences.</p>
-                        
-                        <div class="member-contact">
-                            <div class="contact-info1">
-                                <i class="fas fa-envelope"></i>
-                                <span>johnathan@company.com</span>
-                            </div>
-                            <div class="contact-info1">
-                                <i class="fas fa-phone"></i>
-                                <span>+1 (555) 123-4567</span>
-                            </div>
-                        </div>
+                        <h3 class="member-name">{{ $team->name }}</h3>
+                        <div class="member-role">{{ $team->role }}</div>
+                        <div style="color:black;">{{ $team->created_at->format('j F Y') }}</div>
+                       
                     </div>
-                </div>
+                </div> 
+                @endforeach
+                
 
-                <!-- Team Member 2 -->
-                <div class="team-card">
-                    <div class="card-header">
-                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Sarah Chen">
-                        <div class="card-overlay">
-                            <div class="social-links">
-                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-behance"></i></a>
-                                <a href="#"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="member-name">Sarah Chen</h3>
-                        <div class="member-role">Creative Director</div>
-                        <p class="member-description">Award-winning designer with a passion for creating memorable brand experiences. Sarah leads our creative vision across all digital platforms.</p>
-                        
-                        <div class="member-contact">
-                            <div class="contact-info1">
-                                <i class="fas fa-envelope"></i>
-                                <span>sarah@company.com</span>
-                            </div>
-                            <div class="contact-info1">
-                                <i class="fas fa-phone"></i>
-                                <span>+1 (555) 123-4568</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Team Member 3 -->
-                <div class="team-card">
-                    <div class="card-header">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Michael Rodriguez">
-                        <div class="card-overlay">
-                            <div class="social-links">
-                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-github"></i></a>
-                                <a href="#"><i class="fab fa-stack-overflow"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="member-name">Michael Rodriguez</h3>
-                        <div class="member-role">CTO & Lead Developer</div>
-                        <p class="member-description">Full-stack developer with expertise in modern web technologies. Michael architects scalable solutions and leads our technical innovation.</p>
-                        
-                        <div class="member-contact">
-                            <div class="contact-info1">
-                                <i class="fas fa-envelope"></i>
-                                <span>michael@company.com</span>
-                            </div>
-                            <div class="contact-info1">
-                                <i class="fas fa-phone"></i>
-                                <span>+1 (555) 123-4569</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
 
         

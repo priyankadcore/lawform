@@ -1,4 +1,6 @@
 <!-- ========== Left Sidebar Start ========== -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <div class="vertical-menu">
 
     <div data-simplebar class="h-100">
@@ -99,12 +101,50 @@
                 </li>
 
                 <li>
-                <a href="{{ route('admin.team.index') }}">
-                    <i class="fas fa-users"></i>
-                    <span>Our Team</span>
-                </a>
-            </li>
+                    <a href="{{ route('admin.team.index') }}" class="waves-effect">
+                        <i class="fas fa-users"></i>
+                        <span>Our Team</span>
+                    </a>
+                </li>
 
+               <li>
+                    <a href="{{ route('admin.portfolio.index') }}">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <span>Portfolio</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.contact.list') }}">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Contact</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.gallery.index') }}">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Gallery</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fa-solid fa-user-tie"></i>
+                        <span>Careers</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{ route('admin.job.index') }}">
+                                <span>Jobs</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>Applications</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                
 
 
                 

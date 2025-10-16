@@ -82,9 +82,9 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
                     </a>
 
 
-                    <a class="dropdown-item d-block" href=""><span
+                    {{-- <a class="dropdown-item d-block" href=""><span
                             class="badge badge-success float-end">11</span><i
-                            class="mdi mdi-cog-outline font-size-16 align-middle me-1"></i> Settings</a>
+                            class="mdi mdi-cog-outline font-size-16 align-middle me-1"></i> Settings</a> --}}
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-danger" href="{{ route('admin.logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

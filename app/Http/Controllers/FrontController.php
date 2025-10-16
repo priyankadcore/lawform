@@ -12,6 +12,7 @@ use App\Models\PageSectionFields;
 use App\Models\Blog;
 use App\Models\Comments;
 use App\Models\Category;
+use App\Models\Team;
 
 class FrontController extends Controller
 {
@@ -127,12 +128,9 @@ class FrontController extends Controller
 
     public function team()
     {
-        // $blogs = Blog::where('status', 'published')
-        //         ->with('category')
-        //         ->latest()
-        //         ->get();
+        $teams = Team::all();
                  
-        return view('frontend.our_team');
+        return view('frontend.our_team', compact('teams'));
     }
 
 }

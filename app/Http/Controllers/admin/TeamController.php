@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Team;
+use Illuminate\Support\Facades\Storage; // Add this
 
 class TeamController extends Controller
 {
@@ -14,56 +15,58 @@ class TeamController extends Controller
         return view('admin.team.index',compact('teams'));
     }
 
-    // Store method
-        public function store(Request $request)
-        {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'role' => 'required|string|max:255',
-                'team_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-            
-            ]);
+    // Add the edit method
+    // public function edit(Team $team)
+    // {
+    //     return view('admin.team.edit', compact('team'));
+    // }
 
-            if ($request->hasFile('team_image')) {
-                $validated['team_image'] = $request->file('team_image')->store('team-images', 'public');
-            }
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
+            'team_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-            Team::create($validated);
-
-            return redirect()->route('admin.team.index')->with('success', 'Team member added successfully!');
+        if ($request->hasFile('team_image')) {
+            $validated['team_image'] = $request->file('team_image')->store('team-images', 'public');
         }
 
-        // Update method
-        public function update(Request $request, Team $team)
-        {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'role' => 'required|string|max:255',
-                'team_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+        Team::create($validated);
 
-            if ($request->hasFile('team_image')) {
-                // Delete old image if exists
-                if ($team->team_image) {
-                    Storage::disk('public')->delete($team->team_image);
-                }
-                $validated['team_image'] = $request->file('team_image')->store('team-images', 'public');
-            }
+        return redirect()->route('admin.team.index')->with('success', 'Team member added successfully!');
+    }
 
-            $team->update($validated);
+    public function update(Request $request, Team $team)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
+            'team_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-            return redirect()->route('admin.team.index')->with('success', 'Team member updated successfully!');
-        }
-
-        // Destroy method
-        public function destroy(Team $team)
-        {
+        if ($request->hasFile('team_image')) {
+            // Delete old image if exists
             if ($team->team_image) {
                 Storage::disk('public')->delete($team->team_image);
             }
-            
-            $team->delete();
-
-            return redirect()->route('admin.team.index')->with('success', 'Team member deleted successfully!');
+            $validated['team_image'] = $request->file('team_image')->store('team-images', 'public');
         }
+
+        $team->update($validated);
+
+        return redirect()->route('admin.team.index')->with('success', 'Team member updated successfully!');
+    }
+
+    public function destroy(Team $team)
+    {
+        if ($team->team_image) {
+            Storage::disk('public')->delete($team->team_image);
+        }
+        
+        $team->delete();
+
+        return redirect()->route('admin.team.index')->with('success', 'Team member deleted successfully!');
+    }
 }

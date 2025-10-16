@@ -8,8 +8,8 @@ $footerlinkheader = \App\Models\Navigation::whereNull('parent_id')
                                 ->get();
 
 $footer = \App\Models\FooterSetting::first();
-$site_title = $settings ? $settings->site_name : 'FindMyHomeZ | Real Estate';
-$site_description = $settings ? $settings->site_description : 'FindMyHomeZ | Real Estate';
+$site_title = $settings ? $settings->site_name : 'CMS';
+$site_description = $settings ? $settings->site_description : 'CMS';
 $site_keywords = $settings ? $settings->site_keywords : 'HTML5,CSS3,HTML,Template,Multi-Purpose,Mr_Bhuvi,Corporate FindMyHomeZ | Real Estate';
 $site_author = $settings ? $settings->site_author : 'Mr_Bhuvi';
 $favicon = isset($settings->favicon) ? asset('storage/' . $settings->favicon) : asset('build/images/favicon.ico');
@@ -21,7 +21,7 @@ $logo = isset($settings->logo) ? asset('storage/' . $settings->logo) : asset('bu
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $site_title }} | Real Estate </title>
+    <title>CMS</title>
     <meta name="keywords"
         content="{{ $site_keywords }}">
     <meta name="description" content="{{ $site_description }}">

@@ -17,6 +17,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\admin\BlogController;
 use App\Http\Controllers\admin\TeamController;
+use App\Http\Controllers\admin\GalleryController;
+use App\Http\Controllers\admin\PortfolioController;
+use App\Http\Controllers\admin\CareerJobController;
 
 
 Route::name('admin.')->group(function () {
@@ -107,14 +110,47 @@ Route::name('admin.')->group(function () {
     Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
     Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
-    Route::controller( TeamController::class)->prefix('team')->name('team.')->group(function () {
+    Route::controller(TeamController::class)->prefix('team')->name('team.')->group(function () {
         Route::get('/', 'index')->name('index');
-        
         Route::post('/store', 'store')->name('store');
-        Route::get('/{blog}/edit', 'edit')->name('edit'); 
-        Route::put('/{blog}', 'update')->name('update'); // Update route
-        Route::delete('/{blog}', 'destroy')->name('destroy');
+        Route::get('/{team}/edit', 'edit')->name('edit'); 
+       
+        Route::put('/{team}', 'update')->name('update'); 
+        Route::delete('/{team}', 'destroy')->name('destroy');
     });
+
+    Route::controller(PortfolioController::class)->prefix('portfolio')->name('portfolio.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/store', 'store')->name('store');
+     Route::put('/{id}', 'update')->name('update'); 
+    Route::delete('/{id}', 'destroy')->name('destroy');
+  
+    });
+
+  Route::get('portfolio-create', [PortfolioController::class, 'create'])->name('portfolio.create');
+  Route::get('portfolio-show-{id}', [PortfolioController::class, 'show'])->name('portfolio.show');
+  Route::get('portfolio-edit-{id}', [PortfolioController::class, 'edit'])->name('portfolio.edit');
+
+ Route::get('contact-list', [ContactController::class, 'index'])->name('contact.list');
+
+
+   Route::controller(GalleryController::class)->prefix('gallery')->name('gallery.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+
+     Route::controller(CareerJobController::class)->prefix('job')->name('job.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+        Route::post('/{id}', 'update')->name('update'); 
+         Route::get('/{id}/edit', 'edit')->name('edit'); 
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    
+        });
+
+      
 
 
 

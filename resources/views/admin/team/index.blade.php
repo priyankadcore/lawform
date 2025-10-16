@@ -140,16 +140,15 @@
                             <div class="row">
                                 @foreach($teams as $team)
                                     <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                                        <div class="card team-card h-100">
+                                        <div class="card team-card h-100" style="background-color: #f1efef;">
                                             <div class="team-image-container">
-                                                <img src="{{ $team->image_url }}" 
+                                                <img src="{{ asset('storage/'.$team->team_image) 	}}" 
                                                      alt="{{ $team->name }}" 
-                                                     class="team-image"
-                                                     onerror="this.src='{{ asset('build/images/default-avatar.png') }}'">
+                                                     class="team-image" >
                                                 
                                                 <div class="team-actions">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-sm btn-light edit-btn" 
+                                                        <button type="button" class="btn btn-sm btn-light edit-btn" style="height: 23px;"
                                                                 data-bs-toggle="modal" 
                                                                 data-bs-target="#teamModal"
                                                                 data-team="{{ json_encode($team) }}">
@@ -166,36 +165,15 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                                
-                                                <span class="status-badge badge bg-{{ $team->is_active ? 'success' : 'secondary' }}">
-                                                    {{ $team->is_active ? 'Active' : 'Inactive' }}
-                                                </span>
+                                               
                                             </div>
                                             
                                             <div class="card-body">
                                                 <h5 class="card-title mb-1">{{ $team->name }}</h5>
                                                 <p class="text-primary mb-2">{{ $team->role }}</p>
-                                                <p class="card-text text-muted small">{{ Str::limit($team->bio, 80) }}</p>
+                                               <p class="card-text text-muted small">{{ $team->created_at->format('j F Y') }}</p>
                                                 
-                                                @if($team->facebook_url || $team->twitter_url || $team->linkedin_url)
-                                                    <div class="social-links">
-                                                        @if($team->facebook_url)
-                                                            <a href="{{ $team->facebook_url }}" target="_blank" class="social-icon facebook-bg">
-                                                                <i class="fab fa-facebook-f"></i>
-                                                            </a>
-                                                        @endif
-                                                        @if($team->twitter_url)
-                                                            <a href="{{ $team->twitter_url }}" target="_blank" class="social-icon twitter-bg">
-                                                                <i class="fab fa-twitter"></i>
-                                                            </a>
-                                                        @endif
-                                                        @if($team->linkedin_url)
-                                                            <a href="{{ $team->linkedin_url }}" target="_blank" class="social-icon linkedin-bg">
-                                                                <i class="fab fa-linkedin-in"></i>
-                                                            </a>
-                                                        @endif
-                                                    </div>
-                                                @endif
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -223,7 +201,7 @@
                     <h5 class="modal-title" id="teamModalLabel" style="color:black!important;">Add Team Member</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="teamForm" method="POST" enctype="multipart/form-data">
+                <form id="teamForm" method="POST" enctype="multipart/form-data" action="{{ route('admin.team.store') }}">
                     @csrf
                     <div id="formMethod"></div>
                     
@@ -376,43 +354,7 @@
                 });
             });
 
-            // Form validation
-            $('#teamForm').on('submit', function(e) {
-                const name = $('#name').val().trim();
-                const role = $('#role').val().trim();
-                
-                let isValid = true;
-                
-                if (!name) {
-                    $('#name').addClass('is-invalid');
-                    $('#name').siblings('.invalid-feedback').text('Name is required.');
-                    isValid = false;
-                }
-                
-                if (!role) {
-                    $('#role').addClass('is-invalid');
-                    $('#role').siblings('.invalid-feedback').text('Role is required.');
-                    isValid = false;
-                }
-                
-                // File size validation (2MB limit)
-                const fileInput = $('#team_image')[0];
-                if (fileInput.files.length > 0) {
-                    const fileSize = fileInput.files[0].size / 1024 / 1024; // in MB
-                    if (fileSize > 2) {
-                        $('#team_image').addClass('is-invalid');
-                        $('#team_image').siblings('.invalid-feedback').text('Image size must be less than 2MB.');
-                        isValid = false;
-                    }
-                }
-                
-                if (!isValid) {
-                    e.preventDefault();
-                    return false;
-                }
-                
-                return true;
-            });
+           
 
             // Remove validation on input
             $('input, textarea').on('input', function() {
