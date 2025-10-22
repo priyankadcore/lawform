@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Portfolio;
 use App\Models\Category;
+use App\Models\PortfolioImage;
 
 class PortfolioController extends Controller
 {
@@ -75,7 +76,8 @@ class PortfolioController extends Controller
 
      public function show($id)
     {
-        $portfolio = Portfolio::with('category')->findOrFail($id);
+        $portfolio = Portfolio::with(['category', 'images'])->findOrFail($id);
+     
         return view('admin.portfolio.show', compact('portfolio'));
     }
 
@@ -161,6 +163,61 @@ class PortfolioController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('admin.portfolio.index')
                 ->with('error', 'Error deleting portfolio: ' . $e->getMessage());
+        }
+    }
+
+
+    public function uploadGallery(Request $request)
+    {
+        $request->validate([
+            'portfolio_id' => 'required|exists:portfolios,id',
+            'gallery_images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120'
+        ]);
+
+        try {
+            $portfolioId = $request->portfolio_id;
+            $uploadedImages = [];
+
+            if ($request->hasFile('gallery_images')) {
+                foreach ($request->file('gallery_images') as $image) {
+                     $filename = $image->getClientOriginalName(); 
+                
+                    $imagePath = $image->storeAs('portfolio/gallery', $filename, 'public');
+            
+                    $portfolioImage = PortfolioImage::create([
+                        'portfolio_id' => $portfolioId,
+                        'image' => $imagePath, 
+                    ]);
+
+                    $uploadedImages[] = $portfolioImage;
+                }
+            }
+
+            return redirect()->back()->with('success', count($uploadedImages) . ' images uploaded successfully!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error uploading images: ' . $e->getMessage());
+        }
+    }
+
+
+    public function deleteImage($id)
+    {
+        try {
+            $portfolioImage = PortfolioImage::findOrFail($id);
+            $portfolioId = $portfolioImage->portfolio_id;
+            
+            if (Storage::disk('public')->exists($portfolioImage->image)) {
+                Storage::disk('public')->delete($portfolioImage->image);
+            }
+            
+            $portfolioImage->delete();
+            
+            return redirect()->route('admin.portfolio.show', $portfolioId)
+                            ->with('success', 'Image deleted successfully!');
+                            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error deleting image: ' . $e->getMessage());
         }
     }
 }

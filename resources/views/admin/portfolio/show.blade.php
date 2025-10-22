@@ -3,6 +3,69 @@
    Portfolio Details
 @endsection
 
+<style>
+    .tech-tags .badge {
+        font-size: 0.85rem;
+        border: 1px solid #dee2e6;
+    }
+    .project-meta div:last-child {
+        border-bottom: none !important;
+    }
+    .swal2-toast {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+        min-width: auto !important;
+        width: 220px !important;
+        line-height: 1.3em !important;
+    }
+
+    .swal2-toast .swal2-icon {
+        width: 24px !important;
+        height: 24px !important;
+        margin-right: 6px !important;
+    }
+
+    .swal2-toast .swal2-title {
+        font-size: 13px !important;
+    }
+</style>
+<style>
+.image-container {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 8px;
+    background: white;
+    transition: transform 0.2s ease;
+}
+
+.image-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.delete-image-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.delete-image-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.img-fluid {
+    max-height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+</style>
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -121,8 +184,46 @@
                         </div>
                     </div>
                     @endif
+                    
                 </div>
             </div>
+             <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Gallery Images</h5>
+                    
+                    @if($portfolio->images && count($portfolio->images) > 0)
+                        <div class="row">
+                            @foreach($portfolio->images as $image)
+                            <div class="col-md-4 mb-3 position-relative">
+                                <div class="image-container position-relative">
+                                    <img src="{{ asset('storage/' . $image->image) }}" 
+                                        alt="{{ $portfolio->name }}" 
+                                        class="img-fluid rounded shadow-sm">
+                                    
+                                    <!-- Delete Button - Top Right -->
+                                    <form action="{{ route('admin.portfolio.image.delete', $image->id) }}" method="POST" class="delete-image-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-danger btn-sm delete-image-btn position-absolute" 
+                                                style="top: 10px; right: 10px;"
+                                                title="Delete Image">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-image fa-3x mb-2"></i>
+                            <p>No Gallery images found</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+
         </div>
         
         <div class="col-lg-4">
@@ -218,13 +319,63 @@
     </div>
 </div>
 
-<style>
-.tech-tags .badge {
-    font-size: 0.85rem;
-    border: 1px solid #dee2e6;
-}
-.project-meta div:last-child {
-    border-bottom: none !important;
-}
-</style>
+
+@endsection
+
+<!-- Add this script section -->
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Delete image confirmation
+        const deleteButtons = document.querySelectorAll('.delete-image-btn');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('.delete-image-form');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+<script>
+     @if (session('success'))
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: "{{ session('success') }}",
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: "{{ session('error') }}",
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        @endif
+    </script>
 @endsection

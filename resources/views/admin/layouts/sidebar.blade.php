@@ -76,17 +76,21 @@
                     </ul>
                 </li>
 
+                <li>
+                    <a href="{{ route('admin.categories.index') }}" class="waves-effect">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Categories</span>
+                    </a>
+                </li>
+
+
                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="fas fa-blog"></i>
                         <span>Blogs</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li>
-                            <a href="{{ route('admin.categories.index') }}">
-                                <span>Categories</span>
-                            </a>
-                        </li>
+                        
                         <li>
                             <a href="{{ route('admin.blogs.index') }}">
                                 <span>Blog Posts</span>
@@ -98,6 +102,14 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.caseStudy.index') }}" class=" waves-effect">
+                        <i class="fas fa-book-open"></i>
+                        <span>Case Study</span>
+                    </a>
+                    
                 </li>
 
                 <li>
@@ -143,6 +155,9 @@
                         </li>
                     </ul>
                 </li>
+
+                
+
                 
                 
 

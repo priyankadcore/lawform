@@ -31,6 +31,10 @@ class Portfolio extends Model
     {
         return $this->belongsTo(Category::class);
     }
+     public function images()
+    {
+        return $this->hasMany(PortfolioImage::class);
+    }
 
     // Auto-generate slug
     public static function boot()

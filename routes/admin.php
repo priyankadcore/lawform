@@ -20,6 +20,7 @@ use App\Http\Controllers\admin\TeamController;
 use App\Http\Controllers\admin\GalleryController;
 use App\Http\Controllers\admin\PortfolioController;
 use App\Http\Controllers\admin\CareerJobController;
+use App\Http\Controllers\admin\CaseStudyController;
 
 
 Route::name('admin.')->group(function () {
@@ -130,6 +131,9 @@ Route::name('admin.')->group(function () {
   Route::get('portfolio-create', [PortfolioController::class, 'create'])->name('portfolio.create');
   Route::get('portfolio-show-{id}', [PortfolioController::class, 'show'])->name('portfolio.show');
   Route::get('portfolio-edit-{id}', [PortfolioController::class, 'edit'])->name('portfolio.edit');
+  Route::post('portfolio-gallery-upload', [PortfolioController::class, 'uploadGallery'])->name('portfolio.gallery.upload');
+
+  Route::delete('portfolio-galleryImage-{id}', [PortfolioController::class, 'deleteImage'])->name('portfolio.image.delete');
 
  Route::get('contact-list', [ContactController::class, 'index'])->name('contact.list');
 
@@ -149,6 +153,17 @@ Route::name('admin.')->group(function () {
         Route::delete('/{id}', 'destroy')->name('destroy');
     
         });
+
+        Route::controller(CaseStudyController::class)->prefix('caseStudy')->name('caseStudy.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            
+            Route::post('/store', 'store')->name('store');
+            // Route::get('/{blog}/edit', 'edit')->name('edit'); 
+            Route::put('/{CaseStudy}', 'update')->name('update'); // Update route
+            Route::delete('/{CaseStudy}', 'destroy')->name('destroy');
+        });
+        Route::get('caseStudy-create', [CaseStudyController::class, 'create'])->name('caseStudy.create');
+        Route::get('caseStudy-edit-{CaseStudy}', [CaseStudyController::class, 'edit'])->name('caseStudy.edit');
 
       
 

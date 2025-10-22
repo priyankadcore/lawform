@@ -6,6 +6,7 @@
 <link href="{{ URL::asset('build/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet"
     type="text/css" />
 <link href="{{ URL::asset('build/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 <style>
     .swal2-toast {
         font-size: 12px !important;
@@ -25,151 +26,190 @@
         font-size: 13px !important;
     }
     
-    .portfolio-card {
-        border-radius: 8px;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        height: 100%;
-    }
-    
-    .portfolio-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-    
-    .portfolio-image-container {
-        height: 200px;
-        overflow: hidden;
-        position: relative;
-    }
-    
-    .portfolio-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    
-    .portfolio-card:hover .portfolio-image {
-        transform: scale(1.05);
-    }
-    
-    .portfolio-status {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 2;
-    }
-    
-    .portfolio-actions {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 2;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .portfolio-card:hover .portfolio-actions {
-        opacity: 1;
-    }
-    
-    .portfolio-meta {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.85rem;
-        color: #6c757d;
-        margin-bottom: 10px;
-    }
-    
-    .portfolio-category {
-        display: inline-block;
-        background: #727ae9;
-        color: #fcfdffff;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        margin-bottom: 8px;
-    }
-    
-    .portfolio-description {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        color: #6c757d;
-        margin-bottom: 15px;
-    }
-    
     .filter-container {
         background: #dfe0e1;
         padding: 20px;
         margin-bottom: 25px;
     }
     
-    .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: #6c757d;
-    }
-    
-    .empty-state i {
-        font-size: 48px;
-        margin-bottom: 15px;
-        color: #dee2e6;
-    }
-    
-    .view-toggle {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    
-    .view-toggle-btn {
-        border: 1px solid #dee2e6;
-        background: white;
-        padding: 8px 12px;
+    .portfolio-image-thumbnail {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
         border-radius: 4px;
-        cursor: pointer;
+    }
+    
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .status-active {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
         transition: all 0.2s ease;
     }
     
-    .view-toggle-btn.active {
-        background: #007bff;
-        color: white;
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-edit {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .btn-delete {
+        background-color: #ffebee;
+        color: #d32f2f;
+    }
+    
+    .btn-gallery {
+        background-color: #e8f5e9;
+        color: #388e3c;
+    }
+    
+    .btn-view {
+        background-color: #f3e5f5;
+        color: #7b1fa2;
+    }
+    
+    .dataTables_wrapper {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    table.dataTable {
+        margin: 0 !important;
+    }
+    
+    .table th {
+        border-top: none;
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .category-badge {
+        display: inline-block;
+        background: #727ae9;
+        color: #fcfdffff;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+    
+    .dataTables_empty {
+        padding: 40px !important;
+        text-align: center;
+        color: #6c757d;
+    }
+    
+    .dataTables_empty i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        color: #dee2e6;
+        display: block;
+    }
+    
+    /* Gallery Modal Styles */
+    .upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 40px 20px;
+        text-align: center;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    
+    .upload-area:hover {
         border-color: #007bff;
+        background-color: #e7f3ff;
     }
     
-    .grid-view {
+    .upload-area i {
+        font-size: 48px;
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+    
+    .upload-area.dragover {
+        border-color: #007bff;
+        background-color: #e7f3ff;
+    }
+    
+    .image-preview-container {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
     }
     
-    .list-view .portfolio-card {
+    .image-preview {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .image-preview img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+    }
+    
+    .remove-image {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
         display: flex;
-        height: auto;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+        color: #dc3545;
     }
     
-    .list-view .portfolio-image-container {
-        width: 200px;
-        height: 150px;
-        flex-shrink: 0;
+    .file-input {
+        display: none;
     }
     
-    .list-view .card-body {
-        flex: 1;
+    .upload-progress {
+        margin-top: 15px;
     }
     
-    @media (max-width: 768px) {
-        .list-view .portfolio-card {
-            flex-direction: column;
-        }
-        
-        .list-view .portfolio-image-container {
-            width: 100%;
-            height: 180px;
-        }
+    .progress {
+        height: 8px;
     }
 </style>
 @section('content')
@@ -178,7 +218,6 @@
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
                 <h5 class="mb-0" style="color:white;">Admin / Portfolio / manage</h5>
-                
             </div>
         </div>
     </div>
@@ -199,91 +238,139 @@
          </div>
     </div>
 
-    
-
-    <!-- Portfolio Items Grid -->
+    <!-- Portfolio DataTable -->
     <div class="row">
         <div class="col-12">
-            <div id="portfolioContainer" class="grid-view">
-                @if(isset($portfolios) && count($portfolios) > 0)
-                    @foreach($portfolios as $portfolio)
-                    <div class="portfolio-card card" data-category="{{ $portfolio->category_id }}" data-status="{{ $portfolio->status }}" data-date="{{ $portfolio->project_date ? \Carbon\Carbon::parse($portfolio->project_date)->format('Y-m') : '' }}">
-                        <div class="portfolio-image-container">
-                            @if($portfolio->featured_image)
-                                <img src="{{ asset('storage/' . $portfolio->featured_image) }}" class="portfolio-image" alt="{{ $portfolio->name }}">
-                            @else
-                                <div class="portfolio-image bg-light d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-image fa-2x text-muted"></i>
-                                </div>
+            <div class="card">
+                <div class="card-body">
+                    <table id="portfolioTable" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Client</th>
+                                <th>Project Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($portfolios) && count($portfolios) > 0)
+                                @foreach($portfolios as $portfolio)
+                                <tr>
+                                    <td>
+                                        @if($portfolio->featured_image)
+                                            <img src="{{ asset('storage/' . $portfolio->featured_image) }}" class="portfolio-image-thumbnail" alt="{{ $portfolio->name }}">
+                                        @else
+                                            <div class="portfolio-image-thumbnail bg-light d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="font-weight-bold">{{ $portfolio->name }}</div>
+                                        <small class="text-muted">Slug: {{ $portfolio->slug }}</small>
+                                        @if($portfolio->short_description)
+                                            <div class="text-truncate" style="max-width: 200px;" title="{{ $portfolio->short_description }}">
+                                                {{ $portfolio->short_description }}
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @php
+                                            $categoryName = $categories->where('id', $portfolio->category_id)->first()->name ?? 'Uncategorized';
+                                        @endphp
+                                        <span class="category-badge">{{ $categoryName }}</span>
+                                    </td>
+                                    <td>{{ $portfolio->client ?? 'N/A' }}</td>
+                                    <td>{{ $portfolio->project_date ? \Carbon\Carbon::parse($portfolio->project_date)->format('M d, Y') : 'N/A' }}</td>
+                                    <td>
+                                        @if($portfolio->status)
+                                            <span class="status-badge status-active">Active</span>
+                                        @else
+                                            <span class="status-badge status-inactive">Inactive</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button type="button" class="action-btn btn-gallery gallery-btn" 
+                                                    title="Manage Gallery" 
+                                                    data-portfolio-id="{{ $portfolio->id }}"
+                                                    data-portfolio-name="{{ $portfolio->name }}">
+                                                <i class="fas fa-images"></i>
+                                            </button>
+                                            <a href="{{ route('admin.portfolio.show', $portfolio->id) }}" class="action-btn btn-view" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('admin.portfolio.edit', $portfolio->id) }}" class="action-btn btn-edit" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('admin.portfolio.destroy', $portfolio->id) }}" method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="action-btn btn-delete delete-btn" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
                             @endif
-                            
-                            <div class="portfolio-status">
-                                @if($portfolio->status)
-                                    <span class="badge badge-success">Active</span>
-                                @else
-                                    <span class="badge badge-secondary">Inactive</span>
-                                @endif
-                            </div>
-                            
-                            <div class="portfolio-actions">
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('admin.portfolio.edit', $portfolio->id) }}" class="btn btn-light" title="Edit" style="height: 30px;">
-                                        <i class="fas fa-edit text-primary" style="font-size: medium;"></i>
-                                    </a>
-                                    <form action="{{ route('admin.portfolio.destroy', $portfolio->id) }}" method="POST" class="d-inline delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-light delete-btn" title="Delete">
-                                            <i class="fas fa-trash text-danger"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card-body" style="background-color: #dfdddd;">
-                            <div class="portfolio-meta">
-                                <span><i class="far fa-calendar-alt mr-1"></i> {{ $portfolio->project_date ? \Carbon\Carbon::parse($portfolio->project_date)->format('M d, Y') : 'N/A' }}</span>
-                                <span><i class="far fa-user mr-1"></i> {{ $portfolio->client ?? 'N/A' }}</span>
-                            </div>
-                            
-                            <span class="portfolio-category">
-                                @php
-                                    $categoryName = $categories->where('id', $portfolio->category_id)->first()->name ?? 'Uncategorized';
-                                @endphp
-                                {{ $categoryName }}
-                            </span>
-                            
-                            <h5 class="card-title" style="color:black;">{{ $portfolio->name }}</h5>
-                            
-                            @if($portfolio->short_description)
-                                <p class="portfolio-description">{{ $portfolio->short_description }}</p>
-                            @endif
-                            
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">Slug: {{ $portfolio->slug }}</small>
-                                <div>
-                                    <a href="{{ route('admin.portfolio.show', $portfolio->id) }}" class="btn btn-sm btn-outline-primary mr-1">View</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                @else
-                    <div id="emptyState" class="empty-state">
-                        <i class="fas fa-folder-open"></i>
-                        <h4>No portfolio items found</h4>
-                        <p>Try adjusting your filters or add a new portfolio item.</p>
-                       
-                    </div>
-                @endif
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-md-6" style="margin-top: 39px;">
-        <div class="text-muted">
-            Showing <span id="itemCount">{{ count($portfolios ?? []) }}</span> of {{ count($portfolios ?? []) }} portfolio items
+<!-- Gallery Upload Modal -->
+<div class="modal fade" id="galleryModal" tabindex="-1" role="dialog" aria-labelledby="galleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="galleryModalLabel">Upload Gallery Images</h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="galleryUploadForm" action="{{ route('admin.portfolio.gallery.upload') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="portfolio_id" id="portfolio_id">
+                    
+                    <div class="form-group">
+                        <label>Portfolio Item: <strong id="portfolio_name"></strong></label>
+                    </div>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h5>Drag & Drop Images Here</h5>
+                        <p class="text-muted">or click to browse files</p>
+                        <p class="small text-muted">Supported formats: JPG, PNG, GIF, WEBP (Max: 5MB each)</p>
+                        <input type="file" name="gallery_images[]" id="gallery_images" multiple accept="image/*">
+                    </div>
+                    
+                    <div class="upload-progress" id="uploadProgress" style="display: none;">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted mt-1" id="progressText">Uploading... 0%</small>
+                    </div>
+                    
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <!-- Image previews will be added here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    {{-- <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
+                        <i class="fas fa-upload mr-1"></i> Upload Images
+                    </button> --}}
+
+                    <button type="submit" class="btn btn-primary"> <i class="fas fa-upload mr-1"></i>Update Images</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -291,6 +378,12 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
     <script>
         @if (session('success'))
             Swal.fire({
@@ -316,134 +409,195 @@
             });
         @endif
 
-        // Delete confirmation
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.delete-btn');
+        // Initialize DataTable
+        $(document).ready(function() {
+            $('#portfolioTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "order": [[4, "desc"]], // Default sort by project date
+                "language": {
+                    "emptyTable": "<div class='dataTables_empty'><i class='fas fa-folder-open'></i><h4>No portfolio items found</h4><p>Add a new portfolio item to get started.</p></div>"
+                },
+                "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                       "<'row'<'col-sm-12'tr>>" +
+                       "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                "columnDefs": [
+                    { "orderable": false, "targets": [0, 6] }, // Disable sorting for image and actions columns
+                    { "className": "text-center", "targets": [0, 5] } // Center align image and status columns
+                ]
+            });
             
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const form = this.closest('.delete-form');
+            // Delete confirmation
+            $('.delete-btn').on('click', function(e) {
+                e.preventDefault();
+                const form = $(this).closest('.delete-form');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+
+            // Gallery Modal Functionality
+            $('.gallery-btn').on('click', function() {
+                const portfolioId = $(this).data('portfolio-id');
+                const portfolioName = $(this).data('portfolio-name');
+                
+                $('#portfolio_id').val(portfolioId);
+                $('#portfolio_name').text(portfolioName);
+                $('#galleryModal').modal('show');
+                
+                // Reset form
+                $('#gallery_images').val('');
+                $('#imagePreviewContainer').empty();
+                $('#uploadBtn').prop('disabled', true);
+            });
+
+            // File upload handling
+            const uploadArea = $('#uploadArea');
+            const fileInput = $('#gallery_images');
+            const previewContainer = $('#imagePreviewContainer');
+            const uploadBtn = $('#uploadBtn');
+
+            // Click on upload area to trigger file input
+            uploadArea.on('click', function() {
+                fileInput.click();
+            });
+
+            // Drag and drop functionality
+            uploadArea.on('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.addClass('dragover');
+            });
+
+            uploadArea.on('dragleave', function() {
+                uploadArea.removeClass('dragover');
+            });
+
+            uploadArea.on('drop', function(e) {
+                e.preventDefault();
+                uploadArea.removeClass('dragover');
+                const files = e.originalEvent.dataTransfer.files;
+                handleFiles(files);
+            });
+
+            // File input change
+            fileInput.on('change', function() {
+                handleFiles(this.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    previewContainer.empty();
                     
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        
+                        // Validate file type
+                        if (!file.type.match('image.*')) {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'Only image files are allowed',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            continue;
                         }
-                    });
-                });
-            });
-            
-            // View Toggle Functionality
-            const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
-            const portfolioContainer = document.getElementById('portfolioContainer');
-            
-            viewToggleBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    viewToggleBtns.forEach(b => b.classList.remove('active'));
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    // Change view
-                    const viewType = this.getAttribute('data-view');
-                    portfolioContainer.className = '';
-                    portfolioContainer.classList.add(viewType + '-view');
-                    
-                    // Adjust grid for list view
-                    if (viewType === 'grid') {
-                        portfolioContainer.classList.add('grid-view');
+                        
+                        // Validate file size (5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'error',
+                                title: 'File size must be less than 5MB',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            continue;
+                        }
+                        
+                        // Create preview
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = $(`
+                                <div class="image-preview">
+                                    <img src="${e.target.result}" alt="Preview">
+                                    <button type="button" class="remove-image" data-index="${i}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            `);
+                            previewContainer.append(preview);
+                        };
+                        reader.readAsDataURL(file);
                     }
-                });
-            });
-            
-            // Filter Functionality
-            const categoryFilter = document.getElementById('categoryFilter');
-            const statusFilter = document.getElementById('statusFilter');
-            const dateFilter = document.getElementById('dateFilter');
-            const searchFilter = document.getElementById('searchFilter');
-            const resetFiltersBtn = document.getElementById('resetFilters');
-            const portfolioCards = document.querySelectorAll('.portfolio-card');
-            const emptyState = document.getElementById('emptyState');
-            const itemCount = document.getElementById('itemCount');
-            
-            function filterPortfolio() {
-                const categoryValue = categoryFilter.value;
-                const statusValue = statusFilter.value;
-                const dateValue = dateFilter.value;
-                const searchValue = searchFilter.value.toLowerCase();
-                
-                let visibleCount = 0;
-                
-                portfolioCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category');
-                    const cardStatus = card.getAttribute('data-status');
-                    const cardDate = card.getAttribute('data-date');
-                    const cardTitle = card.querySelector('.card-title').textContent.toLowerCase();
-                    const cardDescription = card.querySelector('.portfolio-description') ? 
-                        card.querySelector('.portfolio-description').textContent.toLowerCase() : '';
                     
-                    const categoryMatch = !categoryValue || cardCategory === categoryValue;
-                    const statusMatch = !statusValue || cardStatus === statusValue;
-                    const dateMatch = !dateValue || cardDate === dateValue;
-                    const searchMatch = !searchValue || 
-                        cardTitle.includes(searchValue) || 
-                        cardDescription.includes(searchValue);
-                    
-                    if (categoryMatch && statusMatch && dateMatch && searchMatch) {
-                        card.style.display = 'block';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
+                    if (previewContainer.children().length > 0) {
+                        uploadBtn.prop('disabled', false);
                     }
-                });
-                
-                // Update item count
-                itemCount.textContent = visibleCount;
-                
-                // Show/hide empty state
-                const existingEmptyState = document.getElementById('emptyState');
-                if (visibleCount === 0 && portfolioCards.length > 0) {
-                    if (!existingEmptyState) {
-                        const emptyStateHTML = `
-                            <div id="emptyState" class="empty-state">
-                                <i class="fas fa-folder-open"></i>
-                                <h4>No portfolio items found</h4>
-                                <p>Try adjusting your filters or add a new portfolio item.</p>
-                              
-                            </div>
-                        `;
-                        portfolioContainer.innerHTML = emptyStateHTML;
-                    }
-                } else if (visibleCount > 0 && existingEmptyState) {
-                    existingEmptyState.remove();
                 }
             }
-            
-            // Add event listeners to filters
-            categoryFilter.addEventListener('change', filterPortfolio);
-            statusFilter.addEventListener('change', filterPortfolio);
-            dateFilter.addEventListener('change', filterPortfolio);
-            searchFilter.addEventListener('input', filterPortfolio);
-            
-            // Reset filters
-            resetFiltersBtn.addEventListener('click', function() {
-                categoryFilter.value = '';
-                statusFilter.value = '';
-                dateFilter.value = '';
-                searchFilter.value = '';
-                filterPortfolio();
+
+            // Remove image preview
+            previewContainer.on('click', '.remove-image', function() {
+                $(this).closest('.image-preview').remove();
+                
+                if (previewContainer.children().length === 0) {
+                    uploadBtn.prop('disabled', true);
+                }
             });
-            
-            // Initialize filter on page load
-            filterPortfolio();
+
+            // Form submission
+            $('#galleryUploadForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const files = fileInput[0].files;
+                
+                if (files.length === 0) {
+                    Swal.fire({
+                        toast: true,
+                        icon: 'error',
+                        title: 'Please select at least one image',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    return;
+                }
+                
+                // Show progress bar
+                $('#uploadProgress').show();
+                const progressBar = $('.progress-bar');
+                const progressText = $('#progressText');
+                
+                // Simulate upload progress (you'll replace this with actual AJAX upload)
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    progressBar.css('width', progress + '%');
+                    progressText.text('Uploading... ' + progress + '%');
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        
+                        // Submit the form (you might want to use AJAX instead)
+                        this.submit();
+                    }
+                }, 200);
+            });
         });
     </script>
 @endsection
